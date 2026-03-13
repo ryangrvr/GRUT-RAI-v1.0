@@ -1,0 +1,50 @@
+{
+  "certificate_id": "4e6de951-5185-45b0-bcd3-834cbf2a0055",
+  "timestamp_utc": "2026-02-09T16:24:49Z",
+  "engine_signature": {
+    "version": "GRUT-RAI-v0.2",
+    "canon_hash": "a425be497ba6b2f6989d2d9f72b32c26891f623efc790473654c422b95577e31",
+    "determinism_mode": "STRICT"
+  },
+  "inputs": {
+    "input_state_hash": "7f8956090072f01beb9b5f6f9b77db2d0d5c2fe804d1263672fa6c06952c2a07",
+    "run_config_hash": "bba145255f6dcbc7dd53104bc0318b3e29036bc5389255ad4c702083ee5cdf2e",
+    "assumption_toggles": {
+      "deterministic_run": true,
+      "baseline_eos_p_equals_w_rho": true
+    }
+  },
+  "run_trace": {
+    "operator_stack_keys": [
+      "OP_S_PHASE",
+      "OP_L_STIFF",
+      "OP_DISSIPATION",
+      "OP_TAU_COUPLING"
+    ],
+    "operators_executed_ids": [
+      "OP_S_PHASE_001",
+      "OP_L_STIFF_001",
+      "OP_DISSIP_001",
+      "OP_COSMO_COUPLE_001"
+    ],
+    "operator_execution_counts": {
+      "OP_S_PHASE_001": 1000,
+      "OP_L_STIFF_001": 1000,
+      "OP_DISSIP_001": 1000,
+      "OP_COSMO_COUPLE_001": 1000
+    },
+    "steps_computed": 1000,
+    "dt_years": 0.001,
+    "integrator": "RK4",
+    "convergence_metric": null,
+    "warnings": []
+  },
+  "outputs": {
+    "observables_emitted": [
+      "OBS_HZ_001"
+    ],
+    "output_digest": "09952b00fd7ba807b02f5555f16d2661798d75885cdaf5f56e8a459a2a315883"
+  },
+  "falsification_check": null,
+  "repro_hash": "345cc121c46989088ce8ba753f93793d89075736500857c1014eb4c03722c77e"
+}

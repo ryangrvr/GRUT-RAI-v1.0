@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GRUT Force RAI</title>
+  <style>
+    :root{font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:#111;}
+    body{margin:0;background:#f6f7f9;}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #e6e6e6;padding:14px 18px;display:flex;gap:12px;align-items:center;}
+    header h1{font-size:16px;margin:0;font-weight:650;}
+    header .pill{font-size:12px;background:#f0f0f0;border:1px solid #e5e5e5;padding:3px 8px;border-radius:999px;}
+    main{max-width:1100px;margin:0 auto;padding:18px;display:grid;grid-template-columns: 420px 1fr;gap:16px;}
+    @media (max-width: 980px){main{grid-template-columns:1fr;}}
+    .card{background:#fff;border:1px solid #e6e6e6;border-radius:14px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+    .card h2{font-size:13px;margin:0;padding:14px 14px 0 14px;color:#333;}
+    .card .content{padding:14px;}
+    label{display:block;font-size:12px;color:#444;margin:10px 0 6px;}
+    input, select, textarea{width:100%;box-sizing:border-box;border:1px solid #d8d8d8;border-radius:10px;padding:10px;font-size:13px;background:#fff;}
+    textarea{min-height:70px;resize:vertical;}
+    .row{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
+    .row3{display:grid;grid-template-columns: 1fr 1fr 1fr;gap:10px;}
+    .btn{width:100%;border:0;border-radius:12px;padding:11px 12px;font-size:13px;font-weight:650;cursor:pointer;background:#111;color:#fff;}
+    .btn:disabled{opacity:.55;cursor:not-allowed;}
+    .muted{color:#666;font-size:12px;margin-top:8px;line-height:1.35;}
+    .answer{padding:14px 14px 6px 14px;}
+    .answer h3{margin:0 0 8px;font-size:14px;}
+    .badge{display:inline-block;font-size:12px;border-radius:999px;padding:4px 9px;border:1px solid #e2e2e2;background:#fafafa;margin-right:6px;}
+    .md{white-space:normal;font-size:13px;line-height:1.45;}
+    .md code{background:#f1f1f1;border:1px solid #e3e3e3;border-radius:7px;padding:1px 6px;font-size:12px;}
+    .md pre{background:#0b1020;color:#e9eefc;border-radius:12px;padding:12px;overflow:auto;}
+    details{border-top:1px solid #eee;}
+    details summary{cursor:pointer;padding:12px 14px;font-size:13px;font-weight:650;list-style:none;}
+    details summary::-webkit-details-marker{display:none;}
+    details .details-body{padding:0 14px 14px;}
+    pre.json{margin:0;background:#0b1020;color:#e9eefc;border-radius:12px;padding:12px;overflow:auto;font-size:12px;}
+    .tiny{font-size:11px;color:#777;}
+    .flex{display:flex;gap:10px;align-items:center;}
+    .chk{display:flex;gap:8px;align-items:center;margin-top:10px;}
+    .chk input{width:auto;}
+    .rightTop{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:8px;}
+    .ghostbtn{border:1px solid #dedede;background:#fff;color:#111;border-radius:12px;padding:9px 10px;font-size:12px;cursor:pointer;}
+    .status-badge{border-radius:999px;padding:6px 10px;font-weight:700;color:#fff;min-width:64px;text-align:center}
+    .status-badge.pass{background:#10b981}
+    .status-badge.warn{background:#f59e0b}
+    .status-badge.fail{background:#ef4444}
+    #resultActions .ghostbtn{padding:6px 8px;font-size:12px} 
+  </style>
+</head>
+<body>
+<header style="display:flex;flex-direction:column;gap:6px;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <h1 style="margin:0;font-size:16px;">GRUT Force RAI</h1>
+    <div class="tiny">Narrative + Receipt</div>
+    <span class="pill" style="margin-left:auto;">Evidence-first Research AI</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <div id="globalTabs" style="display:flex;gap:8px;">
+      <button class="ghostbtn" id="tabChat" onclick="switchTab('chat')" data-testid="tab-chat">Chat</button>
+      <button class="ghostbtn" id="tabGrut" onclick="switchTab('grut')" data-testid="tab-grut">GRUT</button>
+      <button class="ghostbtn" id="tabAnam" onclick="switchTab('anamnesis')" data-testid="tab-anamnesis">Anamnesis</button>
+      <button class="ghostbtn" id="tabGrutpedia" onclick="switchTab('grutipedia')" data-testid="tab-grutipedia">GRUTipedia</button>
+      <button class="ghostbtn" id="tabLibrary" onclick="switchTab('library')" data-testid="tab-library">Library</button>
+      <button class="ghostbtn" id="tabGenerate" disabled style="opacity:0.6;" data-testid="tab-generate">Generate</button>
+    </div>
+    <span id="engineVersion" class="pill" style="margin-left:auto;">engine: —</span>
+  </div>
+</header>
+
+<div style="background:#fff;border-bottom:1px solid #e6e6e6;padding:0 18px;display:flex;gap:16px;min-height:6px;"> </div>
+
+<main id="runTab" style="max-width:1100px;margin:0 auto;padding:18px;display:grid;grid-template-columns: 420px 1fr;gap:16px;">
+  <section class="card">
+    <h2>Ask</h2>
+    <div class="content">
+      <label>Prompt</label>
+      <textarea id="prompt">Explain what this run means and why the answer is 42.</textarea>
+
+      <label>Observer profile</label>
+      <select id="profile">
+        <option value="monk">monk</option>
+        <option value="astronomer">astronomer</option>
+        <option value="participant" selected>participant</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>v_obs (m/s)</label>
+          <input id="v_obs" type="number" value="200000"/>
+        </div>
+        <div>
+          <label>eps_t (Myr)</label>
+          <input id="eps_t" type="number" step="0.01" value="0.10"/>
+        </div>
+      </div>
+
+      <label>z_grid (comma-separated)</label>
+      <input id="z_grid" value="0, 0.5, 1.0, 2.0"/>
+
+      <h2 style="padding:14px 0 0 0;margin:6px 0 0 0;">Observer inputs</h2>
+      <div class="row3">
+        <div>
+          <label>ui_actions</label>
+          <input id="ui_actions" type="number" value="60"/>
+        </div>
+        <div>
+          <label>window_s</label>
+          <input id="window_s" type="number" value="10"/>
+        </div>
+        <div>
+          <label>avg_param_delta</label>
+          <input id="avg_param_delta" type="number" step="0.1" value="0.9"/>
+        </div>
+      </div>
+
+      <label>Sensor mode</label>
+      <select id="sensor_mode">
+        <option value="off">off</option>
+        <option value="ambient">ambient</option>
+        <option value="recorded" selected>recorded (alias)</option>
+        <option value="snapshot">snapshot</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>ambient_flux</label>
+          <input id="ambient_flux" type="number" step="0.01" value="0.03"/>
+        </div>
+        <div>
+          <label>eta (info coefficient)</label>
+          <input id="eta" type="number" step="0.1" value="1.0"/>
+        </div>
+      </div>
+
+      <div class="chk">
+        <input id="enable_mod" type="checkbox" checked/>
+        <label for="enable_mod" style="margin:0;">enable_observer_modulation (dissipation-only)</label>
+      </div>
+
+      <div class="rightTop">
+        <button class="ghostbtn" id="copyReq">Copy JSON</button>
+      </div>
+      <button class="btn" id="send">Ask /ask</button>
+      <div class="muted">
+        This page calls <code>/ask</code> and renders: narrative first → expandable sections (equations, engine, observer, NIS certificate).
+        <div class="tiny">Tip: In Swagger, paste JSON only. Here you can just click “Ask”.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="resultCard">
+    <div class="answer">
+      <div id="resultMeta" style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">
+        <div id="resultStatusBadge" class="status-badge">—</div>
+        <div class="tiny" style="margin-left:8px;">run: <code id="runIdShort">—</code></div>
+        <div class="tiny" style="margin-left:8px;">engine: <span id="engineVersionInline">—</span> • params: <code id="paramsHash">—</code> • bundle: <code id="bundleHash">—</code></div>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center;" id="resultActions">
+          <button class="ghostbtn" id="copyRunBtn" data-testid="copy-run-btn" style="display:none;margin-right:8px;">Copy ID</button>
+          <button class="ghostbtn" id="exportBtn" data-testid="export-btn" style="display:none;margin-right:8px;">Export</button>
+          <button class="ghostbtn" id="publishBtn" data-testid="publish-btn" style="display:none;margin-right:8px;">Publish</button>
+          <button class="ghostbtn" id="viewPublishedBtn" data-testid="view-published-btn" style="display:none;margin-right:8px;">Published</button>
+        </div>
+      </div>
+      <div id="receiptPanel" style="display:flex;align-items:flex-start;gap:12px;">
+        <div id="suggestedActions" style="min-width:220px; display:flex;flex-direction:column;gap:8px;">
+          <!-- suggested action buttons populated here -->
+        </div>
+        <div id="navigatorPanel" style="flex:1;min-height:40px;"></div>
+      </div>
+      <h3 id="headline">No response yet.</h3>
+      <div class="flex">
+        <span class="badge" id="badgeNis">NIS: —</span>
+        <span class="badge" id="badgeState">State: —</span>
+        <span class="badge" id="badgeTension">Tension: —</span>
+      </div>
+      <div class="md" id="md"></div>
+    </div>
+
+    <details open>
+      <summary>Expandable bundle</summary>
+      <div class="details-body" id="sections"></div>
+    </details>
+  </section>
+</main>
+
+<div id="libraryTab" style="display:none;max-width:1200px;margin:0 auto;padding:18px;">
+  <div class="card">
+    <h2>Run Library</h2>
+    <div class="content">
+      <div style="margin-bottom:14px;">
+        <button class="btn" onclick="refreshLibrary()" data-testid="library-refresh" style="width:auto;padding:8px 12px;display:inline-block;">Refresh</button>
+      </div>
+
+      <table id="libraryTable" style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="border-bottom:1px solid #ddd;">
+            <th style="text-align:left;padding:8px;">Kind</th>
+            <th style="text-align:left;padding:8px;">Status</th>
+            <th style="text-align:left;padding:8px;">Created</th>
+            <th style="text-align:left;padding:8px;">Hash</th>
+            <th style="text-align:left;padding:8px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="libraryBody">
+        </tbody>
+      </table>
+
+      <p class="muted" style="margin-top:14px;">
+        <strong>Actions:</strong> View details, export as JSON, or publish to immutable snapshot.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="grutipediaTab" style="display:none;max-width:1200px;margin:0 auto;padding:18px;">
+  <div class="card">
+    <h2>GRUTipedia</h2>
+    <div class="content">
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <input id="grutSearch" placeholder="Search topics" style="flex:1;" />
+        <button class="btn" onclick="refreshGrutipedia()" style="width:auto;padding:8px 12px;">Refresh</button>
+      </div>
+
+      <div id="grutStatus" class="tiny muted" style="margin-bottom:10px;">Loading topics…</div>
+
+      <div style="display:flex;gap:16px;">
+        <div style="width:320px;">
+          <ul id="topicList" style="list-style:none;padding:0;margin:0;font-size:13px;"></ul>
+        </div>
+        <div style="flex:1;">
+          <div id="topicView">
+            <h3 id="topicTitle">Select a topic</h3>
+            <div id="topicDef" class="md"></div>
+            <details id="topicEq" style="margin-top:8px;"><summary>Equations</summary><div class="details-body" id="topicEqs"></div></details>
+            <h4 style="margin-top:12px;">Related Research</h4>
+            <div id="topicLinks"></div>
+            <div style="margin-top:12px;"><button class="ghostbtn" onclick="linkLastRunToTopic(currentTopic)">Link last run to this topic</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="anamnesisTab" style="display:none;max-width:1200px;margin:0 auto;padding:18px;">
+  <div id="anamnesisContent"></div>
+</div>
+
+<script>
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+function basicMarkdown(md){
+  // Minimal, safe: escape then add a few markdown affordances.
+  let s = escapeHtml(md || "");
+  // code blocks ```...```
+  s = s.replace(/```([\s\S]*?)```/g, (m, p1) => "<pre>"+p1+"</pre>");
+  // inline code `x`
+  s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+  // bold **x**
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  // newlines
+  s = s.replace(/\n/g, "<br/>");
+  return s;
+}
+
+function parseZGrid(s){
+  return s.split(",").map(x => parseFloat(x.trim())).filter(x => !Number.isNaN(x));
+}
+
+function buildPayload(){
+  const prompt = document.getElementById("prompt").value.trim();
+  const profile = document.getElementById("profile").value;
+  const v_obs = Number(document.getElementById("v_obs").value);
+  const eps_t = Number(document.getElementById("eps_t").value);
+  const z_grid = parseZGrid(document.getElementById("z_grid").value);
+
+  const ui_actions = Number(document.getElementById("ui_actions").value);
+  const window_s = Number(document.getElementById("window_s").value);
+  const avg_param_delta = Number(document.getElementById("avg_param_delta").value);
+
+  const sensor_mode = document.getElementById("sensor_mode").value;
+  const ambient_flux = Number(document.getElementById("ambient_flux").value);
+  const eta = Number(document.getElementById("eta").value);
+  const enable_mod = document.getElementById("enable_mod").checked;
+
+  const sensor = (sensor_mode === "ambient")
+    ? { mode: "ambient", ambient_flux }
+    : (sensor_mode === "off")
+      ? { mode: "off" }
+      : { mode: sensor_mode, snapshot: { ambient_flux } }; // recorded/snapshot
+
+  return {
+    prompt,
+    run: {
+      engine: { z_grid, eps_t_myr: eps_t },
+      observer: {
+        profile,
+        v_obs_m_s: v_obs,
+        ui_window: { ui_actions, window_s, avg_param_delta },
+        sensor,
+        info_cfg: { eta },
+        enable_observer_modulation: enable_mod
+      }
+    }
+  };
+}
+
+function drawLineChartHost(host, series){
+  // series: [{label, data:[]}, ...]
+  try{
+    host.innerHTML = '';
+    const width = 420; const height = 120; const pad=6;
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS,'svg'); svg.setAttribute('viewBox',`0 0 ${width} ${height}`); svg.style.width='100%'; svg.style.height='120px';
+    // compute x scale and y scale
+    const maxLen = Math.max(...series.map(s=>s.data.length));
+    const allVals = series.flatMap(s=>s.data);
+    const minY = Math.min(...allVals); const maxY = Math.max(...allVals);
+    const range = maxY - minY || 1;
+    series.forEach((s,i)=>{
+      const path = document.createElementNS(svgNS,'path');
+      const pts = s.data.map((v, idx)=>{
+        const x = pad + (idx/(maxLen-1 || 1))*(width-2*pad);
+        const y = pad + (1 - ((v - minY)/range))*(height-2*pad);
+        return `${idx===0 ? 'M' : 'L'} ${x} ${y}`;
+      }).join(' ');
+      path.setAttribute('d', pts);
+      path.setAttribute('fill','none');
+      const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444'];
+      path.setAttribute('stroke', colors[i%colors.length]);
+      path.setAttribute('stroke-width', 2);
+      svg.appendChild(path);
+    });
+    host.appendChild(svg);
+  }catch(e){ console.warn('plot error', e); }
+}
+
+function renderAccordion(data){
+  const host = document.getElementById('sections');
+  host.innerHTML = '';
+
+  function makeSection(title, innerNode){
+    const wrap = document.createElement('details');
+    wrap.open = false;
+    const sum = document.createElement('summary'); sum.textContent = title;
+    const body = document.createElement('div'); body.className='details-body';
+    if(innerNode) body.appendChild(innerNode);
+    wrap.appendChild(sum); wrap.appendChild(body); host.appendChild(wrap);
+    return body;
+  }
+
+  // Certificate (NIS/RIS)
+  const certBody = makeSection('Certificate (NIS/RIS)');
+  const certPre = document.createElement('pre'); certPre.className='json'; certPre.textContent = JSON.stringify({nis: data.answer && data.answer.badge, ris: data.ris || data.ris_summary}, null, 2);
+  certBody.appendChild(certPre);
+
+  // Key equations (from answer text if present)
+  const eqBody = makeSection('Key equations');
+  const eqDiv = document.createElement('div'); eqDiv.className='md'; eqDiv.innerHTML = basicMarkdown((data.answer && data.answer.text_markdown) ? data.answer.text_markdown.slice(0,500) : '');
+  eqBody.appendChild(eqDiv);
+
+  // Comparison
+  const compBody = makeSection('Comparison (if present)');
+  if(data && data.comparison){
+    const cmpDiv = document.createElement('div'); cmpDiv.className='md'; cmpDiv.innerHTML = basicMarkdown(JSON.stringify(data.comparison, null, 2)); compBody.appendChild(cmpDiv);
+  } else {
+    compBody.appendChild(document.createTextNode('No comparison present'));
+  }
+
+  // Engine outputs
+  const engBody = makeSection('Engine outputs');
+  const engPre = document.createElement('pre'); engPre.className='json'; engPre.textContent = JSON.stringify(data.engine || data.answer?.engine || {}, null, 2);
+  engBody.appendChild(engPre);
+
+  // Observer layer
+  const obsBody = makeSection('Observer layer');
+  const obsPre = document.createElement('pre'); obsPre.className='json'; obsPre.textContent = JSON.stringify(data.observer || data.answer?.observer || {}, null, 2);
+  obsBody.appendChild(obsPre);
+
+  // Raw request/response
+  const rawBody = makeSection('Raw response JSON');
+  const rawPre = document.createElement('pre'); rawPre.className='json'; rawPre.textContent = JSON.stringify(data, null, 2);
+  rawBody.appendChild(rawPre);
+
+  // Plots
+  // GRUT plot
+  if(data && (data.engine && data.engine.f_sigma8_grut)){
+    const plotHost = makeSection('Plot: f_sigma8_grut');
+    const div = document.createElement('div'); plotHost.appendChild(div);
+    drawLineChartHost(div, [{label:'f_sigma8_grut', data: data.engine.f_sigma8_grut}, {label:'baseline', data: (data.comparison && data.comparison.baseline && data.comparison.baseline.f_sigma8) ? data.comparison.baseline.f_sigma8 : []}]);
+  }
+  // Anamnesis plots
+  if(data && (data.reconstructed_observed || data.reconstructed_source || data.y_obs)){
+    const plotHost = makeSection('Anamnesis plots (observed vs reconstructed)');
+    const div = document.createElement('div'); plotHost.appendChild(div);
+    const series = [];
+    if(data.y_obs) series.push({label:'observed', data: data.y_obs});
+    if(data.reconstructed_observed) series.push({label:'reconstructed_observed', data: data.reconstructed_observed});
+    if(data.reconstructed_source) series.push({label:'reconstructed_source', data: data.reconstructed_source});
+    drawLineChartHost(div, series);
+  }
+}
+
+async function send(){
+  console.log("send() called");
+  const btn = document.getElementById("send");
+  btn.disabled = true;
+  btn.textContent = "Running…";
+  // Prevent stale success output from lingering if this request errors.
+  document.getElementById("engineVersion").textContent = "engine: —";
+  document.getElementById("headline").textContent = "Running…";
+  document.getElementById("badgeNis").textContent = "NIS: —";
+  document.getElementById("badgeState").textContent = "State: —";
+  document.getElementById("badgeTension").textContent = "Tension: —";
+  document.getElementById("md").innerHTML = "";
+  document.getElementById("sections").innerHTML = "";
+  try{
+    const payload = buildPayload();
+    console.log("Payload built:", payload);
+    const res = await fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "accept": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    console.log("Fetch response status:", res.status, res.ok);
+    const raw = await res.text();
+    console.log("Response text length:", raw.length);
+    let data = null;
+    try { data = raw ? JSON.parse(raw) : null; } catch (e) { data = null; console.error("JSON parse error:", e); }
+
+    if (!res.ok){
+      // FastAPI errors come back as { detail: ... }
+      const detail = data && data.detail !== undefined ? data.detail : raw;
+
+      // Pretty, educational rendering when we hit a sovereign integrity failure.
+      if (detail && typeof detail === "object" && !Array.isArray(detail) && detail.status === "NIS_INTEGRITY_FAILURE"){
+        const diag = detail.diagnostic || {};
+        const corr = detail.correction_logic || {};
+        document.getElementById("headline").textContent = "NIS integrity failure";
+        document.getElementById("badgeNis").textContent = "NIS: FAIL";
+        document.getElementById("badgeState").textContent = "State: —";
+        document.getElementById("badgeTension").textContent = "Tension: —";
+        const md = `**${escapeHtml(detail.error_code || "Integrity failure")}**\n\n`+
+                  `**Diagnostic**\n`+
+                  `- observed_speed: \`${escapeHtml(String(diag.observed_speed || "—"))}\`\n`+
+                  `- elastic_limit: \`${escapeHtml(String(diag.elastic_limit || "—"))}\`\n`+
+                  `- message: ${escapeHtml(String(diag.message || ""))}\n\n`+
+                  `**Metabolic correction**\n`+
+                  `- recommendation: ${escapeHtml(String(corr.recommendation || ""))}\n`+
+                  (corr.required_eps_t ? `- required_eps_t: \`${escapeHtml(String(corr.required_eps_t))}\`\n` : "")+
+                  (corr.current_eps_t ? `- current_eps_t: \`${escapeHtml(String(corr.current_eps_t))}\`\n` : "")+
+                  `\n_Open the raw error payload below for reproducibility._`;
+        document.getElementById("md").innerHTML = basicMarkdown(md);
+        // Put the raw payload into the expandable panel.
+        renderSections({ sections: [
+          { label: "Raw error payload", content_markdown: "```json\n" + JSON.stringify(detail, null, 2) + "\n```" }
+        ]});
+        return;
+      }
+
+      // Generic error fallback.
+      throw new Error((detail !== undefined) ? JSON.stringify(detail, null, 2) : ("HTTP "+res.status));
+    }
+
+    document.getElementById("engineVersion").textContent = "engine: " + (data.engine_version || "—");
+    document.getElementById("headline").textContent = (data.answer && data.answer.headline) ? data.answer.headline : "Response";
+    document.getElementById("badgeNis").textContent = "NIS: " + ((data.answer && data.answer.badge && data.answer.badge.nis) || "—");
+    document.getElementById("badgeState").textContent = "State: " + ((data.answer && data.answer.badge && data.answer.badge.metabolic_state) || "—");
+    document.getElementById("badgeTension").textContent = "Tension: " + ((data.answer && data.answer.badge && data.answer.badge.tension_color) || "—");
+
+    // Standardized result header/meta
+    const metaStatus = (data && data.answer && data.answer.badge && data.answer.badge.nis) ? data.answer.badge.nis : (data && data.ris && data.ris.status) || '—';
+    const publishedSlug = data.publish_slug || data.published_slug || (data.response && data.response.publish_slug) || null;
+    setResultMeta(metaStatus, data.engine_version, data.params_hash, data.bundle_hash, data.run_id, publishedSlug);
+
+    // Track last run for unambiguous linking
+    if(data && data.run_id) {
+      lastRunId = data.run_id;
+      console.log('Captured lastRunId:', lastRunId);
+    }
+
+    if(lastRunId) {
+      loadNavigatorSuggestions(lastRunId);
+    }
+
+    document.getElementById("md").innerHTML = basicMarkdown(data.answer && data.answer.text_markdown ? data.answer.text_markdown : "");
+    // Update standardized result header/meta + suggested actions (reuse publishedSlug above)
+    setResultMeta((data.answer && data.answer.badge && data.answer.badge.nis) || (data.ris && data.ris.status) || '—', data.engine_version, data.params_hash, data.bundle_hash, data.run_id, publishedSlug);
+    updateSuggestedActions(data);
+    renderAccordion(data);
+  } catch(e){
+    console.error("Send error:", e);
+    document.getElementById("headline").textContent = "Error";
+    document.getElementById("md").innerHTML = "<pre class='json'>"+escapeHtml(String(e))+"</pre>";
+    document.getElementById("badgeNis").textContent = "NIS: ERROR";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Ask /ask";
+    // Scroll result card into view
+    try {
+      document.getElementById("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (e) {
+      console.warn("Scroll failed:", e);
+    }
+  }
+}
+
+document.getElementById("send").addEventListener("click", send);
+document.getElementById("copyReq").addEventListener("click", async () => {
+  const payload = buildPayload();
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  const b = document.getElementById("copyReq");
+  const old = b.textContent;
+  b.textContent = "Copied";
+  setTimeout(()=>b.textContent=old, 900);
+});
+
+// =========================
+// Reconstruction Panel (Anamnesis)
+// =========================
+
+function buildReconstructionPanel() {
+  const panel = document.createElement("div");
+  panel.className = "card";
+  panel.style.gridColumn = "1 / 3";
+  panel.innerHTML = `
+    <h2>Reconstruction Lens (Anamnesis)</h2>
+    <div class="content">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <!-- Demo Section -->
+        <div>
+          <h3 style="font-size:12px; margin:0 0 12px; font-weight:650;">Demo</h3>
+          <label>dt_s (seconds)</label>
+          <input type="number" id="demodt" value="1.0" step="0.1"/>
+          
+          <label style="margin-top:10px;">tau_s (seconds)</label>
+          <input type="number" id="demotau" value="30.0" step="1.0"/>
+          
+          <label style="margin-top:10px;">n_kernel (samples)</label>
+          <input type="number" id="demonk" value="128" step="1" min="4"/>
+          
+          <label style="margin-top:10px;">lambda (sparsity)</label>
+          <input type="number" id="demolam" value="0.01" step="0.001" min="0"/>
+          
+          <button class="btn" style="margin-top:14px;" onclick="runDemo()">Run Demo</button>
+        </div>
+
+        <!-- Tau Search Section -->
+        <div>
+          <h3 style="font-size:12px; margin:0 0 12px; font-weight:650;">Search τ</h3>
+          <label>tau_candidates (comma-separated)</label>
+          <textarea id="taucandidates" placeholder="1.0,5.0,10.0,20.0,30.0">5.0,10.0,20.0,30.0</textarea>
+          
+          <label style="margin-top:10px;">n_kernel</label>
+          <input type="number" id="taunks" value="128" step="1" min="4"/>
+          
+          <label style="margin-top:10px;">lambda</label>
+          <input type="number" id="taulam" value="0.02" step="0.001" min="0"/>
+          
+          <button class="btn" style="margin-top:14px;" onclick="runTauSearch()">Search τ</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="anamResContainer" style="margin-top:20px; display:none;">
+        <div id="anamBadge" style="margin-bottom:12px;">
+          <span class="badge" id="anamRisBadge">—</span>
+          <span class="badge" id="anamMsg">—</span>
+        </div>
+
+        <div id="demoRes" style="display:none;">
+          <h4 style="font-size:12px; margin:0 0 8px; font-weight:650;">Demo Result</h4>
+          <div style="background:#f9f9f9; border-radius:10px; padding:12px; font-size:12px; max-height:200px; overflow:auto;">
+            <div>EMD: <code id="demoEmd">—</code></div>
+            <div>Residual: <code id="demoRes2">—</code></div>
+            <div>Iters: <code id="demoIters">—</code></div>
+            <div>Recovery Recall (±2): <code id="demoRecall">—</code></div>
+          </div>
+        </div>
+
+        <div id="tauRes" style="display:none; margin-top:12px;">
+          <h4 style="font-size:12px; margin:0 0 8px; font-weight:650;">Tau Search Result</h4>
+          <div style="background:#f9f9f9; border-radius:10px; padding:12px; font-size:12px; max-height:200px; overflow:auto;">
+            <div>Best τ: <code id="bestTau">—</code></div>
+            <div style="margin-top:8px;">
+              <details>
+                <summary>Score Details</summary>
+                <div class="details-body">
+                  <div class="chk" style="margin-bottom:8px; align-items:center;">
+                    <input type="checkbox" id="showBaseline" checked />
+                    <label for="showBaseline" style="margin:0; font-size:12px;">Show baseline row</label>
+                    <div style="margin-left:auto; font-size:12px;" id="comparisonSummary"></div>
+                  </div>
+                  <table id="tauScoresTable" style="width:100%; font-size:11px; border-collapse:collapse;">
+                    <thead>
+                      <tr style="border-bottom:1px solid #ddd;">
+                        <th style="text-align:left; padding:6px;">τ</th>
+                        <th style="text-align:left; padding:6px;">EMD</th>
+                        <th style="text-align:left; padding:6px;">Residual</th>
+                        <th style="text-align:left; padding:6px;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tauScoresTbody">
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="muted" style="margin-top:14px;">
+        <strong>Note:</strong> If RIS = FAIL, do not pretend you "saw the past." Widen tau range, lower lambda, or increase n_kernel.
+      </p>
+    </div>
+  `;
+  return panel;
+}
+
+async function runDemo() {
+  const dt = parseFloat(document.getElementById("demodt").value) || 1.0;
+  const tau = parseFloat(document.getElementById("demotau").value) || 30.0;
+  const nk = parseInt(document.getElementById("demonk").value) || 128;
+  const lam = parseFloat(document.getElementById("demolam").value) || 0.01;
+
+  const payload = {
+    n: 256,
+    dt_s: dt,
+    tau_s: tau,
+    n_kernel: nk,
+    lam: lam,
+    max_iter: 4000,
+    noise_std: 0.0,
+    spikes: [
+      { index: 40, amplitude: 1.0 },
+      { index: 150, amplitude: 0.7 }
+    ],
+    seed: 1
+  };
+
+  try {
+    const resp = await fetch("/anamnesis/demo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await resp.json();
+
+    const ris = data.ris || {};
+    const diag = data.diagnostic || {};
+
+    document.getElementById("anamResContainer").style.display = "block";
+    document.getElementById("demoRes").style.display = "block";
+    document.getElementById("tauRes").style.display = "none";
+
+    const statusColor = ris.status === "PASS" ? "#10b981" : (ris.status === "WARN" ? "#f59e0b" : "#ef4444");
+    document.getElementById("anamRisBadge").innerHTML = `<span style="color:${statusColor}; font-weight:650;">● ${ris.status}</span>`;
+    document.getElementById("anamMsg").textContent = ris.message || "OK";
+
+    document.getElementById("demoEmd").textContent = (ris.emd || 0).toFixed(3);
+    document.getElementById("demoRes2").textContent = (diag.residual_norm || 0).toFixed(4);
+    document.getElementById("demoIters").textContent = ris.iters || "—";
+    const recovery = diag.spike_recovery || {};
+    const recallTol = recovery.recovery_within_tol_recall || 0;
+    document.getElementById("demoRecall").textContent = (recallTol * 100).toFixed(1) + "%";
+
+    // Show kernel metadata
+    const kernelName = data.kernel_name ? (data.kernel_name === 'seth' ? 'Seth Kernel' : data.kernel_name) : '—';
+    const kernelFamily = data.kernel_family || '—';
+    document.getElementById('demoRes').querySelector('.details-body')?.insertAdjacentHTML('beforeend', `<div style="margin-top:8px;font-size:12px;">Kernel: <strong>${escapeHtml(kernelName)}</strong> <span class="tiny">(${escapeHtml(kernelFamily)})</span></div>`);
+
+    // Capture last run id for linking
+    if(data && data.run_id) { lastRunId = data.run_id; console.log('Captured lastRunId (demo):', lastRunId); loadNavigatorSuggestions(lastRunId); }
+
+    // Update standardized result header/meta + suggested actions and accordion
+    const publishedSlug = data.publish_slug || data.published_slug || null;
+    setResultMeta(ris.status || '—', data.engine_version, data.params_hash, data.bundle_hash, data.run_id, publishedSlug);
+    updateSuggestedActions(data);
+    renderAccordion(data);
+  } catch (e) {
+    alert("Demo error: " + e.message);
+  }
+}
+
+async function runTauSearch() {
+  const tauStrs = document.getElementById("taucandidates").value.trim().split(",").map(s => parseFloat(s.trim())).filter(t => !isNaN(t));
+  const nk = parseInt(document.getElementById("taunks").value) || 128;
+  const lam = parseFloat(document.getElementById("taulam").value) || 0.02;
+  const dt = 1.0; // fixed for search
+
+  if (tauStrs.length === 0) {
+    alert("Enter at least one tau candidate");
+    return;
+  }
+
+  // Generate synthetic signal: simulate_shadow with a simple spike
+  const n = 256;
+  const x_true = new Array(n).fill(0);
+  x_true[60] = 1.0;
+  x_true[180] = 0.7;
+
+  // Simple forward: convolve with exponential kernel
+  const tau_default = 30.0;
+  const kernel = makeExpKernel(tau_default, dt, nk);
+  const y = convolveSimple(x_true, kernel).slice(0, n);
+
+  const payload = {
+    y_obs: y,
+    dt_s: dt,
+    tau_candidates_s: tauStrs,
+    n_kernel: nk,
+    lam: lam,
+    max_iter: 1500,
+    tol: 1e-6,
+    nonnegative: true,
+    emd_warn: 2.0,
+    emd_fail: 5.0,
+    residual_warn: 0.10,
+    residual_fail: 0.25
+  };
+
+  try {
+    const resp = await fetch("/anamnesis/search_tau", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await resp.json();
+
+    const risSummary = data.ris_summary || {};
+    const scores = data.scores || [];
+
+    document.getElementById("anamResContainer").style.display = "block";
+    document.getElementById("demoRes").style.display = "none";
+    document.getElementById("tauRes").style.display = "block";
+
+    const statusColor = risSummary.status === "PASS" ? "#10b981" : (risSummary.status === "WARN" ? "#f59e0b" : "#ef4444");
+    document.getElementById("anamRisBadge").innerHTML = `<span style="color:${statusColor}; font-weight:650;">● ${risSummary.status}</span>`;
+    document.getElementById("anamMsg").textContent = risSummary.message || "—";
+
+    const bestTau = data.best_tau_s !== null ? data.best_tau_s.toFixed(2) : "NONE";
+    document.getElementById("bestTau").textContent = bestTau;
+
+    // Update standardized result header/meta and accordion
+    const publishedSlug = data.publish_slug || data.published_slug || null;
+    setResultMeta(risSummary.status || '—', data.engine_version, data.params_hash, data.bundle_hash, data.run_id, publishedSlug);
+    updateSuggestedActions(data);
+    renderAccordion(data);
+
+    // Populate scores table
+    const tbody = document.getElementById("tauScoresTbody");
+    tbody.innerHTML = scores.map(s => `
+      <tr class="${s.label==='tau0_baseline' ? 'baseline-row' : ''}" data-label="${s.label||''}" style="border-bottom:1px solid #eee; ${s.label==='tau0_baseline' ? 'background:#fff7e6;' : ''}">
+        <td style="padding:6px;">${s.label ? (s.label==='tau0_baseline' ? '<em>baseline</em>' : s.label) : s.tau_s.toFixed(2)}</td>
+        <td style="padding:6px;">${s.emd_shadow.toFixed(3)}</td>
+        <td style="padding:6px;">${s.residual_norm.toFixed(4)}</td>
+        <td style="padding:6px;"><span style="color:${s.ris_status === "PASS" ? "#10b981" : (s.ris_status === "WARN" ? "#f59e0b" : "#ef4444")}">${s.ris_status}</span></td>
+      </tr>
+    `).join("");
+
+    // Show comparison if present
+    const comparisonSummaryHost = document.getElementById('comparisonSummary');
+    comparisonSummaryHost.innerHTML = '';
+    if(data.comparison){
+      // show kernel info near comparison summary if available
+      if (data.kernel_name || data.kernel_family) {
+        const kn = data.kernel_name === 'seth' ? 'Seth Kernel' : (data.kernel_name || '—');
+        const kf = data.kernel_family || '—';
+        comparisonSummaryHost.innerHTML += ` <span style="margin-left:8px;font-size:12px;">Kernel: <strong>${escapeHtml(kn)}</strong> <span class="tiny">(${escapeHtml(kf)})</span></span>`;
+      }
+      const comp = data.comparison;
+      // Summary area (small, for quick UI)
+      const winner = comp.delta && comp.delta.winner ? comp.delta.winner : '—';
+      const deltaVal = typeof comp.delta?.value !== 'undefined' ? Number(comp.delta.value).toFixed(4) : '—';
+      const color = winner === 'best' ? '#10b981' : (winner === 'baseline' ? '#f59e0b' : '#888');
+      comparisonSummaryHost.innerHTML = `<span style="display:inline-block;padding:6px;border-radius:999px;border:1px solid #eaeaea;background:#fff;font-size:12px;">Baseline: <strong>${escapeHtml(comp.baseline.name)}</strong></span> <span style="display:inline-block;margin-left:8px;padding:6px;border-radius:999px;background:${color};color:#fff;font-weight:700;font-size:12px;">${escapeHtml(winner)}</span> <span style="display:inline-block;margin-left:8px;font-size:12px;">Δ=${deltaVal}</span>`;
+
+      const cmpDiv = document.createElement('div');
+      cmpDiv.style.marginTop = '8px';
+      cmpDiv.className = 'md';
+      cmpDiv.innerHTML = `<strong>Baseline:</strong> ${escapeHtml(comp.baseline.name)} • <strong>Delta:</strong> ${deltaVal} • <strong>Winner:</strong> <span style="color:${color}; font-weight:700;">${escapeHtml(winner)}</span>`;
+      document.getElementById('tauRes').appendChild(cmpDiv);
+    }
+
+    // Baseline show/hide toggle
+    const showBaselineCheckbox = document.getElementById('showBaseline');
+    function applyBaselineToggle(){
+      const show = showBaselineCheckbox.checked;
+      document.querySelectorAll('.baseline-row').forEach(r => r.style.display = show ? '' : 'none');
+    }
+    showBaselineCheckbox.addEventListener('change', applyBaselineToggle);
+    applyBaselineToggle();
+
+    // Capture last run id for linking
+    if(data && data.run_id) { lastRunId = data.run_id; console.log('Captured lastRunId (tau):', lastRunId); loadNavigatorSuggestions(lastRunId); }
+  } catch (e) {
+    alert("Tau search error: " + e.message);
+  }
+}
+
+// Simple helper functions
+function makeExpKernel(tau, dt, n) {
+  const k = new Array(n);
+  for (let i = 0; i < n; i++) {
+    k[i] = Math.exp(-(i * dt) / tau);
+  }
+  const sum = k.reduce((a, b) => a + b, 0);
+  return k.map(x => x / sum);
+}
+
+function convolveSimple(x, k) {
+  const n = x.length;
+  const m = k.length;
+  const y = new Array(n + m - 1).fill(0);
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      y[i + j] += x[i] * k[j];
+    }
+  }
+  return y;
+}
+
+// Result meta helper: status badge, engine/params/bundle short, and action buttons
+function setResultMeta(status, engineVer, paramsHash, bundleHash, runId, publishedSlug) {
+  try {
+    const badgeEl = document.getElementById('resultStatusBadge');
+    if(badgeEl){
+      badgeEl.textContent = status || '—';
+      badgeEl.classList.remove('pass','warn','fail');
+      if (String(status).toUpperCase() === 'PASS') badgeEl.classList.add('pass');
+      else if (String(status).toUpperCase() === 'WARN') badgeEl.classList.add('warn');
+      else if (String(status).toUpperCase() === 'FAIL') badgeEl.classList.add('fail');
+    }
+    const evEl = document.getElementById('engineVersionInline'); if(evEl) evEl.textContent = engineVer || '—';
+    const ph = document.getElementById('paramsHash'); if(ph) ph.textContent = (paramsHash || '—').substring(0,8);
+    const bh = document.getElementById('bundleHash'); if(bh) bh.textContent = (bundleHash || '—').substring(0,8);
+
+    const runEl = document.getElementById('runIdShort'); if(runEl) runEl.textContent = runId || '—';
+    const copyRunBtn = document.getElementById('copyRunBtn');
+    if(copyRunBtn){
+      copyRunBtn.style.display = runId ? '' : 'none';
+      copyRunBtn.onclick = async () => {
+        try{
+          await navigator.clipboard.writeText(runId || '');
+          const old = copyRunBtn.textContent;
+          copyRunBtn.textContent = 'Copied';
+          setTimeout(()=>copyRunBtn.textContent = old,900);
+        }catch(e){ alert('Copy failed'); }
+      }
+    }
+
+    const exportBtn = document.getElementById('exportBtn');
+    const publishBtn = document.getElementById('publishBtn');
+    const viewPubBtn = document.getElementById('viewPublishedBtn');
+
+    if (exportBtn) { exportBtn.style.display = runId ? '' : 'none'; exportBtn.onclick = () => { if (lastRunId) exportRun(lastRunId); else alert('No run to export'); } }
+    if (publishBtn) { publishBtn.style.display = runId && !publishedSlug ? '' : 'none'; publishBtn.onclick = () => { if (lastRunId) publishRun(lastRunId); else alert('No run to publish'); } }
+    if (viewPubBtn) { if (publishedSlug) { viewPubBtn.style.display = ''; viewPubBtn.onclick = () => viewPublishedModal(publishedSlug); } else { viewPubBtn.style.display = 'none'; } }
+  } catch(e){ console.warn('setResultMeta error', e); }
+}
+
+function updateSuggestedActions(data){
+  try{
+    const host = document.getElementById('suggestedActions');
+    host.innerHTML = '';
+    const status = (data && ((data.answer && data.answer.badge && data.answer.badge.nis) || (data.ris && data.ris.status))) || '—';
+
+    function addBtn(html, onclick){ const b = document.createElement('button'); b.className='ghostbtn'; b.innerHTML = html; b.addEventListener('click', onclick); host.appendChild(b); }
+
+    if(String(status).toUpperCase() === 'PASS'){
+      addBtn('Publish', ()=>{ if(lastRunId) publishRun(lastRunId); else alert('No run to publish'); });
+      addBtn('Link to GRUTipedia', ()=>{ if(lastRunId) alert('Click GRUTipedia topic to link or use UI link'); else alert('No run available'); });
+      if(data && data.comparison) addBtn('Compare view', ()=>{ alert('Open compare view (placeholder)'); });
+    } else if(String(status).toUpperCase() === 'FAIL'){
+      if(data && data.correction_logic) addBtn('Apply recommended eps_t', ()=>{ alert('Apply recommendation: '+JSON.stringify(data.correction_logic)); });
+      addBtn('Re-run', ()=>{ if(window.location.href.indexOf('/ui')>=0){ if(typeof runDemo === 'function') runDemo(); else alert('Re-run not available'); } });
+      // prominent failure message
+      if(data && data.ris_summary && data.ris_summary.status === 'FAIL'){
+        const m = document.createElement('div'); m.style.color = '#b91c1c'; m.style.fontWeight = 700; m.textContent = (data.ris_summary.message || 'Failure'); host.appendChild(m);
+      }
+    }
+  }catch(e){ console.warn('updateSuggestedActions error', e); }
+}
+
+async function loadNavigatorSuggestions(runId){
+  const host = document.getElementById('navigatorPanel');
+  if(!host) return;
+  if(!runId){ host.innerHTML = ''; return; }
+  host.innerHTML = '<div class="tiny muted">Loading navigator...</div>';
+  try{
+    const resp = await fetch(`/suggest/${runId}`);
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.detail || 'Failed to fetch suggestions');
+    renderNavigator(data.suggestions || []);
+  }catch(e){
+    host.innerHTML = `<div class="tiny" style="color:#b91c1c;">Navigator error: ${escapeHtml(e.message || String(e))}</div>`;
+  }
+}
+
+function renderNavigator(suggestions){
+  const host = document.getElementById('navigatorPanel');
+  if(!host) return;
+  if(!suggestions || suggestions.length === 0){
+    host.innerHTML = '<div class="tiny muted">No navigator suggestions yet.</div>';
+    return;
+  }
+
+  const cards = suggestions.slice(0,3).map(s => {
+    const title = s.to_topic || s.type || 'suggestion';
+    const reason = s.reason || '';
+    const conf = (s.confidence || '').toLowerCase();
+    return `<div style="border:1px solid #eee;border-radius:10px;padding:10px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <div><strong>${escapeHtml(title)}</strong><div class="tiny">${escapeHtml(conf || '')}</div></div>
+        ${s.to_topic ? `<button class="ghostbtn" onclick="applySuggestion('${s.to_topic}', '${escapeHtml(reason)}')">Apply</button>` : ''}
+      </div>
+      <div class="tiny" style="margin-top:6px;">${escapeHtml(reason)}</div>
+    </div>`;
+  }).join('');
+
+  host.innerHTML = `<div style="font-weight:650;margin-bottom:6px;">Navigator</div>${cards}`;
+}
+
+async function applySuggestion(topic, note){
+  if(!topic){ alert('No topic provided'); return; }
+  if(!lastRunId){ alert('No last run captured.'); return; }
+  try{
+    const body = { run_id: lastRunId };
+    if(note) body.note_md = note;
+    const resp = await fetch(`/grutipedia/${topic}/link`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.detail || data.message || 'Link failed');
+    alert(`Applied: linked run ${lastRunId} to ${topic}`);
+    if(currentTopic === topic) viewTopic(topic);
+  }catch(e){ alert('Apply error: '+ (e.message || e)); }
+}
+
+// Insert reconstruction panel into Anamnesis tab area
+const anamHost = document.getElementById("anamnesisContent");
+if (anamHost) {
+  const panel = buildReconstructionPanel();
+  anamHost.appendChild(panel);
+}
+
+// =========================
+// Tab switching & Library
+// =========================
+
+function switchTab(tab) {
+  const runTab = document.getElementById("runTab");
+  const libraryTab = document.getElementById("libraryTab");
+  const grutipediaTab = document.getElementById("grutipediaTab");
+  const anamnesisTab = document.getElementById("anamnesisTab");
+  const btns = ["tabChat","tabGrut","tabAnam","tabGrutpedia","tabLibrary","tabGenerate"].map(id => document.getElementById(id));
+
+  // Hide all content first
+  [runTab, libraryTab, grutipediaTab, anamnesisTab].forEach(el => { if(el) el.style.display = 'none'; });
+  // reset button underline style
+  btns.forEach(b => { if(b) b.style.borderBottomColor = '#ddd'; });
+
+  if (tab === 'chat') {
+    document.getElementById('tabChat').style.borderBottomColor = '#111';
+    alert('Chat placeholder — not implemented');
+  } else if (tab === 'grut') {
+    if(runTab) runTab.style.display = 'grid';
+    document.getElementById('tabGrut').style.borderBottomColor = '#111';
+  } else if (tab === 'anamnesis') {
+    if(anamnesisTab) anamnesisTab.style.display = 'block';
+    document.getElementById('tabAnam').style.borderBottomColor = '#111';
+  } else if (tab === 'library') {
+    if(libraryTab) libraryTab.style.display = 'block';
+    document.getElementById('tabLibrary').style.borderBottomColor = '#111';
+    refreshLibrary();
+  } else if (tab === 'grutipedia') {
+    if(grutipediaTab) grutipediaTab.style.display = 'block';
+    document.getElementById('tabGrutpedia').style.borderBottomColor = '#111';
+    refreshGrutipedia();
+  }
+}
+
+async function refreshLibrary() {
+  try {
+    const resp = await fetch("/library");
+    const data = await resp.json();
+    const runs = data.runs || [];
+
+    const tbody = document.getElementById("libraryBody");
+    tbody.innerHTML = runs.map(run => {
+      const statusColor = run.status === "PASS" ? "#10b981" : (run.status === "WARN" ? "#f59e0b" : "#ef4444");
+      const hashShort = (run.params_hash || "").substring(0, 8);
+      const date = new Date(run.created_at).toLocaleString();
+
+      return `
+        <tr data-run-id="${run.id}" style="border-bottom:1px solid #eee;">
+          <td style="padding:8px;">${run.kind}</td>
+          <td style="padding:8px;"><span style="color:${statusColor};font-weight:650;">●</span> ${run.status}</td>
+          <td style="padding:8px;">${date}</td>
+          <td style="padding:8px;"><code>${hashShort}</code></td>
+          <td style="padding:8px;">
+            <button class="ghostbtn" onclick="viewRun('${run.id}')" data-testid="run-view-${run.id}">View</button>
+            <button class="ghostbtn" onclick="exportRun('${run.id}')" data-testid="run-export-${run.id}">Export</button>
+            ${!run.is_published ? `<button class="ghostbtn" onclick="publishRun('${run.id}')" data-testid="run-publish-${run.id}">Publish</button>` : `<button class="ghostbtn" onclick="viewPublished('${run.publish_slug}')" data-testid="run-published-${run.id}">Published</button>`}
+          </td>
+        </tr>
+      `;
+    }).join("");
+  } catch (e) {
+    alert("Error loading library: " + e.message);
+  }
+}
+
+function viewRun(runId) {
+  fetch(`/runs/${runId}`)
+    .then(r => r.json())
+    .then(data => {
+      const status = data.response?.ris?.status || data.response?.nis?.status || "—";
+      const msg = data.response?.ris?.message || data.response?.nis?.message || "—";
+      let extra = '';
+      if(data.response && data.response.comparison) {
+        const cmp = data.response.comparison;
+        extra = `\n\nComparison (${cmp.metric}):\nWinner: ${cmp.delta?.winner || '—'} \nDelta: ${typeof cmp.delta?.value !== 'undefined' ? cmp.delta.value.toFixed(4) : '—'}`;
+      }
+      alert(`Run ${runId}\nStatus: ${status}\nMessage: ${msg}${extra}\n\n(Full data in browser console)`);
+      console.log(data);
+    })
+    .catch(e => alert("Error: " + e.message));
+}
+
+async function exportRun(runId) {
+  try {
+    const resp = await fetch(`/runs/${runId}/export`);
+    const data = await resp.json();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `run-${runId}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert("Export error: " + e.message);
+  }
+}
+
+// Minimal published viewer modal
+function viewPublishedModal(slug) {
+  fetch(`/p/${slug}`)
+    .then(r => r.json())
+    .then(data => {
+      const packet = data.evidence_packet || data;
+      const meta = { slug: data.slug, revision: data.revision, published_hash: data.published_hash, published_at: data.published_at };
+      const overlay = document.createElement('div');
+      overlay.style.position = 'fixed'; overlay.style.left = 0; overlay.style.top = 0; overlay.style.right = 0; overlay.style.bottom = 0; overlay.style.background='rgba(0,0,0,0.4)'; overlay.style.display='flex'; overlay.style.alignItems='center'; overlay.style.justifyContent='center'; overlay.style.zIndex=9999;
+      const box = document.createElement('div');
+      box.style.background='#fff'; box.style.borderRadius='10px'; box.style.padding='18px'; box.style.maxWidth='800px'; box.style.width='90%'; box.style.maxHeight='80%'; box.style.overflow='auto';
+      box.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div>
+            <strong>Published: /p/${escapeHtml(meta.slug || slug)}</strong><div class="tiny">rev ${escapeHtml(String(meta.revision || '—'))} • ${escapeHtml(meta.published_at || '')}</div>
+          </div>
+          <div><button class="ghostbtn" id="closePub">Close</button></div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div class="tiny">Header: <code>${escapeHtml(JSON.stringify(packet.header || {}, null, 2))}</code></div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <h4 style="margin:0 0 6px 0;">Receipt</h4>
+          <pre class="json">${escapeHtml(JSON.stringify(packet.receipt || {}, null, 2))}</pre>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <button class="ghostbtn" id="exportPub" data-testid="export-published">Export JSON</button>
+          <a href="/p/${slug}" target="_blank" class="ghostbtn" data-testid="published-link">Open raw</a>
+        </div>
+      `;
+      overlay.appendChild(box);
+      overlay.setAttribute('data-testid','published-modal');
+      document.body.appendChild(overlay);
+      document.getElementById('closePub').addEventListener('click', () => document.body.removeChild(overlay));
+      document.getElementById('exportPub').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(packet, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `published-${slug}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      });
+    })
+    .catch(e => alert('Error loading published snapshot: '+e.message));
+}
+
+async function publishRun(runId) {
+  try {
+    const resp = await fetch(`/runs/${runId}/publish`, { method: "POST" });
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.detail || data.message || 'Publish failed');
+    const url = data.public_url;
+    alert(`Published!\n\nRevision: ${data.revision}\nShare: ${window.location.origin}${url}`);
+    await navigator.clipboard.writeText(window.location.origin + url);
+    // Refresh library and, if viewing a topic, refresh it too so link buttons update
+    refreshLibrary();
+    if(currentTopic) viewTopic(currentTopic);
+  } catch (e) {
+    alert("Publish error: " + e.message);
+  }
+}
+
+function viewPublished(slug) {
+  const url = `/p/${slug}`;
+  window.open(url, "_blank");
+}
+
+// ------------------------
+// GRUTipedia UI functions
+// ------------------------
+let currentTopic = null;
+let lastRunId = null; // Tracks the most recently returned run_id from /ask, /runs, /anamnesis/demo, /anamnesis/search_tau
+
+async function refreshGrutipedia() {
+  try {
+    const resp = await fetch('/grutipedia');
+    const data = await resp.json();
+    const topics = data.topics || [];
+    const list = document.getElementById('topicList');
+    const status = document.getElementById('grutStatus');
+    if(!resp.ok){
+      const msg = (data && (data.detail || data.message)) ? (data.detail || data.message) : 'Failed to load topics';
+      if(status) status.textContent = msg;
+      list.innerHTML = '';
+      document.getElementById('topicTitle').textContent = 'GRUTipedia unavailable';
+      document.getElementById('topicDef').innerHTML = `<div class="tiny" style="color:#b91c1c;">${escapeHtml(msg)}</div>`;
+      document.getElementById('topicEqs').innerHTML = '';
+      document.getElementById('topicLinks').innerHTML = '';
+      return;
+    }
+    list.innerHTML = topics.map(t => `<li style="padding:8px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="viewTopic('${t.slug}')"><strong>${t.title}</strong><div class="tiny">${t.slug}</div></li>`).join('');
+    if(status) status.textContent = topics.length ? `Loaded ${topics.length} topics` : 'No topics found';
+    if(topics.length>0) viewTopic(topics[0].slug);
+    else {
+      document.getElementById('topicTitle').textContent = 'No topics available';
+      document.getElementById('topicDef').innerHTML = '<div class="tiny">Seed topics by restarting the API or check /grutipedia.</div>';
+      document.getElementById('topicEqs').innerHTML = '';
+      document.getElementById('topicLinks').innerHTML = '';
+    }
+  } catch(e) {
+    const status = document.getElementById('grutStatus');
+    if(status) status.textContent = 'Error loading topics';
+    document.getElementById('topicTitle').textContent = 'GRUTipedia unavailable';
+    document.getElementById('topicDef').innerHTML = `<div class="tiny" style="color:#b91c1c;">${escapeHtml(e.message || String(e))}</div>`;
+    document.getElementById('topicEqs').innerHTML = '';
+    document.getElementById('topicLinks').innerHTML = '';
+  }
+}
+
+async function viewTopic(slug) {
+  try {
+    const resp = await fetch(`/grutipedia/${slug}`);
+    if(!resp.ok) throw new Error('Topic not found');
+    const t = await resp.json();
+    currentTopic = slug;
+    document.getElementById('topicTitle').textContent = t.title || slug;
+    document.getElementById('topicDef').innerHTML = basicMarkdown(t.definition_md || '');
+    document.getElementById('topicEqs').innerHTML = basicMarkdown(t.equations_md || '');
+    const links = t.links || [];
+    document.getElementById('topicLinks').innerHTML = links.map(l => `
+      <div style="border-bottom:1px solid #eee;padding:8px 0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:650;">${l.run_id}</div>
+            <div class="tiny">${l.created_at}</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div style="text-align:right; margin-right:8px;">
+              <div class="tiny">${l.engine_version || '—'}</div>
+              <div class="tiny">params: <code>${(l.params_hash||'').slice(0,8)}</code></div>
+              <div class="tiny">bundle: <code>${(l.bundle_hash||'').slice(0,8)}</code></div>
+            </div>
+            <button class="ghostbtn" onclick="exportRun('${l.run_id}')">Export</button>
+            ${l.is_published ? `<button class="ghostbtn" onclick="viewPublishedModal('${l.publish_slug}')">Open Published</button>` : `<button class="ghostbtn" onclick="publishRun('${l.run_id}')">Publish</button>`}
+          </div>
+        </div>
+        <div style="margin-top:6px;" class="md">${basicMarkdown(l.note_md||'')}</div>
+        <div style="margin-top:6px;" class="tiny">Status: <span style="color:${l.status==='PASS' ? '#10b981' : (l.status==='WARN' ? '#f59e0b' : '#ef4444')}; font-weight:650;">${l.status || '—'}</span></div>
+        ${l.is_published ? `<div style="margin-top:6px;" class="tiny">Share: <a href="/p/${l.publish_slug}" target="_blank">/p/${l.publish_slug}</a> (rev ${l.published_revision})</div>` : ''}
+      </div>
+    `).join('');
+  } catch(e) { alert('Error loading topic: '+e.message); }
+}
+
+async function linkLastRunToTopic(slug) {
+  try {
+    // Prefer an explicit "last run" tracked in UI state to avoid ambiguity
+    if(!lastRunId) {
+      alert('No last run captured. Run /ask, an anamnesis demo, or a tau search first.');
+      return;
+    }
+
+    const run_id = lastRunId;
+    const resp = await fetch(`/grutipedia/${slug}/link`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ run_id })
+    });
+    if(!resp.ok) throw new Error((await resp.json()).detail || 'Link failed');
+    alert('Linked run '+run_id+' to '+slug);
+    viewTopic(slug);
+  } catch(e) { alert('Link error: '+e.message); }
+}
+</script>
+</body>
+</html>

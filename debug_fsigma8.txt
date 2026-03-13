@@ -1,0 +1,32 @@
+.F
+=================================== FAILURES ===================================
+_______________ test_baseline_win_and_best_nonbaseline_reported ________________
+
+    def test_baseline_win_and_best_nonbaseline_reported():
+        client = TestClient(app)
+        payload = {
+            "data": {"z": [0.0, 0.5, 1.0], "fsigma8": [0.5, 0.5, 0.5]},
+            "dt_myr": 10.0,
+            "tau_candidates_myr": [10.0, 50.0],
+            "n_kernel": 32,
+            "lam": 0.01,
+        }
+    
+        r = client.post('/anamnesis/search_tau_fsigma8', json=payload)
+        assert r.status_code == 200, r.text
+        j = r.json()
+    
+        assert any(s.get('label') == 'tau0_baseline' for s in j['scores'])
+    
+        # Ensure best is baseline (or best_index points to baseline)
+        best_is_baseline = (j.get('best_tau_myr') == 0.0) or (
+            j.get('best_index') is not None and j['scores'][j['best_index']].get('label') == 'tau0_baseline'
+        )
+>       assert best_is_baseline
+E       assert False
+
+tests/test_api_fsigma8.py:85: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_api_fsigma8.py::test_baseline_win_and_best_nonbaseline_reported
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1 passed in 1.41s
