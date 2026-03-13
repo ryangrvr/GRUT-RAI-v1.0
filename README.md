@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1180387532.svg)](https://doi.org/10.5281/zenodo.18993689)
+
 # GRUT-RAI Sovereign Engine (Phase E)
 
 Phase I canon is frozen by the GRUT_v12 Closure Protocol (February 2026). All outputs are definition-only and reproducibility-first.
