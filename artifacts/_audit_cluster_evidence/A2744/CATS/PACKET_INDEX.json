@@ -1,0 +1,127 @@
+{
+  "cluster": "A2744",
+  "model": "CATS",
+  "synthetic": true,
+  "gas_fits_path": "artifacts/_audit_cluster_evidence/A2744/CATS/raw/gas.fits",
+  "gas_from_chandra_a2744": false,
+  "packet_files": {
+    "raw": [
+      "raw/gamma1.npy",
+      "raw/gamma2.npy",
+      "raw/PROVENANCE.json",
+      "raw/kappa.npy",
+      "raw/kappa.fits",
+      "raw/gamma1.fits",
+      "raw/gas.fits",
+      "raw/gamma2.fits",
+      "raw/gas/gas.fits",
+      "raw/gas/GAS_PROVENANCE.json"
+    ],
+    "processed": [
+      "processed/gamma1.npy",
+      "processed/gamma2.npy",
+      "processed/kappa.npy",
+      "processed/WCS.json",
+      "processed/gas_registered/gas_registered.npy",
+      "processed/gas_registered/registration_report.json"
+    ],
+    "outputs": [
+      "outputs/profile_packet/profiles.csv",
+      "outputs/profile_packet/nis_profile_certificate.json",
+      "outputs/profile_packet/profile_metrics.json"
+    ],
+    "outputs_gas": [
+      "outputs/gas_offset_packet/offsets.csv",
+      "outputs/gas_offset_packet/registration_report.json",
+      "outputs/gas_offset_packet/centroids_summary.json",
+      "outputs/gas_offset_packet/nis_cluster_certificate.json",
+      "outputs/gas_offset_packet/nis_cluster_offset_certificate.json"
+    ]
+  },
+  "output_hashes": {
+    "profiles.csv": "245b730849ead6a9f8760e4a78d0fa196a01c0a190ae12804c5010e022518427",
+    "profile_metrics.json": "98c8190f50b587260ebc77c839e86c5bd5f93839abe343a93b8fb303f5573041",
+    "nis_profile_certificate.json": "1057f5a129308fbf486b92eda47acd5073ae764009f177e871567c9f5202ea05",
+    "gas_offsets.csv": "cfc7bfa188613b7eb80563e331b06c77899ee0a55037f5634b59d1ebdf12f578",
+    "gas_centroids_summary.json": "957499f75e05269f1fd640d7a1ec4b4522e0098eaa1be7a26ffbf97641f53173",
+    "nis_cluster_offset_certificate.json": "dd9f46f4310898478e5c83b90656d94b9510f4ed90ec1fc5f4408e75e6b84230",
+    "gas_registration_report.json": "1fcf32fbde1ed014795f6243652c143f30cdcf9fda568cad1b033b91bb4231f5"
+  },
+  "output_digest": "3d393f8d79c8d46fa7b74752b14e35750847010a019765d4bd999f7b1c22d9e6",
+  "profile_packet_certificate": {
+    "tool_version": "v0.5",
+    "determinism_mode": "STRICT",
+    "input_hash": "24ba2cfd93508b63511c2b0a2c7df744892df80125a963fa8f7c89ba8ba41a49",
+    "output_digest": "accb3f8c8981d4d8f84c7ad3558d9ae36707de71ca1e49584f0cc6c19c851f58",
+    "output_hashes": {
+      "profiles.csv": "245b730849ead6a9f8760e4a78d0fa196a01c0a190ae12804c5010e022518427",
+      "profile_metrics.json": "98c8190f50b587260ebc77c839e86c5bd5f93839abe343a93b8fb303f5573041"
+    }
+  },
+  "gas_offset_packet": {
+    "summary": {
+      "kappa_path": "artifacts/_audit_cluster_evidence/A2744/CATS/processed/kappa.npy",
+      "gas_path": "artifacts/_audit_cluster_evidence/A2744/CATS/processed/gas_registered/gas_registered.npy",
+      "normalize_mode": "none",
+      "pixel_scale_arcsec": 1.0,
+      "smoothing_grid": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "threshold_grid": [
+        0.0,
+        0.1
+      ],
+      "peak_mode": "com_positive_kappa",
+      "gas_centroid_mode": "com_positive",
+      "offset_stats_arcmin": {
+        "median": 0.08333284307255295,
+        "iqr": 1.8522513958313391e-06,
+        "min": 0.08332723134200845,
+        "max": 0.08333333333349782
+      },
+      "robust_offset_arcmin": 0.08333284307255295,
+      "robust_offset_arcsec": 4.999970584353177,
+      "robust_vector_arcsec": {
+        "dx_arcsec": -3.999968627495031,
+        "dy_arcsec": 2.9999928038716757
+      },
+      "offset_count": 6,
+      "nan_fraction": {
+        "kappa": 0.0,
+        "gas": 0.0
+      }
+    },
+    "prediction": null,
+    "certificate": {
+      "tool_version": "v0.1",
+      "determinism_mode": "STRICT",
+      "input_hash": "3968d05316b736018fa6554c8777e017d44bef9d94998bb63ac3b23d3267cd35",
+      "output_digest": "86b698231471b2f5333ed5a9673f718dec7d890125d42d8812924a55e2449c21",
+      "output_hashes": {
+        "centroids_summary.json": "957499f75e05269f1fd640d7a1ec4b4522e0098eaa1be7a26ffbf97641f53173",
+        "offsets.csv": "cfc7bfa188613b7eb80563e331b06c77899ee0a55037f5634b59d1ebdf12f578"
+      },
+      "config": {
+        "peak_mode": "com_positive_kappa",
+        "gas_centroid_mode": "com_positive",
+        "normalize_mode": "none",
+        "pixel_scale_arcsec": 1.0,
+        "smoothing_grid": [
+          0.0,
+          1.0,
+          2.0
+        ],
+        "threshold_grid": [
+          0.0,
+          0.1
+        ],
+        "v_coll_kms": null,
+        "v_coll_angle_deg": null,
+        "kpc_per_arcsec": null
+      }
+    }
+  },
+  "canon_hash": "60fd8c5c2be022e33060ea16ac5bf455eb40523a8520aa3011c6c361aabc25c9"
+}

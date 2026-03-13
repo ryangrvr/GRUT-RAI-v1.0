@@ -1,0 +1,31 @@
+{
+  "packet": "PACKET_ENDPOINT_v0.1",
+  "operator_id": "OP_QPRESS_001",
+  "created_at": "2026-03-08T21:08:31.385399Z",
+  "canon_status": "RESEARCH_TARGET",
+  "parameters": {
+    "epsilon_Q": 0.1,
+    "beta_Q": 2,
+    "R_eq_predicted": 0.31622776601683794
+  },
+  "overall_pass": true,
+  "output_files": [
+    "PACKET_INDEX.json",
+    "acceptance.json",
+    "force_decomposition.json",
+    "vtol_sweep.json",
+    "r0_sweep.json",
+    "stability.json",
+    "artifact_comparison.json",
+    "README_ENDPOINT.md"
+  ],
+  "output_hashes": {
+    "acceptance.json": "53ad1695715f69327f5450abaab75b1fa6b552a01174ec7af990f7312dec932f",
+    "force_decomposition.json": "9d6f31b59efec6bbab72e86d696f96c65a31e32b60796306ab27a1a56eb4d819",
+    "vtol_sweep.json": "c2d088a1be13ec6c3f900a334ef4ec867770e0c4a9bfe1e1a03fa9eaa5b4ccbc",
+    "r0_sweep.json": "11c57b5dbf00bffa42073a6fba8b89e834aa0be63ddff8422597cc8a501417c6",
+    "stability.json": "54830f8b9ca0e8e7af364257805fb41cc16ac96393e3dc9d13332d2fa29e268c",
+    "artifact_comparison.json": "cad5ad84d9ab35ff553c2b8931211ebb8194b0533b4b1468d250adc4e5d97438",
+    "README_ENDPOINT.md": "c9417b2b972adbd01d811cc2635dd11f55542ec2156848f29387b1b6592c147b"
+  }
+}

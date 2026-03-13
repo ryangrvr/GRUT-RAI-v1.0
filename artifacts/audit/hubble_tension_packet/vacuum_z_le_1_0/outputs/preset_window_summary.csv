@@ -1,0 +1,2 @@
+preset,compare_window_policy,n_points_used,n_excluded,chi2_total_planck,chi2_total_shoes,chi2_E_total,chi2_E_cc,chi2_E_bao,worst_point_z,worst_point_tracer,worst_point_resid_sigma_E
+vacuum_plus_matter,z_le_1_0,7,3,4.7944257584952155,10.483451466070312,3.0267472776482363,3.0267472776482363,,0.88,CC,1.4386130021925116

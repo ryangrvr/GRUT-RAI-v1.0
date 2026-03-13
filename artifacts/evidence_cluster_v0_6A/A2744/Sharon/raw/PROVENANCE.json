@@ -1,0 +1,20 @@
+{
+  "cluster": "A2744",
+  "model": "Sharon",
+  "source_url": null,
+  "file_urls": {
+    "kappa": "https://archive.stsci.edu/pub/hlsp/frontier/abell2744/models/sharon/v4cor/hlsp_frontier_model_abell2744_sharon_v4cor_kappa.fits",
+    "gamma": "https://archive.stsci.edu/pub/hlsp/frontier/abell2744/models/sharon/v4cor/hlsp_frontier_model_abell2744_sharon_v4cor_gamma.fits"
+  },
+  "download_timestamp": "2026-03-02T06:02:08.055899+00:00",
+  "file_hashes": {
+    "archive": null,
+    "kappa": "9e79d81186fe8d7e77abc46eb06c83e8312c84f1dea1df3ae331520640796545",
+    "gamma": "04057cb30973d169b9c308c75d424c5ec14ee11a381f0e2f5b729bd98c72385d"
+  },
+  "selected_maps": {
+    "kappa": "kappa.fits",
+    "gamma": "gamma.fits"
+  },
+  "stable_provenance_hash": "afac2be93c725ac77e78560250de4608dc9a9ea06385230ac56bfa8764c9fe37"
+}

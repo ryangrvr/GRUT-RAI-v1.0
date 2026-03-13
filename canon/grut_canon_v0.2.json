@@ -1,0 +1,319 @@
+{
+  "meta": {
+    "schema_version": "v0.2",
+    "phase": "2",
+    "status": "DRAFT",
+    "canon_hash": "RUNTIME_SHA256",
+    "created_utc": "REPLACED_AT_RUNTIME",
+    "notes": [
+      "v0.2 makes math explicit enough to execute deterministically: retarded exponential kernel via ODE, tau_eff(H) coupling, minimal FLRW evolution, operator guardrails logged to NIS."
+    ]
+  },
+  "unit_system": {
+    "name": "GRUT_CODE_UNITS",
+    "time_unit": "years",
+    "a_unit": "dimensionless",
+    "H_unit": "1/years",
+    "rho_unit": "code_energy_density",
+    "p_unit": "code_energy_density"
+  },
+  "constants": {
+    "by_id": {
+      "CONST_LAMBDA_LOCK": {
+        "id": "CONST_LAMBDA_LOCK",
+        "symbol": "Λ_lock",
+        "value": 1.154700538,
+        "units": "dimensionless",
+        "description": "Geometric anchor approx 2/sqrt(3). Fundamental scaling ratio."
+      },
+      "CONST_TAU_0": {
+        "id": "CONST_TAU_0",
+        "symbol": "τ_0",
+        "value": 4.19e7,
+        "units": "years",
+        "description": "Canonical relaxation time derived in Phase 1."
+      },
+      "CONST_K0": {
+        "id": "CONST_K0",
+        "symbol": "K_0",
+        "value": -0.083333333,
+        "units": "dimensionless",
+        "description": "Base curvature anchor -1/12."
+      },
+      "PARAM_ALPHA_MEM": {
+        "id": "PARAM_ALPHA_MEM",
+        "symbol": "α_mem",
+        "value": 0.1,
+        "units": "dimensionless",
+        "bounds": [
+          0.0,
+          1.0
+        ],
+        "status": "TUNABLE",
+        "description": "Weight of memory-smoothed driver in H^2 correction. 0 disables memory correction."
+      },
+      "PARAM_C_RHO": {
+        "id": "PARAM_C_RHO",
+        "symbol": "C_ρ",
+        "value": 1.0,
+        "units": "1/years^2 per rho_unit",
+        "status": "UNLOCKED",
+        "description": "Maps rho to H^2 in code units (placeholder until GRUT normalization is locked)."
+      },
+      "PARAM_C_K": {
+        "id": "PARAM_C_K",
+        "symbol": "C_k",
+        "value": 1.0,
+        "units": "1/years^2",
+        "status": "UNLOCKED",
+        "description": "Curvature coupling coefficient in code units (placeholder)."
+      },
+      "PARAM_W_EOS": {
+        "id": "PARAM_W_EOS",
+        "symbol": "w",
+        "value": 0.0,
+        "units": "dimensionless",
+        "bounds": [
+          -1.5,
+          1.5
+        ],
+        "status": "TUNABLE",
+        "description": "Equation of state parameter p = w rho for baseline fluid evolution."
+      },
+      "NUM_A_MIN": {
+        "id": "NUM_A_MIN",
+        "symbol": "a_min",
+        "value": 1e-12,
+        "units": "dimensionless",
+        "status": "LOCKED",
+        "description": "Numerical floor for scale factor."
+      },
+      "NUM_H_CAP": {
+        "id": "NUM_H_CAP",
+        "symbol": "H_cap",
+        "value": 1000000.0,
+        "units": "1/years",
+        "status": "LOCKED",
+        "description": "Numerical cap for |H| used by stiffening guardrail."
+      },
+      "NUM_GAMMA_H": {
+        "id": "NUM_GAMMA_H",
+        "symbol": "γ_H",
+        "value": 0.0,
+        "units": "1/years",
+        "bounds": [
+          0.0,
+          1000000.0
+        ],
+        "status": "TUNABLE",
+        "description": "Positive-definite damping rate applied to H each step."
+      }
+    },
+    "aliases": {
+      "diamond_lock": "CONST_LAMBDA_LOCK",
+      "tau0": "CONST_TAU_0",
+      "k0": "CONST_K0",
+      "alpha_mem": "PARAM_ALPHA_MEM",
+      "C_rho": "PARAM_C_RHO",
+      "C_k": "PARAM_C_K",
+      "w": "PARAM_W_EOS",
+      "a_min": "NUM_A_MIN",
+      "H_cap": "NUM_H_CAP",
+      "gamma_H": "NUM_GAMMA_H"
+    }
+  },
+  "primitives": {
+    "metric": "FLRW (+---)",
+    "state_vector": [
+      {
+        "name": "a",
+        "units": "dimensionless",
+        "description": "Scale factor"
+      },
+      {
+        "name": "H",
+        "units": "1/years",
+        "description": "Hubble parameter"
+      },
+      {
+        "name": "rho",
+        "units": "code_energy_density",
+        "description": "Effective density"
+      },
+      {
+        "name": "p",
+        "units": "code_energy_density",
+        "description": "Effective pressure"
+      },
+      {
+        "name": "M_X",
+        "units": "1/years^2",
+        "description": "Memory state for driver X (ODE equivalent)"
+      }
+    ]
+  },
+  "genesis": {
+    "id": "GENESIS_001",
+    "memory_init": {
+      "mode": "steady_state",
+      "allowed": [
+        "steady_state",
+        "empty_history",
+        "explicit"
+      ],
+      "explicit_M_X": null,
+      "driver": "X = H_base^2"
+    }
+  },
+  "memory_kernel": {
+    "id": "KERNEL_RETARDED_001",
+    "type": "exponential_retarded_normalized",
+    "causality": "strictly_retarded (t>t')",
+    "kernel_definition": "K(s) = (1/τ_eff) exp(-s/τ_eff) Θ(s), with ∫_0^∞ K(s) ds = 1",
+    "ode_equivalent": {
+      "state_name": "M_X",
+      "driver_name": "X",
+      "definition": "τ_eff dM_X/dt + M_X = X(t)",
+      "driver_policy": {
+        "default": "X = H_base^2",
+        "allowed": [
+          "X = H_base^2"
+        ]
+      }
+    }
+  },
+  "operator_stack": {
+    "execution_order": [
+      "OP_GENESIS",
+      "OP_S_PHASE",
+      "OP_L_STIFF",
+      "OP_DISSIPATION",
+      "OP_TAU_COUPLING"
+    ],
+    "definitions": {
+      "OP_GENESIS": {
+        "id": "OP_GENESIS_001",
+        "role": "Boundary condition solver (memory cold start)",
+        "bootstrap_only": true,
+        "parameters": [
+          "NUM_A_MIN",
+          "PARAM_W_EOS",
+          "PARAM_C_RHO",
+          "PARAM_C_K",
+          "CONST_K0"
+        ],
+        "math": [
+          "Sanitize inputs (a>=a_min, rho>=0, p=w*rho unless provided)",
+          "Compute H_base^2 from unmodified closure",
+          "Set M_X(t0) using genesis.memory_init.mode",
+          "Recompute H(t0) using GRUT closure with M_X(t0)",
+          "Compute tau_eff(H(t0))"
+        ]
+      },
+      "OP_S_PHASE": {
+        "id": "OP_S_PHASE_001",
+        "role": "State Preparation",
+        "parameters": [
+          "NUM_A_MIN"
+        ],
+        "math": [
+          "a := max(a, a_min)",
+          "require rho >= 0",
+          "set p := w * rho (baseline EOS unless overridden by caller)"
+        ]
+      },
+      "OP_L_STIFF": {
+        "id": "OP_L_STIFF_001",
+        "role": "Anti-Singularity Stiffening (Guardrail)",
+        "parameters": [
+          "NUM_H_CAP"
+        ],
+        "math": [
+          "If |H| > H_cap then H := sign(H) * H_cap and log warning L_STIFF_ACTIVATED"
+        ]
+      },
+      "OP_DISSIPATION": {
+        "id": "OP_DISSIP_001",
+        "role": "Positive-definite damping",
+        "parameters": [
+          "NUM_GAMMA_H"
+        ],
+        "math": [
+          "Apply per-step damping: H := H * exp(-γ_H Δt)",
+          "Constraint: γ_H >= 0"
+        ]
+      },
+      "OP_TAU_COUPLING": {
+        "id": "OP_COSMO_COUPLE_001",
+        "role": "τ_eff(H) coupling",
+        "parameters": [
+          "CONST_TAU_0"
+        ],
+        "math": [
+          "Define τ_eff(H) using τ0 and dimensionless (H τ0)",
+          "Baseline: τ_eff = τ0 / (1 + (H τ0)^2)"
+        ]
+      }
+    }
+  },
+  "core_equations": {
+    "baseline_model": "Minimal FLRW + memory-smoothed closure (DRAFT)",
+    "equations": [
+      {
+        "id": "EQ_A_001",
+        "name": "Scale factor kinematics",
+        "math": "da/dt = a H"
+      },
+      {
+        "id": "EQ_RHO_001",
+        "name": "Fluid continuity (baseline)",
+        "math": "dρ/dt = -3 H (ρ + p)"
+      },
+      {
+        "id": "EQ_HBASE_001",
+        "name": "Base closure (placeholder coefficients)",
+        "math": "H_base^2 = C_ρ ρ + C_k K0/a^2"
+      },
+      {
+        "id": "EQ_MEM_001",
+        "name": "Memory ODE (driver X = H_base^2)",
+        "math": "τ_eff dM_X/dt + M_X = H_base^2"
+      },
+      {
+        "id": "EQ_HCORR_001",
+        "name": "Memory-smoothed corrected closure",
+        "math": "H^2 = (1-α_mem) H_base^2 + α_mem M_X"
+      }
+    ]
+  },
+  "numeric_policy": {
+    "float": "float64",
+    "integrator": "RK4",
+    "dt_years_default": 100000.0,
+    "max_steps_default": 2000,
+    "strict_nan_check": true
+  },
+  "assumptions_registry": {
+    "deterministic_run": {
+      "default": true,
+      "description": "No randomization; stable hashing of inputs/outputs."
+    },
+    "baseline_eos_p_equals_w_rho": {
+      "default": true,
+      "description": "Use p=w rho with PARAM_W_EOS unless overridden."
+    }
+  },
+  "observables": {
+    "primary_targets": [
+      {
+        "id": "OBS_HZ_001",
+        "name": "H(z)",
+        "definition": "Emit arrays of (z, H) where z=1/a-1 for a0=1",
+        "fields": [
+          "a",
+          "H"
+        ]
+      }
+    ]
+  }
+}

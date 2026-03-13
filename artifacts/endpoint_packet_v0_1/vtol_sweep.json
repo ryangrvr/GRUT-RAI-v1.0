@@ -1,0 +1,34 @@
+{
+  "probe": "vtol_insensitivity",
+  "passed": true,
+  "spread": 1.000000022647062,
+  "spread_pct": 2.2647062003500196e-06,
+  "vtol_range": [
+    1e-08,
+    1e-12
+  ],
+  "rows": [
+    {
+      "V_tol": 1e-08,
+      "R_f_over_r_s": 0.3162277605880457,
+      "force_balance_residual": 4.9028722294053006e-08,
+      "termination_reason": "saturation",
+      "artifact_R_f": 0.15950216607804887
+    },
+    {
+      "V_tol": 1e-10,
+      "R_f_over_r_s": 0.3162277599626744,
+      "force_balance_residual": 4.920758309260201e-08,
+      "termination_reason": "saturation",
+      "artifact_R_f": 0.007403434730049227
+    },
+    {
+      "V_tol": 1e-12,
+      "R_f_over_r_s": 0.31622776712430406,
+      "force_balance_residual": 1.3553600173314186e-08,
+      "termination_reason": "radius_converged",
+      "artifact_R_f": 0.0003436369997337754
+    }
+  ],
+  "caveat": "Endpoint validation applies to barrier-engaged runs only. Loose V_tol values (e.g. 1e-4) can cause the saturation detector to fire before the shell reaches the quantum pressure barrier, producing the old L_stiff x V_tol artifact endpoint instead."
+}

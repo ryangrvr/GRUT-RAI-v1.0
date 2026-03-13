@@ -1,0 +1,40 @@
+{
+  "cluster": "A2744",
+  "model": "GLAFIC",
+  "synthetic": false,
+  "packet_files": {
+    "raw": [
+      "raw/PROVENANCE.json",
+      "raw/kappa.fits",
+      "raw/gamma.fits"
+    ],
+    "processed": [
+      "processed/gamma1.npy",
+      "processed/gamma2.npy",
+      "processed/kappa.npy",
+      "processed/WCS.json"
+    ],
+    "outputs": [
+      "outputs/profile_packet/profiles.csv",
+      "outputs/profile_packet/nis_profile_certificate.json",
+      "outputs/profile_packet/profile_metrics.json"
+    ]
+  },
+  "output_hashes": {
+    "profiles.csv": "8e20bc9fed2b8791478595a20a5a1c6a25ee7a15f10f728a13eab21654ca8821",
+    "profile_metrics.json": "1cd78df8f6ee652b7a8118d3455eb6923c2d290bef532cdaac1a89aee7f7e852",
+    "nis_profile_certificate.json": "b84d4e59ff3eb694d574002c77fd45eba8a683d05c2fd5bdc42e65891523b3d0"
+  },
+  "output_digest": "46a526ba1aab04a782f71862d64a2ab78fb0c2f532f7786410d8bcc772100600",
+  "profile_packet_certificate": {
+    "tool_version": "v0.5",
+    "determinism_mode": "STRICT",
+    "input_hash": "28d8f3f2a1ea6fe7a864dc22af6f1cae8d738040d49925a0e873c87168284a19",
+    "output_digest": "892ca5d051902db7fa6e7377a121ff415c784e8463695dc8eff5bb32e46e6e5b",
+    "output_hashes": {
+      "profiles.csv": "8e20bc9fed2b8791478595a20a5a1c6a25ee7a15f10f728a13eab21654ca8821",
+      "profile_metrics.json": "1cd78df8f6ee652b7a8118d3455eb6923c2d290bef532cdaac1a89aee7f7e852"
+    }
+  },
+  "canon_hash": "36acba0ce70ca8bc19c360668e4f6c0e8fb003e03951255146da1d2cc9f6f874"
+}

@@ -1,0 +1,23 @@
+{
+  "canon_hash": "60fd8c5c2be022e33060ea16ac5bf455eb40523a8520aa3011c6c361aabc25c9",
+  "files": {
+    "PACKET_INDEX.json": "c934c6c9a2211ed911a165cf9cb21e7641dd8e008375c9d306ef83bbb9448104",
+    "README_DATA.md": "c2128940c1e6256e3d2bba2028ba22efaa153b01969725a6fcf7c7ae73d40368",
+    "data/hz_observations.csv": "90ba455719f142c06627795101cb11b64efd463ee1a15017466dd1d6a603cdb0",
+    "data/sources.json": "d1b81ca9405332e091fc0ae15369fb2ef23e19a1a76861f0fa3ab6ebb10db7fd",
+    "nis_hubble_certificate.json": "269abcb0e1a0a9ae657d6a39be0656681cc6cc25a5be76911c9425e1f11d33d7",
+    "outputs/Ez_grut.csv": "84aa6fbc9dbb3fb03270498309447fc71c23b7093995a2a95605558ee42c9898",
+    "outputs/Ez_lcdm.csv": "fcd7c21f1989521d27ffbedced7672defc9059168c84224ec0def44704fddf1c",
+    "outputs/Hz_grut_anchors.csv": "d6f9f36935581112f774a430cdfad7980a78b37a10c642f1000e57873035dbae",
+    "outputs/point_residuals.csv": "120d97cf76821c0a6081e6d11db6778bf019111003fc46c530ed3e72efd5d0f2",
+    "outputs/preset_window_summary.csv": "58fcf63b4dea4dd44c452ea1906961c365eb2c94fc3abc913ce589f532d5e6c4",
+    "outputs/preset_window_summary.json": "10ff8656fc6b90ea7f27e9f96038fe148df3b49f097cc4e4ad811dc1be30a24c",
+    "outputs/residuals_vs_data.json": "acd1342d70459f4e15fd7d6fe69f4f2ef218e8623daa04b0fcda8df110c4c9d2",
+    "outputs/residuals_vs_lcdm.json": "ebc6baba073cb20a314387932945c3c3a905804dc9adb01962d8947dfaf4ed3b",
+    "runs/grut_run.json": "752ffd21c677acb8d3879f5c79c77ff618694d503df1b5b7ee8e3403c01085c0",
+    "runs/lcdm_reference.json": "23983d32cc20bcde26f2a067f7f6367349939577e88ada233cb52783df45f34e"
+  },
+  "input_hash": "9a0f5c2d1c3463ff0ebe0575ba9d7fbd0d4e46fbd3b9a5c9dd596becf4d22848",
+  "output_digest": "30c370e3d9a81a7467f9c3a1e5619c7d9dc40fcf7cb181954d7f775667d1c0a2",
+  "packet": "evidence_hubble_tension_v0_2_2"
+}

@@ -1,0 +1,25 @@
+{
+  "kappa_path": "artifacts/cluster_sample/kappa.npy",
+  "gas_path": "artifacts/cluster_sample/gas.npy",
+  "normalize_mode": "none",
+  "pixel_scale_arcsec": 5.0,
+  "smoothing_grid": [
+    0.0,
+    1.0,
+    2.0
+  ],
+  "threshold_grid": [
+    0.0,
+    0.1
+  ],
+  "peak_mode": "com_positive_kappa",
+  "gas_centroid_mode": "com_positive",
+  "offset_stats_arcmin": {
+    "median": 0.4992134750289376,
+    "iqr": 4.011981379059559e-06,
+    "min": 0.49919776529731297,
+    "max": 0.4992441838291948
+  },
+  "robust_offset_arcmin": 0.4992134750289376,
+  "offset_count": 6
+}

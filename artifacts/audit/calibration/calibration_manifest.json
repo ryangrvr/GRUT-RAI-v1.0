@@ -1,0 +1,30 @@
+{
+  "preset": "matter_only",
+  "alpha_mem": 0.3333333333333333,
+  "start_z": 2.0,
+  "dt_years": 100000.0,
+  "steps": 300,
+  "canon_hash": "0590b719443d6302cb1d02f70d5f4c299bc4ebb27be6256e4eb385eb0e8936e5",
+  "repro_hash": "53a297fb7b7e5e9f21d6d10f22b2195cb3482fde5751d0c6660aa21ebeff14d8",
+  "output_digest": "d888aac58cdbd266fa9b30b135d8eab536c4055f004dd5ae5673b6008da91a25",
+  "H0_code": 0.34156502601993227,
+  "idx0": 299,
+  "z0": 2.4202861936828413e-14,
+  "status": "VIABLE",
+  "failure_reason": null,
+  "anchors": [
+    {
+      "name": "Planck_67p4",
+      "H0_km_s_Mpc": 67.4,
+      "scale_H": 197.32699446830026
+    },
+    {
+      "name": "SH0ES_73p0",
+      "H0_km_s_Mpc": 73.0,
+      "scale_H": 213.72211567041418
+    }
+  ],
+  "sigma8_0": 0.811,
+  "compare_definition": "compare mask: z in [0, start_z] AND H > 10*H_floor AND fsigma8 not None",
+  "valid_z_max": null
+}

@@ -1,0 +1,21 @@
+{
+  "canon_hash": "60fd8c5c2be022e33060ea16ac5bf455eb40523a8520aa3011c6c361aabc25c9",
+  "files": {
+    "PACKET_INDEX.json": "eb4729b533de43ccdf74e875c1dd721c77753b70a199fa036553d180db3817ef",
+    "README_DATA.md": "a0568a8c05467f4c9f8fbd2c5f6db00d8e1840a004fce35ab71e23802f49b257",
+    "data/hz_observations.csv": "90ba455719f142c06627795101cb11b64efd463ee1a15017466dd1d6a603cdb0",
+    "data/sources.json": "d1b81ca9405332e091fc0ae15369fb2ef23e19a1a76861f0fa3ab6ebb10db7fd",
+    "nis_hubble_certificate.json": "31de9b12d3c021e6687d0adc14154d3d353382225f5a5ee77b6f061bce9d941d",
+    "outputs/Ez_grut.csv": "bd199e99680447a8811ebbd4cde7c4bbb136232e8c27922863dd3e383cfa42c2",
+    "outputs/Ez_lcdm.csv": "46f3a0f28e3c0863d835cb771a934454f981b3d1101291efda4259ed79840d5c",
+    "outputs/Hz_grut_anchors.csv": "4b19fd643fb54c57e976f1835ed8f537f683f9c48a8e6e9f8d7a6b4403fce8c4",
+    "outputs/point_residuals.csv": "571f0401b487768bac0fbf0017d852cf00e1c336d0023810a4c8c6e44b47f666",
+    "outputs/residuals_vs_data.json": "a86f0c933bcc4513ee0aecc6435e20e24ac22366a8a4b641a6e7c2607efa0ed4",
+    "outputs/residuals_vs_lcdm.json": "fb9e7ac99a539935d86156d4494b43ae09b2f84b4305d4411775f34d6ac1be7d",
+    "runs/grut_run.json": "34ffc22092b480905f826d5b718e711e03aeee4b651c3f960750c9b2a0c22c38",
+    "runs/lcdm_reference.json": "23983d32cc20bcde26f2a067f7f6367349939577e88ada233cb52783df45f34e"
+  },
+  "input_hash": "97a0b9be3d031fcbe923e227f66a25e878dfc84871d00da29702ded71bf645a7",
+  "output_digest": "2cb7c14694449346599a302f34cc372df76d383d33577147092e9424abf4f361",
+  "packet": "evidence_hubble_tension_v0_2_1"
+}

@@ -1,0 +1,44 @@
+name: E2E (Playwright)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies (including dev)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          # Ensure Playwright browsers are installed
+          python -m playwright install --with-deps
+
+      - name: Start server in background (configurable PORT)
+        env:
+          PORT: ${{ env.PORT || '8001' }}
+        run: |
+          # Use PORT env var (default 8001)
+          : ${PORT:=8001}
+          python -m uvicorn api.main:app --host 127.0.0.1 --port $PORT &
+          # Give the server some time to come up
+          sleep 2
+
+      - name: Run E2E tests
+        env:
+          PORT: ${{ env.PORT || '8001' }}
+        run: |
+          pytest -q tests/e2e -q

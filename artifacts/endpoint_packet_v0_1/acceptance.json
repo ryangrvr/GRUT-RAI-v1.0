@@ -1,0 +1,39 @@
+{
+  "operator_id": "OP_QPRESS_001",
+  "equation": "a_Q = (GM/R^2) * epsilon_Q * (r_s/R)^beta_Q",
+  "equilibrium": "R_eq/r_s = epsilon_Q^(1/beta_Q)",
+  "epsilon_Q": 0.1,
+  "beta_Q": 2,
+  "R_eq_predicted": 0.31622776601683794,
+  "canon_status": "RESEARCH_TARGET",
+  "vtol_insensitive": [
+    true,
+    "spread=0.00%"
+  ],
+  "r0_insensitive": [
+    true,
+    "spread=0.00%"
+  ],
+  "force_balanced": [
+    true,
+    "residual=0.000000"
+  ],
+  "operator_driven": [
+    true,
+    "a_outward/a_grav=1.0000"
+  ],
+  "not_artifact": [
+    true,
+    "deviation=49.6%"
+  ],
+  "stable_endpoint": [
+    true,
+    "err_out=0.0000 err_in=0.0000"
+  ],
+  "stability_positive": [
+    true,
+    "indicator_outside=1.29e+12 indicator_inside=1.29e+12"
+  ],
+  "endpoint_motion_class": "sign_definite_infall",
+  "overall": true
+}

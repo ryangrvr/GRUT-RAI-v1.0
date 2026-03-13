@@ -1,0 +1,20 @@
+{
+  "cluster": "A2744",
+  "model": "GLAFIC",
+  "source_url": null,
+  "file_urls": {
+    "kappa": "https://archive.stsci.edu/pub/hlsp/frontier/abell2744/models/glafic/v4/hlsp_frontier_model_abell2744_glafic_v4_kappa.fits",
+    "gamma": "https://archive.stsci.edu/pub/hlsp/frontier/abell2744/models/glafic/v4/hlsp_frontier_model_abell2744_glafic_v4_gamma.fits"
+  },
+  "download_timestamp": "2026-03-02T05:58:04.005009+00:00",
+  "file_hashes": {
+    "archive": null,
+    "kappa": "7b5c76cf7a3bbb7a316f04587ee229a557ce8e190f47c2fe57564b2bccc8aae5",
+    "gamma": "83975d296782f8cf645b34ef0faecfbd40f37051ff4052fe86556ff63ce43d9b"
+  },
+  "selected_maps": {
+    "kappa": "kappa.fits",
+    "gamma": "gamma.fits"
+  },
+  "stable_provenance_hash": "a7406b1caa8f831868803572b10d4e3d62c72ac931f3e906a980b223071b8ea1"
+}

@@ -1,0 +1,18 @@
+{
+  "kappa_fits_path": "artifacts/_audit_cluster_evidence/A2744/CATS/raw/kappa.fits",
+  "gas_fits_path": "artifacts/_audit_cluster_evidence/A2744/CATS/raw/gas.fits",
+  "method": "nearest_wcs",
+  "shape": [
+    64,
+    64
+  ],
+  "nan_count": 0,
+  "kappa_wcs": {},
+  "gas_wcs": {},
+  "hashes": {
+    "kappa_fits": "b752f4b26f9e27416be83ef28d9d9eff5db15c479a8e5926d8bf56f16d41b94f",
+    "gas_fits": "ea32f84281b8d6a949ad18a606a88e158bb560f9303740705da1b006844201d0",
+    "gas_registered": "0b316ddff0444801205e4a49b5f37906b1fa790cda9946ff48e603043dabd37b"
+  },
+  "registration_hash": "35f9b3565c3ef8e6202c74f093f1955aa9d58b70a123ab6a717fac45c392c4f4"
+}

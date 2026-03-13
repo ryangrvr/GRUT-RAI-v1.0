@@ -1,0 +1,77 @@
+{
+  "sigma_baryon_path": "artifacts/cluster_sample/kappa.npy",
+  "gas_path": "artifacts/cluster_sample/gas.npy",
+  "mode": "predict_kappa",
+  "kernel": "k2",
+  "response_model": "grut_gate_kspace_v0",
+  "response_meta": {
+    "response_model": "grut_gate_kspace_v0",
+    "grut_gate_kspace_v0": {
+      "k0_policy": "r_smooth",
+      "k0_value_used": 206264.806,
+      "alpha_mem": 0.333333333,
+      "r_smooth_rad": 4.848136816903219e-06,
+      "sigma_ref_px": 1.0,
+      "pixel_scale_rad": 4.848136816903219e-06,
+      "transfer_min": 1.2722003178463523,
+      "transfer_max": 1.3333333330000001
+    }
+  },
+  "alpha_mem": 0.333333333,
+  "A_psi": 1.0,
+  "fov_arcmin": 20.0,
+  "fov_rad": 0.005817764180283863,
+  "grid_n": 128,
+  "normalize_mode": "none",
+  "pixel_scale_arcsec": 1.0,
+  "smoothing_grid": [
+    0.0,
+    1.0,
+    2.0
+  ],
+  "threshold_grid": [
+    0.0,
+    0.1
+  ],
+  "peak_mode": "com_positive_kappa",
+  "gas_centroid_mode": "com_positive",
+  "offsets_available": true,
+  "offset_stats_arcmin": {
+    "median": 0.09984269500578755,
+    "iqr": 8.023962755621117e-07,
+    "min": 0.09983955305946283,
+    "max": 0.09984883676583882
+  },
+  "robust_offset_arcmin": 0.09984269500578755,
+  "offset_count": 6,
+  "k_grid": {
+    "dtheta_rad": 4.545128265846768e-05,
+    "k_min": 1079.9999987062065,
+    "k_max": 69119.99991719722
+  },
+  "k0_warnings": [],
+  "comparison": {
+    "baseline_response_model": "identity",
+    "centroid_shift_px": 1.5888218580782548e-14,
+    "centroid_shift_arcsec": 1.5888218580782548e-14,
+    "rms_kappa_diff": 0.021201098756553217,
+    "corr_kappa": 0.9999999995117465
+  },
+  "map_stats": {
+    "phi_b": {
+      "min": -2.3346859158785154e-07,
+      "max": 6.168629814576872e-08,
+      "mean": 1.6543612251060553e-24
+    },
+    "phi_eff": {
+      "min": -3.112839166706651e-07,
+      "max": 8.224812491182095e-08,
+      "mean": 1.6543612251060553e-24
+    },
+    "kappa": {
+      "min": -0.02319522761327404,
+      "max": 0.6415953746965449,
+      "mean": 8.673617379884035e-19
+    }
+  }
+}

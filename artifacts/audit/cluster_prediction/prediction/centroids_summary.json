@@ -1,0 +1,59 @@
+{
+  "sigma_baryon_path": "artifacts/audit/cluster_prediction/sigma_b.npy",
+  "gas_path": "artifacts/audit/cluster_prediction/gas.npy",
+  "mode": "predict_kappa",
+  "kernel": "k1",
+  "response_model": "identity",
+  "response_meta": {
+    "response_model": "identity"
+  },
+  "alpha_mem": 0.333333333,
+  "A_psi": 1.0,
+  "fov_arcmin": 10.0,
+  "fov_rad": 0.0029088820901419315,
+  "grid_n": 64,
+  "normalize_mode": "none",
+  "pixel_scale_arcsec": 60.0,
+  "smoothing_grid": [
+    0.0,
+    1.0
+  ],
+  "threshold_grid": [
+    0.1
+  ],
+  "peak_mode": "com_positive_kappa",
+  "gas_centroid_mode": "com_positive",
+  "offsets_available": true,
+  "offset_stats_arcmin": {
+    "median": 3.999999999998062,
+    "iqr": 1.9415580254644738e-12,
+    "min": 3.9999999999961204,
+    "max": 4.0000000000000036
+  },
+  "robust_offset_arcmin": 3.999999999998062,
+  "offset_count": 2,
+  "k_grid": {
+    "dtheta_rad": 4.545128265846768e-05,
+    "k_min": 2159.999997412413,
+    "k_max": 69119.99991719722
+  },
+  "k0_warnings": [],
+  "comparison": null,
+  "map_stats": {
+    "phi_b": {
+      "min": -0.0002430995280970244,
+      "max": 3.9390916617632444e-05,
+      "mean": 0.0
+    },
+    "phi_eff": {
+      "min": -0.0002430995280970244,
+      "max": 3.9390916617632444e-05,
+      "mean": 0.0
+    },
+    "kappa": {
+      "min": -194.07382395102786,
+      "max": 2283.9404375490626,
+      "mean": -3.552713678800501e-15
+    }
+  }
+}

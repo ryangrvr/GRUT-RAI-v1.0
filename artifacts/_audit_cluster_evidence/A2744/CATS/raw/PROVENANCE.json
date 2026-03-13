@@ -1,0 +1,9 @@
+{
+  "mode": "synthetic",
+  "files": {
+    "kappa": "kappa.fits",
+    "gamma1": "gamma1.fits",
+    "gamma2": "gamma2.fits",
+    "gas": "gas.fits"
+  }
+}

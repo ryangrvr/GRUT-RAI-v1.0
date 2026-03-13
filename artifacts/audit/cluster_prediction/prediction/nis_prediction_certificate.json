@@ -1,0 +1,23 @@
+{
+  "tool_version": "v0.4B",
+  "determinism_mode": "STRICT",
+  "input_hash": "ea7570b135ab26740024d7e33e9cafb6eaa599a271df99a062d1d3df915956c5",
+  "output_digest": "305c77c111e1d8aa7cce2edce20d412f52a4e5c096c20ba1b83387dbe1f23655",
+  "output_hashes": {
+    "phi_b.npy": "ed9321d910637cb94655764203552d901893086df567292c151509c87c30c8bb",
+    "phi_eff.npy": "ed9321d910637cb94655764203552d901893086df567292c151509c87c30c8bb",
+    "psi.npy": "cf96efcb9935fef6e232721965cf652aa026dc32bf61f9fab1414f40d812f9f5",
+    "alpha_x.npy": "45ecb16a1f1440a6ba76b61708705f039f1ebc6ef459302e698174d7848ae7ec",
+    "alpha_y.npy": "f24837f3851026ecc007895c9ab911f9329e72830c79dd9857bb74e7dd420e3e",
+    "kappa.npy": "b98635236c8be4a3bde15654c8d139659d373c1403727f904972d1534aba05e4",
+    "gamma1.npy": "d899976907edc0ab4ec5e14c61a98a8f41fcee66feaca3933dea7488695ad0de",
+    "gamma2.npy": "e7fe5e473dc1404725c8363f29c40b51b96b5f643eafb0cd9c5428f02b378a92",
+    "centroids_summary.json": "33ea2244b339048b1b9d8cbd61aded507b2a4766abf443ede0d5e177b056e765",
+    "offsets.csv": "66550d3e7824f88acc819307dc0a330736404d967b32d4d602358da11aae5a09"
+  },
+  "grid_counts": {
+    "smoothing": 2,
+    "threshold": 1
+  },
+  "warnings": []
+}

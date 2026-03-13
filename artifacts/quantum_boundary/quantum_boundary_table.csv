@@ -1,0 +1,2 @@
+m_kg,l_m,tau0_s,omega,policy,alpha_vac,t_dp_s,t_grut_s,enhancement
+1.0,1.0,41900000.0,1000.0,controlled,0.3333333333333333,1.5801195939466588e-24,0.008322221280986081,5.26683e+21

@@ -1,0 +1,11 @@
+{
+  "cluster": "A2744",
+  "models": [
+    "CATS",
+    "GLAFIC",
+    "Sharon"
+  ],
+  "summary_csv": "artifacts/evidence_cluster_v0_6A_batch/A2744/hff_batch_summary.csv",
+  "summary_csv_sha256": "a700315de930f0b79f78d09cad8fc2a8f509a7f142fff3d9901fe8c5010000c3",
+  "summary_hash": "9422c49bc52c38603a65a7e47622f6d4120354a6e69609a1454d3ef992e4baa2"
+}

@@ -1,0 +1,25 @@
+{
+  "tool_version": "v0.4B",
+  "determinism_mode": "STRICT",
+  "input_hash": "6bde7e82e87308acbbfdb819ab5466e49ae8630952799ecc8a3b254ca6098db6",
+  "output_digest": "05e009028c9308b10c57fa434771eecb4c57569b96a07e4ae68dca694cc7b2e3",
+  "output_hashes": {
+    "phi_b.npy": "42cdba24723f7e724e91eb56ea806945101b35bf361d2e1977a9a062cb669c5a",
+    "phi_eff.npy": "f60f15e30755d854f0f70841dd2d89a520c2b66e3c50b99a6c239df401d7e762",
+    "psi.npy": "94ba707b480add18e11110aaacfae3fcb727f241eb22caee3e0065663ce654d5",
+    "alpha_x.npy": "72ef4f0847ea179c459ac65c1e3520b0ec9993c7d1c1554b58ac19bf1fb5bc0d",
+    "alpha_y.npy": "0a0c3ac0ea590f59ee489fee0c71d4cc18fac62fd75d12b973e6a43ecfaee822",
+    "kappa.npy": "aa57b7f81405a845b0f7d0da78654927a951e9bd986680ad58c8f0b9a906e745",
+    "gamma1.npy": "bb1bf14ef1469c0ac22aaccdbba525780cd533ab96f97d09b3beb422b8944bc2",
+    "gamma2.npy": "e0e1d9a6b371e51911311388b5d483a8a1152a41210c0f7c2e733948c0499eb9",
+    "centroids_summary.json": "d86775eb8156e04000870aa8223ea7e974a6f8e9875be3ebdcdea0896248c381",
+    "offsets.csv": "83546ee67741de6570715a00450c4194f15f55a00ed524028d4aeca8d6e9315f",
+    "comparison.json": "928f3d488a2558f3df061cbb0734bcccd5c35a413d8981d619a9453b774b4165",
+    "comparison_profiles.json": "65fd1ec56b1c5754d138f339c2730c40ef0016963a24b7377d2f073db77d5a31"
+  },
+  "grid_counts": {
+    "smoothing": 3,
+    "threshold": 2
+  },
+  "warnings": []
+}

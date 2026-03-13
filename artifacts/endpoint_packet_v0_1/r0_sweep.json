@@ -1,0 +1,38 @@
+{
+  "probe": "r0_insensitivity",
+  "passed": true,
+  "spread": 1.0000000000269191,
+  "spread_pct": 2.691913358887632e-09,
+  "rows": [
+    {
+      "R0_over_r_s": 3,
+      "R_f_over_r_s": 0.3162277605930286,
+      "force_balance_residual": 4.900995706201418e-08,
+      "termination_reason": "saturation"
+    },
+    {
+      "R0_over_r_s": 5,
+      "R_f_over_r_s": 0.3162277605947594,
+      "force_balance_residual": 4.9003439724057934e-08,
+      "termination_reason": "saturation"
+    },
+    {
+      "R0_over_r_s": 10,
+      "R_f_over_r_s": 0.3162277605880457,
+      "force_balance_residual": 4.9028722294053006e-08,
+      "termination_reason": "saturation"
+    },
+    {
+      "R0_over_r_s": 30,
+      "R_f_over_r_s": 0.3162277605862468,
+      "force_balance_residual": 4.9035496590946864e-08,
+      "termination_reason": "saturation"
+    },
+    {
+      "R0_over_r_s": 100,
+      "R_f_over_r_s": 0.31622776059143515,
+      "force_balance_residual": 4.901595800339038e-08,
+      "termination_reason": "saturation"
+    }
+  ]
+}

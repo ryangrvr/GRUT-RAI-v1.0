@@ -1,0 +1,34 @@
+{
+  "kappa_path": "artifacts/_audit_cluster_evidence/A2744/CATS/processed/kappa.npy",
+  "gas_path": "artifacts/_audit_cluster_evidence/A2744/CATS/processed/gas_registered/gas_registered.npy",
+  "normalize_mode": "none",
+  "pixel_scale_arcsec": 1.0,
+  "smoothing_grid": [
+    0.0,
+    1.0,
+    2.0
+  ],
+  "threshold_grid": [
+    0.0,
+    0.1
+  ],
+  "peak_mode": "com_positive_kappa",
+  "gas_centroid_mode": "com_positive",
+  "offset_stats_arcmin": {
+    "median": 0.08333284307255295,
+    "iqr": 1.8522513958313391e-06,
+    "min": 0.08332723134200845,
+    "max": 0.08333333333349782
+  },
+  "robust_offset_arcmin": 0.08333284307255295,
+  "robust_offset_arcsec": 4.999970584353177,
+  "robust_vector_arcsec": {
+    "dx_arcsec": -3.999968627495031,
+    "dy_arcsec": 2.9999928038716757
+  },
+  "offset_count": 6,
+  "nan_fraction": {
+    "kappa": 0.0,
+    "gas": 0.0
+  }
+}

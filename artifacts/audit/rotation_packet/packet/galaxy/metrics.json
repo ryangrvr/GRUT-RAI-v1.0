@@ -1,0 +1,37 @@
+{
+  "response_model": "radial_gate_v0",
+  "alpha_mem": 0.2,
+  "r0_policy": "median_radius",
+  "r0_value_used": 2.5,
+  "ups_star": 1.0,
+  "ups_bulge": 1.0,
+  "baseline": {
+    "rms_residual": 10.0,
+    "mean_abs_residual": 10.0,
+    "mean_abs_frac_residual": 0.09090909090909091,
+    "chi_like": 4.0,
+    "inner_disk_rms": 10.0,
+    "outer_disk_rms": 10.0
+  },
+  "grut": {
+    "rms_residual": 5.187632850354365,
+    "mean_abs_residual": 4.752870600281064,
+    "mean_abs_frac_residual": 0.043207914548009665,
+    "chi_like": 1.0764613836030303,
+    "inner_disk_rms": 3.129979683073337,
+    "outer_disk_rms": 6.635231447636145
+  },
+  "data_stats": {
+    "n_points": 4,
+    "r_min": 1.0,
+    "r_max": 4.0,
+    "field_map": {
+      "r_kpc": "r_kpc",
+      "v_obs": "v_obs",
+      "v_err": "v_err",
+      "v_gas": "v_gas",
+      "v_star": "v_star"
+    },
+    "has_v_bulge": false
+  }
+}

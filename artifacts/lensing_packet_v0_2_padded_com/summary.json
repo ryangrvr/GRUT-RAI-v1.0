@@ -1,0 +1,73 @@
+{
+  "grid": {
+    "n": 256,
+    "fov_arcmin": 20.0,
+    "fov_rad": 0.005817764180283863
+  },
+  "sigma_crit": 1.0,
+  "preset": "single_halo",
+  "mode": "phi_to_psi",
+  "A_psi": 1.0,
+  "phi_preset": "bullet_phi_toy",
+  "pad_factor": 2,
+  "pad_n": 512,
+  "crop_start": 128,
+  "crop_end": 384,
+  "phi_mass_amp": 1e-06,
+  "phi_gas_amp": 7e-07,
+  "delta_arcmin": 2.0,
+  "peak_mode": "com_positive_kappa",
+  "smoothing_sigma_px": null,
+  "peak_kappa": {
+    "index": [
+      128,
+      153
+    ],
+    "theta_x_rad": 0.0005817791421817766,
+    "theta_y_rad": 1.0525221825852612e-17,
+    "theta_x_arcmin": 2.000009364949509,
+    "theta_y_arcmin": 3.6183047300274247e-14,
+    "theta_x_arcsec": 120.00056189697057,
+    "theta_y_arcsec": 2.170982838016455e-12
+  },
+  "peak_gas": {
+    "index": [
+      127,
+      102
+    ],
+    "theta_x_rad": -0.0005795038538954629,
+    "theta_y_rad": -1.136282066461692e-05,
+    "theta_x_arcmin": -1.9921875,
+    "theta_y_arcmin": -0.0390625,
+    "theta_x_arcsec": -119.53125,
+    "theta_y_arcsec": -2.34375
+  },
+  "offset": {
+    "dx_rad": 0.0011612829960772394,
+    "dy_rad": 1.1362820664627445e-05,
+    "magnitude_rad": 0.0011613385857154605,
+    "dx_arcmin": 3.992196864949509,
+    "dy_arcmin": 0.039062500000036186,
+    "magnitude_arcmin": 3.992387968048564,
+    "dx_arcsec": 239.53181189697057,
+    "dy_arcsec": 2.343750000002171,
+    "magnitude_arcsec": 239.54327808291384
+  },
+  "stats": {
+    "kappa": {
+      "min": -15.101096611499253,
+      "max": 2.9918302861795967,
+      "mean": -8.167157626881841e-15
+    },
+    "gamma_abs": {
+      "min": 4.50591551169928e-17,
+      "max": 5.7559477687889675,
+      "mean": 0.19343985742290853
+    },
+    "alpha_abs": {
+      "min": 0.0,
+      "max": 0.002604676614183666,
+      "mean": 6.109965221514928e-05
+    }
+  }
+}

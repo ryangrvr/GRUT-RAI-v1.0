@@ -1,0 +1,9 @@
+{
+  "probe": "artifact_comparison",
+  "R_f_over_r_s": 0.3162277605880457,
+  "artifact_R_f_over_r_s": 0.15950216607804887,
+  "deviation_fraction": 0.495609854803878,
+  "deviation_pct": 49.5609854803878,
+  "passed": true,
+  "explanation": "The old endpoint was determined by L_stiff x V_tol: R_f = (V_tol^2 * 2GM / H_cap^2)^(1/3). OP_QPRESS_001 endpoint must differ by > 10% from this artifact formula."
+}

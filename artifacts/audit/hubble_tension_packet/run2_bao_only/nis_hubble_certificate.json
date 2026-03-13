@@ -1,0 +1,23 @@
+{
+  "canon_hash": "60fd8c5c2be022e33060ea16ac5bf455eb40523a8520aa3011c6c361aabc25c9",
+  "determinism_mode": "STRICT",
+  "input_hash": "f6018e151936f016e44ab2ef1dcde58532cbb4a803630d859107e4a10ffdf21a",
+  "output_digest": "2f5fa0b75f16164823779497afa8fbc6bb09164d985eb721b1f7e40d92c6ef4a",
+  "output_hashes": {
+    "PACKET_INDEX.json": "14798758f9413686c10eda7fe8a02eb13852e7a3757d61335353865f58762483",
+    "README_DATA.md": "a0568a8c05467f4c9f8fbd2c5f6db00d8e1840a004fce35ab71e23802f49b257",
+    "data/hz_observations.csv": "90ba455719f142c06627795101cb11b64efd463ee1a15017466dd1d6a603cdb0",
+    "data/sources.json": "d1b81ca9405332e091fc0ae15369fb2ef23e19a1a76861f0fa3ab6ebb10db7fd",
+    "nis_hubble_certificate.json": "ba2ed1df2ffca4b5ee5b7de70beb7bb70095c3def271d8189188bbb8c9c07d96",
+    "outputs/Ez_grut.csv": "bd199e99680447a8811ebbd4cde7c4bbb136232e8c27922863dd3e383cfa42c2",
+    "outputs/Ez_lcdm.csv": "46f3a0f28e3c0863d835cb771a934454f981b3d1101291efda4259ed79840d5c",
+    "outputs/Hz_grut_anchors.csv": "4b19fd643fb54c57e976f1835ed8f537f683f9c48a8e6e9f8d7a6b4403fce8c4",
+    "outputs/point_residuals.csv": "422976f2f4248832fd0bf4f00b681f35bc19f3f838b1c4d7936ac3ba9ca6f9e2",
+    "outputs/residuals_vs_data.json": "42b551cd46d4bdac7eb414832ec20369411bfb58136b08ccca146ac6b826604d",
+    "outputs/residuals_vs_lcdm.json": "fb9e7ac99a539935d86156d4494b43ae09b2f84b4305d4411775f34d6ac1be7d",
+    "runs/grut_run.json": "34ffc22092b480905f826d5b718e711e03aeee4b651c3f960750c9b2a0c22c38",
+    "runs/lcdm_reference.json": "23983d32cc20bcde26f2a067f7f6367349939577e88ada233cb52783df45f34e"
+  },
+  "timestamp": null,
+  "tool_version": "hubble_tension_packet_v0.2.1"
+}

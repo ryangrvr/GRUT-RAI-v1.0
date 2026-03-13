@@ -1,0 +1,7 @@
+z,tracer,Hz_obs,sigma_Hz,E_obs,sigma_E,E_model,resid_sigma_E,exclude_reason_H,exclude_reason_E,Hz_model_Planck_67p4,resid_sigma_H_Planck_67p4,Hz_model_SH0ES_73p0,resid_sigma_H_SH0ES_73p0,preset
+1.43,BAO,177.0,18.0,1.0,0.14381832837692493,4.514618467612114,24.437903758697978,,,304.2852847170565,7.071404706503141,329.5671481356843,8.475952674204684,matter_only
+1.53,BAO,140.0,14.0,0.7909604519774012,0.11281063786642154,4.815695981043389,35.676914918535026,,,324.5779091223244,13.184136365880315,351.54580661616734,15.110414758297667,matter_only
+2.34,BAO,222.0,7.0,,,,,outside_z_window,outside_z_window,,,,,matter_only
+1.43,BAO,177.0,18.0,,,,,out_of_domain,out_of_domain,,,,,vacuum_plus_matter
+1.53,BAO,140.0,14.0,,,,,out_of_domain,out_of_domain,,,,,vacuum_plus_matter
+2.34,BAO,222.0,7.0,,,,,outside_z_window,outside_z_window,,,,,vacuum_plus_matter

@@ -1,0 +1,15 @@
+{
+  "response_model": "identity",
+  "alpha_mem": 0.333333333,
+  "ups_star": 1.0,
+  "ups_bulge": 1.0,
+  "r0_policy": "median_radius",
+  "r0_kpc": null,
+  "files": [
+    "g1.csv",
+    "g2.csv"
+  ],
+  "summary_csv": "artifacts/audit/rotation_batch/batch/summary.csv",
+  "summary_sha256": "8ee71deb1993e5cdff433daa4527f01c483c6f130e71ac47799dc0682a030a93",
+  "summary_hash": "d4fff98530bd5298e27680bf93a0795722e9f44c52712c23e112abda1ee71d89"
+}

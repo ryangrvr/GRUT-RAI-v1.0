@@ -1,0 +1,10 @@
+{
+  "tool_version": "v0.5",
+  "determinism_mode": "STRICT",
+  "input_hash": "c8725d0c77dbd77a038c74166c67a40f57d873825d35fc0a9fddc2ca10f992c4",
+  "output_digest": "a89347ee5b11da6831abd460fc63d73d8e5cc8243f5cc14cd51a0e88fbb67ec6",
+  "output_hashes": {
+    "profiles.csv": "d3276faa0c9649a8842276b92bd7cc46ccc98dde50bef8cd09bc12f917712fc4",
+    "profile_metrics.json": "d96f0a7cf3d75b917da230580f463b8c61927bb81c3f41b989b6f09fcd0fc5a9"
+  }
+}

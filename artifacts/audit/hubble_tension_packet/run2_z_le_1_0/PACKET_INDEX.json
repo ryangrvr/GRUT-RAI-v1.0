@@ -1,0 +1,24 @@
+{
+  "canon_hash": "60fd8c5c2be022e33060ea16ac5bf455eb40523a8520aa3011c6c361aabc25c9",
+  "files": {
+    "PACKET_INDEX.json": "2b97c112c50c019d9cbe359753cd581394a1010ecd485a576d8f25c2ab292d05",
+    "README_DATA.md": "087c12edcde690b92327fa87921504c393e2fc7e9abe43b56d1b09d87611ae14",
+    "data/hz_observations.csv": "90ba455719f142c06627795101cb11b64efd463ee1a15017466dd1d6a603cdb0",
+    "data/sources.json": "d1b81ca9405332e091fc0ae15369fb2ef23e19a1a76861f0fa3ab6ebb10db7fd",
+    "nis_hubble_certificate.json": "7f7a48d351b52b68e66169a5acb7a7a32586ead1473f40d32337e4b3499f9209",
+    "outputs/Ez_grut.csv": "bd199e99680447a8811ebbd4cde7c4bbb136232e8c27922863dd3e383cfa42c2",
+    "outputs/Ez_lcdm.csv": "46f3a0f28e3c0863d835cb771a934454f981b3d1101291efda4259ed79840d5c",
+    "outputs/Hz_grut_anchors.csv": "4b19fd643fb54c57e976f1835ed8f537f683f9c48a8e6e9f8d7a6b4403fce8c4",
+    "outputs/late_time_recommendation.json": "9bb7b38195126b2ca744a65c773e38e061f923d6f42e77f5ad6b4db8e5fff697",
+    "outputs/point_residuals.csv": "0952753a36b05b67d0fa86c9ee58c3b65360084ee34bc4fd50c9aba9b4f88853",
+    "outputs/preset_window_summary.csv": "37ab3769881f54d561f12c00e62cb6dfa42dc15db48323661dadf06dfc73d906",
+    "outputs/preset_window_summary.json": "1bdee248814c3a6be6ad275ee3584af10229034feeb0778d14c12b7e79d42f86",
+    "outputs/residuals_vs_data.json": "72e78cdcd34b6659e8e52d515122aab99bbef3b981ee2e849065b01d0bd94d11",
+    "outputs/residuals_vs_lcdm.json": "fb9e7ac99a539935d86156d4494b43ae09b2f84b4305d4411775f34d6ac1be7d",
+    "runs/grut_run.json": "34ffc22092b480905f826d5b718e711e03aeee4b651c3f960750c9b2a0c22c38",
+    "runs/lcdm_reference.json": "23983d32cc20bcde26f2a067f7f6367349939577e88ada233cb52783df45f34e"
+  },
+  "input_hash": "9a0f5c2d1c3463ff0ebe0575ba9d7fbd0d4e46fbd3b9a5c9dd596becf4d22848",
+  "output_digest": "3ce7a971950870eb539f5e08b4a13d3e9c5cf5a58f377a4116cc90a1c1fc09e6",
+  "packet": "evidence_hubble_tension_v0_2_4"
+}

@@ -1,0 +1,110 @@
+{
+  "certificate_id": "cd979dba-90d4-43aa-a3a4-08943063b8ad",
+  "timestamp_utc": "2026-02-26T22:22:41Z",
+  "engine_signature": {
+    "version": "GRUT-RAI-v0.2",
+    "canon_hash": "64c184d42a4a93afd5d4990ccf0780d9fce0616225658c5f3873558f92d82596",
+    "determinism_mode": "STRICT"
+  },
+  "inputs": {
+    "input_state_hash": "e2bb235af4fac9a84ee5d259226bd2bedb68edf7decfb5d65e5b2e55155a530b",
+    "run_config_hash": "de828d64dab09d2d56659fe75ffec1abcfa1ee7f32e82b87ce7529c0d826d2a6",
+    "assumption_toggles": {
+      "deterministic_run": true,
+      "growth_enabled": true
+    }
+  },
+  "run_trace": {
+    "operator_stack_keys": [
+      "OP_GENESIS",
+      "OP_S_PHASE",
+      "OP_L_STIFF",
+      "OP_DISSIPATION",
+      "OP_TAU_COUPLING",
+      "OP_GROWTH_LINEAR"
+    ],
+    "operators_executed_ids": [
+      "OP_GENESIS_001",
+      "OP_S_PHASE_001",
+      "OP_L_STIFF_001",
+      "OP_DISSIP_001",
+      "OP_COSMO_COUPLE_001",
+      "OP_GROWTH_LINEAR_001"
+    ],
+    "operator_execution_counts": {
+      "OP_GENESIS_001": 1,
+      "OP_S_PHASE_001": 300,
+      "OP_L_STIFF_001": 300,
+      "OP_DISSIP_001": 300,
+      "OP_COSMO_COUPLE_001": 300,
+      "OP_GROWTH_LINEAR_001": 300
+    },
+    "steps_computed": 300,
+    "dt_years": 100000.0,
+    "integrator": "RK4",
+    "convergence_metric": null,
+    "warnings": [],
+    "growth_enabled": true,
+    "growth_method": "TIME_DOMAIN",
+    "growth_held_low_H_steps": 0,
+    "memory_update_scheme": "EXACT_EXPONENTIAL_STRANG",
+    "max_dt_over_tau_eff": 19483500012570.004,
+    "fsigma8_masking_enabled": true,
+    "H_floor": 1e-12,
+    "H_floor_count": 0,
+    "fs8_masked_count": 0,
+    "growth_sigma8_0": 0.811,
+    "growth_D0": 1.1910992065376205,
+    "fs8_mask_rule": "H < 1e-12 or D <= 0",
+    "fs8_mask_H_floor": 1e-12,
+    "compare_definition": "compare mask: z in [0, start_z] AND H > 10*H_floor AND fsigma8 not None",
+    "compare_H_floor_multiplier": 10.0,
+    "rms_definition": "rms = sqrt(mean((x_i - x_i_baseline)^2)); fs8 uses aligned points where both baseline and run are unmasked and fsigma8 is not None",
+    "rms_n_points": {
+      "H": 300,
+      "fs8": 300
+    }
+  },
+  "outputs": {
+    "observables_emitted": [
+      "OBS_HZ_001",
+      "OBS_FS8_001"
+    ],
+    "output_digest": "186bbd4ad7a19a5c8879a9679009c7105593817b644bb456b4c420cdd6d7025a"
+  },
+  "falsification_check": null,
+  "initial_conditions": {
+    "t0_years": 0.0,
+    "genesis_mode": "steady_state",
+    "driver": "X=H_base^2",
+    "H_base2_t0": 4.6500000030000015,
+    "M_X_t0": 4.6500000030000015,
+    "H_t0": 2.156385865980391,
+    "tau_eff_t0": 5.132548050169828e-09,
+    "transient_warning": false,
+    "a_init_used": 0.3333333333333333,
+    "rho_init_used": 5.400000000000001,
+    "p_init_used": 0.0,
+    "w_effective_init": 0.0,
+    "start_z_used": 2.0,
+    "start_z": 2.0,
+    "a_init": 0.3333333333333333,
+    "rho_init": 5.400000000000001,
+    "rho_m_init": 5.400000000000001,
+    "rho_is_rho0": true,
+    "rho0_input": 0.2,
+    "rho_m0_input": 0.2,
+    "rho_m_init_used": 5.400000000000001,
+    "p0_input": 0.0,
+    "w_eff_used_for_inference": 0.0,
+    "rho_init_inferred": 5.400000000000001,
+    "dlna_target": 0.0036620409622270325,
+    "growth_init": {
+      "mode": "growing_mode",
+      "a_init": 0.33455625147557466,
+      "D_init": 0.33455625147557466,
+      "Dp_init": 0.7172680535750656
+    }
+  },
+  "repro_hash": "4ed13cf59dbe294a65d6d5872ba9874e82c2955a23c558edb01a0a9da89ff2d3"
+}

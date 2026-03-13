@@ -1,0 +1,39 @@
+# Secrets / credentials
+.env
+.env.txt
+*.key
+credentials*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+
+# IDE / OS
+.vscode/
+.DS_Store
+*.swp
+*.swo
+
+# Pytest
+.pytest_cache/
+
+# Claude local state
+.claude/
+
+# Large binary data (FITS, NumPy, HDF5)
+*.fits
+*.npy
+*.pkl
+*.h5
+*.hdf5
+
+# Raw/processed data artifacts (large)
+artifacts/hff_raw/
+artifacts/lensing_packet_v0_2/
+artifacts/lensing_packet_v0_2_padded/
+artifacts/release_bundle_v0_1/

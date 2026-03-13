@@ -1,0 +1,20 @@
+{
+  "cluster": "A2744",
+  "model": "CATS",
+  "source_url": null,
+  "file_urls": {
+    "kappa": "https://archive.stsci.edu/pub/hlsp/frontier/abell2744/models/cats/v4.1/hlsp_frontier_model_abell2744_cats_v4.1_kappa.fits",
+    "gamma": "https://archive.stsci.edu/pub/hlsp/frontier/abell2744/models/cats/v4.1/hlsp_frontier_model_abell2744_cats_v4.1_gamma.fits"
+  },
+  "download_timestamp": "2026-03-02T05:43:41.992393+00:00",
+  "file_hashes": {
+    "archive": null,
+    "kappa": "bd1cf25162bd71ced4f8b75d063713b12d4054e83e409e8fd48e98205597d47b",
+    "gamma": "21f4859ba4cbe6331e99ad97018bc01b651a0a13f022e02c097241550a28b3f8"
+  },
+  "selected_maps": {
+    "kappa": "kappa.fits",
+    "gamma": "gamma.fits"
+  },
+  "stable_provenance_hash": "70b161b4386c9d5bff9e1c28211fc4dfd65731de6653c2b92c7ff76e0dfe6bcf"
+}

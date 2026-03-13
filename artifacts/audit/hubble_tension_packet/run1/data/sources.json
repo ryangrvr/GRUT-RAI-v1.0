@@ -1,0 +1,29 @@
+{
+  "hz_observations_min.csv": [
+    {
+      "reference_id": "Moresco2012",
+      "type": "cosmic_chronometers",
+      "citation": "Moresco et al. 2012, JCAP 08 (2012) 006"
+    },
+    {
+      "reference_id": "Moresco2016",
+      "type": "cosmic_chronometers",
+      "citation": "Moresco et al. 2016, JCAP 05 (2016) 014"
+    },
+    {
+      "reference_id": "Stern2010",
+      "type": "cosmic_chronometers",
+      "citation": "Stern et al. 2010, JCAP 02 (2010) 008"
+    },
+    {
+      "reference_id": "DA2013",
+      "type": "BAO",
+      "citation": "Busca et al. 2013 / Delubac et al. 2013 compilation"
+    },
+    {
+      "reference_id": "Delubac2015",
+      "type": "BAO",
+      "citation": "Delubac et al. 2015, A&A 574, A59"
+    }
+  ]
+}

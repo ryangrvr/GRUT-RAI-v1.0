@@ -1,0 +1,12 @@
+{
+  "canon_hash": "9b8a611986f366489d6a3c316a887bfce3932a2962037ed33946d04b9eb57a8b",
+  "repro_hash": "792974cff013ac9536ce782ace0038e015944534caea6461214dea663d0f5218",
+  "output_digest": "dac71a5f7f68fa90b334043357c51af15b4e6e791f6ca9c46cfc58c59809350c",
+  "H0_code": 0.24294639522014036,
+  "idx0": 299,
+  "z0": 2.4202861936828413e-14,
+  "status": "VIABLE",
+  "failure_reason": null,
+  "compare_point_count": 300,
+  "valid_z_max": null
+}

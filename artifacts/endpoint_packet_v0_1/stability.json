@@ -1,0 +1,22 @@
+{
+  "probe": "stability_perturbation",
+  "R_eq_predicted": 0.31622776601683794,
+  "case_outside": {
+    "R0_over_r_s": 0.3478505426185218,
+    "V0_mps": 0.0,
+    "R_f_over_r_s": 0.31622776058198415,
+    "relative_error_to_R_eq": 1.7186516723970966e-08,
+    "termination_reason": "saturation",
+    "asymptotic_stability_indicator": 1288522106309.971
+  },
+  "case_inside": {
+    "R0_over_r_s": 0.28460498941515416,
+    "V0_mps": -5619522.937126402,
+    "R_f_over_r_s": 0.3162217190260421,
+    "relative_error_to_R_eq": 1.9122263904852917e-05,
+    "termination_reason": "radius_converged",
+    "asymptotic_stability_indicator": 1288694438799.5654
+  },
+  "both_converge_passed": true,
+  "stability_indicator_positive": true
+}

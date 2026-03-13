@@ -1,0 +1,24 @@
+{
+  "probe": "force_decomposition",
+  "canonical_convention": {
+    "a_inward": "(1-alpha_vac)*a_grav + alpha_vac*M_drive",
+    "a_outward": "a_Q = (GM/R^2)*epsilon_Q*(r_s/R)^beta_Q",
+    "a_net": "a_inward - a_outward",
+    "force_balance_residual": "|a_net| / a_grav"
+  },
+  "endpoint_values": {
+    "R_f_over_r_s": 0.3162277605880457,
+    "a_grav_final": 302577501888100.94,
+    "a_inward_final": 302577497442019.7,
+    "a_outward_final": 302577512277008.0,
+    "a_net_final": -14834988.3125,
+    "force_balance_residual": 4.9028722294053006e-08,
+    "a_outward_over_a_grav": 1.0000000343346978,
+    "memory_tracking_ratio": 0.999999955917926
+  },
+  "operator_share_passed": true,
+  "force_balance_passed": true,
+  "endpoint_motion_class": "sign_definite_infall",
+  "positive_velocity_episodes": 0,
+  "max_outward_velocity": 0.0
+}

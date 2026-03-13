@@ -1,0 +1,57 @@
+{
+  "grid": {
+    "n": 256,
+    "fov_arcmin": 20.0,
+    "fov_rad": 0.005817764180283863
+  },
+  "sigma_crit": 1.0,
+  "preset": "bullet_toy",
+  "delta_arcmin": 2.0,
+  "peak_kappa": {
+    "index": [
+      128,
+      154
+    ],
+    "theta_x_rad": 0.0005908666745600799,
+    "theta_y_rad": 0.0,
+    "theta_x_arcmin": 2.03125,
+    "theta_y_arcmin": 0.0,
+    "theta_x_arcsec": 121.87500000000001,
+    "theta_y_arcsec": 0.0
+  },
+  "peak_gas": {
+    "index": [
+      128,
+      102
+    ],
+    "theta_x_rad": -0.0005908666745600799,
+    "theta_y_rad": 0.0,
+    "theta_x_arcmin": -2.03125,
+    "theta_y_arcmin": 0.0,
+    "theta_x_arcsec": -121.87500000000001,
+    "theta_y_arcsec": 0.0
+  },
+  "offset": {
+    "dx_rad": 0.0011817333491201598,
+    "dy_rad": 0.0,
+    "magnitude_rad": 0.0011817333491201598,
+    "dx_arcmin": 4.0625,
+    "dy_arcmin": 0.0,
+    "magnitude_arcmin": 4.0625,
+    "dx_arcsec": 243.75000000000003,
+    "dy_arcsec": 0.0,
+    "magnitude_arcsec": 243.75000000000003
+  },
+  "stats": {
+    "kappa": {
+      "min": 6.331999972064796e-66,
+      "max": 0.9995118379398894,
+      "mean": 0.012566370614359161
+    },
+    "gamma_abs": {
+      "min": 2.3164641301090134e-05,
+      "max": 0.30778295058796246,
+      "mean": 0.048630444083761534
+    }
+  }
+}

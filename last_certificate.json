@@ -1,0 +1,63 @@
+{
+  "certificate_id": "d539bf31-eea1-46dc-889e-f869b4db54a8",
+  "timestamp_utc": "2026-02-10T11:46:23Z",
+  "engine_signature": {
+    "version": "GRUT-RAI-v0.2",
+    "canon_hash": "8d25b60da0ba2b739a815e85db22f4a30c4fab1cdddbd90d7b34ecae02931255",
+    "determinism_mode": "STRICT"
+  },
+  "inputs": {
+    "input_state_hash": "7f8956090072f01beb9b5f6f9b77db2d0d5c2fe804d1263672fa6c06952c2a07",
+    "run_config_hash": "bba145255f6dcbc7dd53104bc0318b3e29036bc5389255ad4c702083ee5cdf2e",
+    "assumption_toggles": {
+      "deterministic_run": true,
+      "baseline_eos_p_equals_w_rho": true
+    }
+  },
+  "run_trace": {
+    "operator_stack_keys": [
+      "OP_GENESIS",
+      "OP_S_PHASE",
+      "OP_L_STIFF",
+      "OP_DISSIPATION",
+      "OP_TAU_COUPLING"
+    ],
+    "operators_executed_ids": [
+      "OP_GENESIS_001",
+      "OP_S_PHASE_001",
+      "OP_L_STIFF_001",
+      "OP_DISSIP_001",
+      "OP_COSMO_COUPLE_001"
+    ],
+    "operator_execution_counts": {
+      "OP_GENESIS_001": 1,
+      "OP_S_PHASE_001": 1000,
+      "OP_L_STIFF_001": 1000,
+      "OP_DISSIP_001": 1000,
+      "OP_COSMO_COUPLE_001": 1000
+    },
+    "steps_computed": 1000,
+    "dt_years": 0.001,
+    "integrator": "RK4",
+    "convergence_metric": null,
+    "warnings": []
+  },
+  "outputs": {
+    "observables_emitted": [
+      "OBS_HZ_001"
+    ],
+    "output_digest": "36d3a82b1b64057e9405f5562237aacb5b900eb310b4a547d67a5530543b2b4f"
+  },
+  "falsification_check": null,
+  "initial_conditions": {
+    "t0_years": 0.0,
+    "genesis_mode": "steady_state",
+    "driver": "X=H_base^2",
+    "H_base2_t0": -0.08333333299899999,
+    "M_X_t0": -0.08333333299899999,
+    "H_t0": 0.0,
+    "tau_eff_t0": 41900000.0,
+    "transient_warning": false
+  },
+  "repro_hash": "c17ec9dc6f0abc074942023e255499171215be06ca5818eb030ad4cc254996f6"
+}

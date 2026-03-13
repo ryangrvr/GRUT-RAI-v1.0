@@ -1,0 +1,42 @@
+{
+  "schema": "grut-phase2-evidence-v1",
+  "created_at": "2026-03-06T12:46:14.160351Z",
+  "components": [
+    {
+      "name": "calibration_manifest",
+      "path": "artifacts/audit/calibration/calibration_manifest.json",
+      "sha256": "2ed3b2ad6d0e7486fac7d9e2f29795e6d0437e987fd3a886c7f6b8e61186d0ce",
+      "kind": "manifest",
+      "size_bytes": 877
+    },
+    {
+      "name": "calibration_Ez",
+      "path": "artifacts/audit/calibration/Hz_dimensionless_Ez.csv",
+      "sha256": "18ab3cb3a855f67059b7802a0d033c6168b6534c07073cdc797fe27061a230e3",
+      "kind": "table",
+      "size_bytes": 17596
+    },
+    {
+      "name": "calibration_Hz_Planck_67p4",
+      "path": "artifacts/audit/calibration/Hz_km_s_Mpc_Planck_67p4.csv",
+      "sha256": "27abcfcf7763088f275ca4ab194e6b2ae0a8550e31c0b3b856eb555010e31728",
+      "kind": "table",
+      "size_bytes": 12011
+    },
+    {
+      "name": "calibration_Hz_SH0ES_73p0",
+      "path": "artifacts/audit/calibration/Hz_km_s_Mpc_SH0ES_73p0.csv",
+      "sha256": "9fff78fcb6729557d14ee1417c71c41f353377a75dd57c50c4ca2e2849012393",
+      "kind": "table",
+      "size_bytes": 12000
+    },
+    {
+      "name": "calibration_fs8_compare",
+      "path": "artifacts/audit/calibration/fs8_compare_window.csv",
+      "sha256": "d3bb56c840362db1def231f9ac044f3a99724566fd88fcda56feec7b15171856",
+      "kind": "table",
+      "size_bytes": 13848
+    }
+  ],
+  "notes": null
+}

@@ -1,0 +1,1295 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GRUT-RAI Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  <style>
+    /* === Design System: CSS Custom Properties === */
+    :root {
+      --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+    [data-theme="dark"] {
+      --bg-base: #0d1117;
+      --bg-surface: #161b22;
+      --bg-elevated: #1c2333;
+      --bg-input: #0d1117;
+      --border: #30363d;
+      --border-light: #21262d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --accent: #58a6ff;
+      --accent-dim: #1f6feb33;
+      --teal: #3fb9a2;
+      --green: #3fb950;
+      --amber: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --chart-line-1: #58a6ff;
+      --chart-line-2: #3fb9a2;
+      --badge-pass-bg: #23883620; --badge-pass-fg: #3fb950;
+      --badge-warn-bg: #d2992220; --badge-warn-fg: #d29922;
+      --badge-fail-bg: #f8514920; --badge-fail-fg: #f85149;
+      --shadow: 0 1px 3px rgba(0,0,0,.3);
+    }
+    [data-theme="light"] {
+      --bg-base: #f6f8fa;
+      --bg-surface: #ffffff;
+      --bg-elevated: #ffffff;
+      --bg-input: #f6f8fa;
+      --border: #d0d7de;
+      --border-light: #e1e4e8;
+      --text-primary: #1f2328;
+      --text-secondary: #656d76;
+      --text-muted: #8b949e;
+      --accent: #0969da;
+      --accent-dim: #0969da15;
+      --teal: #1a7f64;
+      --green: #1a7f37;
+      --amber: #9a6700;
+      --red: #cf222e;
+      --purple: #8250df;
+      --chart-line-1: #0969da;
+      --chart-line-2: #1a7f64;
+      --badge-pass-bg: #dafbe1; --badge-pass-fg: #1a7f37;
+      --badge-warn-bg: #fff8c5; --badge-warn-fg: #9a6700;
+      --badge-fail-bg: #ffebe9; --badge-fail-fg: #cf222e;
+      --shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+
+    /* === Reset & Base === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === Header === */
+    #app-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+    }
+    .header-top {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0 8px;
+    }
+    .header-top h1 { font-size: 16px; font-weight: 700; letter-spacing: -.3px; }
+    .header-top .subtitle { font-size: 11px; color: var(--text-muted); }
+    .header-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .pill {
+      font-size: 11px; padding: 3px 10px; border-radius: 999px;
+      background: var(--accent-dim); color: var(--accent); border: 1px solid var(--border);
+      font-weight: 500;
+    }
+    .theme-btn {
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      padding: 5px 10px; cursor: pointer; color: var(--text-secondary); font-size: 13px;
+    }
+    .theme-btn:hover { background: var(--accent-dim); }
+
+    /* === Tabs === */
+    .tab-bar {
+      display: flex; gap: 2px; padding-bottom: 0;
+      border-bottom: none;
+    }
+    .tab-btn {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      padding: 8px 14px; font-size: 13px; font-weight: 500;
+      color: var(--text-secondary); cursor: pointer; transition: all .15s;
+    }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* === Layout === */
+    #app-body {
+      flex: 1; display: flex; flex-direction: column;
+      max-width: 1400px; width: 100%; margin: 0 auto;
+      padding: 16px 20px;
+    }
+    .tab-content { display: none; flex: 1; }
+    .tab-content.active { display: flex; flex-direction: column; }
+
+    /* === Chat Tab (3-panel) === */
+    .chat-layout {
+      display: grid; grid-template-columns: 260px 1fr 300px; gap: 16px;
+      flex: 1; min-height: 0;
+    }
+    @media (max-width: 1100px) { .chat-layout { grid-template-columns: 1fr 300px; }
+      .chat-sidebar { display: none; }
+    }
+    @media (max-width: 800px) { .chat-layout { grid-template-columns: 1fr; }
+      .chat-inspector { display: none; }
+    }
+
+    /* === Cards === */
+    .card {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: var(--shadow); overflow: hidden;
+    }
+    .card-header {
+      padding: 12px 16px; font-size: 12px; font-weight: 600;
+      color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .card-body { padding: 16px; }
+
+    /* === Sidebar === */
+    .chat-sidebar { display: flex; flex-direction: column; gap: 12px; }
+    .sidebar-section { padding: 12px; }
+    .sidebar-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px; }
+    .sidebar-value { font-size: 13px; color: var(--text-primary); font-family: var(--font-mono); }
+    .profile-select {
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg-input);
+      color: var(--text-primary); font-size: 13px;
+    }
+    .run-history-item {
+      padding: 8px 10px; border-radius: 8px; margin-bottom: 4px; cursor: pointer;
+      font-size: 12px; color: var(--text-secondary); transition: background .1s;
+    }
+    .run-history-item:hover { background: var(--accent-dim); }
+
+    /* === Chat Main === */
+    .chat-main { display: flex; flex-direction: column; min-height: 0; }
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 16px;
+      min-height: 300px; max-height: calc(100vh - 300px);
+    }
+    .msg { max-width: 85%; animation: fadeIn .2s ease; }
+    .msg.user {
+      align-self: flex-end;
+      background: var(--accent); color: #fff;
+      padding: 10px 14px; border-radius: 14px 14px 4px 14px;
+      font-size: 13px; line-height: 1.5;
+    }
+    .msg.assistant {
+      align-self: flex-start;
+      background: var(--bg-elevated); border: 1px solid var(--border-light);
+      padding: 14px 16px; border-radius: 4px 14px 14px 14px;
+      font-size: 13px; line-height: 1.6;
+    }
+    .msg.assistant .md-content h1, .msg.assistant .md-content h2, .msg.assistant .md-content h3 {
+      font-size: 14px; margin: 12px 0 6px; color: var(--accent);
+    }
+    .msg.assistant .md-content p { margin: 6px 0; }
+    .msg.assistant .md-content code {
+      background: var(--bg-input); padding: 1px 6px; border-radius: 4px;
+      font-family: var(--font-mono); font-size: 12px;
+    }
+    .msg.assistant .md-content pre {
+      background: var(--bg-base); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px; overflow-x: auto; margin: 8px 0;
+    }
+    .msg.assistant .md-content pre code { background: none; padding: 0; }
+    .msg.assistant .md-content table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 12px; }
+    .msg.assistant .md-content th, .msg.assistant .md-content td {
+      padding: 6px 10px; border: 1px solid var(--border); text-align: left;
+    }
+    .msg.assistant .md-content th { background: var(--bg-base); font-weight: 600; }
+    .msg .chart-container { margin: 12px 0; border-radius: 8px; overflow: hidden; background: var(--bg-base); padding: 8px; }
+    .msg .chart-container canvas { max-height: 200px; }
+
+    /* Typing indicator */
+    .typing-indicator { align-self: flex-start; padding: 10px 14px; }
+    .typing-indicator span {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--text-muted); margin: 0 2px; animation: bounce .6s infinite alternate;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: .2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: .4s; }
+
+    /* === Chat Input === */
+    .chat-input-area {
+      padding: 12px 16px; border-top: 1px solid var(--border);
+      background: var(--bg-surface);
+    }
+    .chat-input-row { display: flex; gap: 8px; }
+    .chat-textarea {
+      flex: 1; resize: none; min-height: 44px; max-height: 120px;
+      padding: 10px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-input);
+      color: var(--text-primary); font-size: 13px; font-family: var(--font-sans);
+      line-height: 1.4;
+    }
+    .chat-textarea:focus { outline: none; border-color: var(--accent); }
+    .chat-textarea::placeholder { color: var(--text-muted); }
+    .send-btn {
+      padding: 10px 18px; border-radius: 10px; border: none;
+      background: var(--accent); color: #fff; font-weight: 600;
+      cursor: pointer; font-size: 13px; white-space: nowrap;
+    }
+    .send-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .quick-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .quick-btn {
+      font-size: 11px; padding: 5px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg-elevated);
+      color: var(--text-secondary); cursor: pointer; transition: all .1s;
+    }
+    .quick-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
+    /* === Inspector Panel === */
+    .chat-inspector { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: calc(100vh - 200px); }
+    .inspector-section { padding: 12px; }
+    .inspector-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+    .status-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+    }
+    .status-badge.pass, .status-badge.pass_not_excluded { background: var(--badge-pass-bg); color: var(--badge-pass-fg); }
+    .status-badge.warn, .status-badge.not_applicable { background: var(--badge-warn-bg); color: var(--badge-warn-fg); }
+    .status-badge.fail, .status-badge.excluded_by_pta_speed, .status-badge.excluded_by_pta_mg_proxy, .status-badge.fail_hf_sanity, .status-badge.error { background: var(--badge-fail-bg); color: var(--badge-fail-fg); }
+
+    .metric-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
+    .metric-row .label { color: var(--text-secondary); }
+    .metric-row .value { color: var(--text-primary); font-family: var(--font-mono); }
+
+    .suggestion-card {
+      padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; cursor: pointer;
+      border: 1px solid var(--border-light); background: var(--bg-elevated);
+      transition: all .1s;
+    }
+    .suggestion-card:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .suggestion-card .sg-title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .suggestion-card .sg-reason { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* === Dashboard Tab === */
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 800px) { .dashboard-grid { grid-template-columns: 1fr; } }
+    .stat-card { text-align: center; padding: 20px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .chart-card { padding: 16px; }
+    .chart-card canvas { width: 100%; max-height: 300px; }
+
+    /* === Experiments Tab === */
+    .exp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .exp-card { cursor: pointer; transition: all .15s; }
+    .exp-card:hover { border-color: var(--accent); }
+    .exp-card .exp-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .exp-card .exp-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .exp-card .exp-status { margin-top: 10px; }
+    #expResultsPanel code { font-family: var(--mono); background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+    #expResultsPanel .status-badge { font-size: 12px; }
+
+    /* === Library Tab === */
+    .library-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .library-table th {
+      text-align: left; padding: 10px 12px; font-weight: 600; font-size: 11px;
+      color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .library-table td {
+      padding: 10px 12px; border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    .library-table tr:hover td { background: var(--accent-dim); }
+
+    /* === GRUTipedia Tab === */
+    .pedia-search {
+      width: 100%; max-width: 500px; padding: 10px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-input);
+      color: var(--text-primary); font-size: 14px; margin-bottom: 16px;
+    }
+    .pedia-search:focus { outline: none; border-color: var(--accent); }
+    .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .topic-card { padding: 16px; cursor: pointer; transition: all .1s; }
+    .topic-card:hover { border-color: var(--accent); }
+    .topic-card .topic-title { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+    .topic-card .topic-cat { font-size: 11px; color: var(--text-muted); }
+    .topic-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500; background: rgba(59,130,246,0.12); color: var(--accent); margin-right: 4px; margin-bottom: 2px; }
+
+    /* === Generate Tab === */
+    .gen-form { max-width: 600px; }
+    .gen-form label { display: block; font-size: 12px; color: var(--text-secondary); margin: 12px 0 4px; }
+    .gen-form input, .gen-form select {
+      width: 100%; padding: 9px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg-input);
+      color: var(--text-primary); font-size: 13px;
+    }
+    .gen-form input:focus, .gen-form select:focus { outline: none; border-color: var(--accent); }
+    .gen-btn {
+      margin-top: 16px; padding: 11px 24px; border-radius: 10px; border: none;
+      background: var(--teal); color: #fff; font-weight: 600; font-size: 14px;
+      cursor: pointer;
+    }
+    .gen-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .gen-progress { margin-top: 12px; font-size: 12px; color: var(--text-secondary); }
+
+    /* === Details/Collapsible === */
+    details { border-top: 1px solid var(--border-light); }
+    details summary {
+      cursor: pointer; padding: 10px 12px; font-size: 12px; font-weight: 600;
+      color: var(--text-secondary); list-style: none;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: '+ '; color: var(--text-muted); }
+    details[open] summary::before { content: '- '; }
+    details .detail-body { padding: 0 12px 12px; }
+    pre.json-block {
+      background: var(--bg-base); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px; overflow: auto;
+      font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+    }
+
+    /* === Status Bar === */
+    #status-bar {
+      padding: 6px 20px; font-size: 11px; color: var(--text-muted);
+      border-top: 1px solid var(--border); background: var(--bg-surface);
+      display: flex; gap: 20px;
+      font-family: var(--font-mono);
+    }
+
+    /* === Animations === */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    @keyframes bounce { to { transform: translateY(-4px); } }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div id="app-header">
+  <div class="header-top">
+    <h1>GRUT Force RAI</h1>
+    <span class="subtitle">Anamnesis · Narrative + Receipt</span>
+    <div class="header-right">
+      <span id="aiStatus" class="pill">AI: checking...</span>
+      <span id="engineVersion" class="pill">engine: --</span>
+      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">&#9681;</button>
+    </div>
+  </div>
+  <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" data-tab="chat" data-testid="tab-chat">Chat</button>
+    <button class="tab-btn" data-tab="dashboard" data-testid="tab-dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="experiments" data-testid="tab-experiments">Experiments</button>
+    <button class="tab-btn" data-tab="library" data-testid="tab-library">Library</button>
+    <button class="tab-btn" data-tab="grutipedia" data-testid="tab-grutipedia">GRUTipedia</button>
+    <button class="tab-btn" data-tab="generate" data-testid="tab-generate">Generate</button>
+  </div>
+</div>
+
+<!-- ===== BODY ===== -->
+<div id="app-body">
+
+  <!-- ==== CHAT TAB ==== -->
+  <div class="tab-content active" id="tab-chat">
+    <div class="chat-layout">
+      <!-- Sidebar -->
+      <div class="chat-sidebar">
+        <div class="card">
+          <div class="card-header">Session</div>
+          <div class="sidebar-section">
+            <div class="sidebar-label">Session ID</div>
+            <div class="sidebar-value" id="sessionId" style="font-size:11px;word-break:break-all;">--</div>
+            <div style="margin-top:10px;">
+              <div class="sidebar-label">Observer Profile</div>
+              <select class="profile-select" id="profileSelect">
+                <option value="monk">Monk</option>
+                <option value="astronomer">Astronomer</option>
+                <option value="participant" selected>Participant</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Recent Runs</div>
+          <div class="sidebar-section" id="runHistory">
+            <div class="run-history-item" style="color:var(--text-muted);">No runs yet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Chat -->
+      <div class="chat-main card">
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg assistant">
+            <div class="md-content">
+              <p><strong>Welcome to GRUT-RAI.</strong></p>
+              <p>I'm the Responsive AI for the Grand Responsive Universe Theory engine.
+              Ask me about GRUT physics, request simulations, or explore experiments.</p>
+              <p style="color:var(--text-secondary);font-size:12px;">Try: "What is tau0?" or "Run H(z) for matter-only at z=2"</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-row">
+            <textarea class="chat-textarea" id="chatInput" placeholder="Ask anything about GRUT or request a simulation..." rows="1"></textarea>
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+          </div>
+          <div class="quick-actions">
+            <button class="quick-btn" onclick="quickAction('Run H(z) for a matter-only universe at z=2')">Run H(z)</button>
+            <button class="quick-btn" onclick="quickAction('What is tau0 and why is it 41.9 Myr?')">Explain tau0</button>
+            <button class="quick-btn" onclick="quickAction('Run the zeta-tau scaling experiment')">Zeta-Tau</button>
+            <button class="quick-btn" onclick="quickAction('What should I try next?')">Suggest</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspector -->
+      <div class="chat-inspector">
+        <div class="card">
+          <div class="card-header">NIS Certificate</div>
+          <div class="inspector-section" id="inspectorNIS">
+            <div style="color:var(--text-muted);font-size:12px;">Run a simulation to see the certificate</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Receipt</div>
+          <div class="inspector-section" id="receiptPanel">
+            <div class="metric-row"><span class="label">Run</span><span class="value" id="runIdShort">--</span></div>
+            <div class="metric-row"><span class="label">Status</span><span class="value" id="resultStatusBadge">--</span></div>
+            <div class="metric-row"><span class="label">Params</span><span class="value" id="paramsHash">--</span></div>
+            <div class="metric-row"><span class="label">Bundle</span><span class="value" id="bundleHash">--</span></div>
+            <button class="quick-btn" id="copy-run-btn" style="margin-top:8px;">Copy Run</button>
+            <div class="sidebar-label" style="margin-top:10px;">Suggested Actions</div>
+            <div id="suggestedActions" style="font-size:12px;color:var(--text-secondary);">--</div>
+            <details>
+              <summary>Certificate (NIS/RIS)</summary>
+              <div class="detail-body"></div>
+            </details>
+            <details>
+              <summary>Key equations</summary>
+              <div class="detail-body"></div>
+            </details>
+            <details>
+              <summary>Comparison (if present)</summary>
+              <div class="detail-body"></div>
+            </details>
+            <details>
+              <summary>Engine outputs</summary>
+              <div class="detail-body"></div>
+            </details>
+            <details>
+              <summary>Observer layer</summary>
+              <div class="detail-body"></div>
+            </details>
+            <details>
+              <summary>Raw response JSON</summary>
+              <div class="detail-body"></div>
+            </details>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Observer State</div>
+          <div class="inspector-section" id="inspectorObserver">
+            <div class="metric-row"><span class="label">Profile</span><span class="value" id="insProfile">--</span></div>
+            <div class="metric-row"><span class="label">Metabolic</span><span class="value" id="insMetabolic">--</span></div>
+            <div class="metric-row"><span class="label">Tension</span><span class="value" id="insTension">--</span></div>
+            <div class="metric-row"><span class="label">deltaS</span><span class="value" id="insDeltaS">--</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Suggestions</div>
+          <div class="inspector-section" id="inspectorSuggestions">
+            <div style="color:var(--text-muted);font-size:12px;">Suggestions appear after engine runs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== DASHBOARD TAB ==== -->
+  <div class="tab-content" id="tab-dashboard">
+    <h2 style="margin-bottom:16px;font-size:18px;">Dashboard</h2>
+    <div class="dashboard-grid">
+      <div class="card stat-card">
+        <div class="stat-value" id="dashRunCount">0</div>
+        <div class="stat-label">Runs This Session</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-value" id="dashExpCount">0</div>
+        <div class="stat-label">Experiments</div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header">Last H(z)</div>
+        <canvas id="dashHzChart"></canvas>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header">Last fsigma8(z)</div>
+        <canvas id="dashFs8Chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== EXPERIMENTS TAB ==== -->
+  <div class="tab-content" id="tab-experiments">
+    <h2 style="margin-bottom:16px;font-size:18px;">Experiments</h2>
+    <div class="exp-grid">
+      <div class="card exp-card" onclick="runExperimentDirect('zeta_tau_scaling')">
+        <div class="card-body">
+          <div class="exp-title">Zeta-Tau Scaling</div>
+          <div class="exp-desc">Test whether tau0 aligns with Riemann zeta zero ordinates under pre-registered cosmological mappings.</div>
+          <div class="exp-status" id="expStatusZeta"></div>
+        </div>
+      </div>
+      <div class="card exp-card" onclick="runExperimentDirect('casimir_density_sweep')">
+        <div class="card-body">
+          <div class="exp-title">Casimir Density Sweep</div>
+          <div class="exp-desc">Instrument-grade sweep testing vacuum screening consistency under Phase I canon (alpha_vac=1/3, S=108pi).</div>
+          <div class="exp-status" id="expStatusCasimir"></div>
+        </div>
+      </div>
+      <div class="card exp-card" onclick="runExperimentDirect('pta_dispersion_probe')">
+        <div class="card-body">
+          <div class="exp-title">PTA Dispersion Probe</div>
+          <div class="exp-desc">Falsification test: does GRUT dispersion survive NANOGrav 15-year PTA bounds on GW phase speed?</div>
+          <div class="exp-status" id="expStatusPTA"></div>
+        </div>
+      </div>
+      <div class="card exp-card" onclick="runExperimentDirect('glass_transition_sweep')">
+        <div class="card-body">
+          <div class="exp-title">Glass Transition Sweep</div>
+          <div class="exp-desc">Cosmological Deborah number analysis: is the universe in a "glassy" memory-dominated regime?</div>
+          <div class="exp-status" id="expStatusGlass"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Experiment Results Panel -->
+    <div id="expResultsPanel" class="card" style="margin-top:20px;display:none;">
+      <div class="card-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3 style="font-size:16px;margin:0;" id="expResultTitle">Results</h3>
+          <div>
+            <span id="expResultStatus" class="status-badge"></span>
+            <button onclick="askAIAboutExperiment()" style="margin-left:8px;padding:4px 10px;border-radius:6px;background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent);cursor:pointer;font-size:11px;">Ask AI</button>
+          </div>
+        </div>
+        <div id="expResultMetrics" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:14px;"></div>
+        <div id="expResultDetails" style="font-size:12px;color:var(--text-secondary);"></div>
+        <div id="expResultCert" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== LIBRARY TAB ==== -->
+  <div class="tab-content" id="tab-library">
+    <h2 style="margin-bottom:16px;font-size:18px;">Run Library</h2>
+    <div class="card">
+      <div class="card-body" style="overflow-x:auto;">
+        <table class="library-table">
+          <thead>
+            <tr><th>Run ID</th><th>Kind</th><th>Status</th><th>Created</th></tr>
+          </thead>
+          <tbody id="libraryBody">
+            <tr><td colspan="4" style="color:var(--text-muted);">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== GRUTIPEDIA TAB ==== -->
+  <div class="tab-content" id="tab-grutipedia">
+    <h2 style="margin-bottom:16px;font-size:18px;">GRUTipedia</h2>
+    <input class="pedia-search" id="pediaSearch" placeholder="Search topics..." oninput="filterTopics()"/>
+    <div class="topic-grid" id="topicGrid"></div>
+    <div class="card" id="topicDetail" style="display:none;margin-top:16px;">
+      <div class="card-header" id="topicDetailTitle"></div>
+      <div class="card-body">
+        <div class="md-content" id="topicDetailBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== GENERATE TAB ==== -->
+  <div class="tab-content" id="tab-generate">
+    <h2 style="margin-bottom:16px;font-size:18px;">Generate Evidence Packet</h2>
+    <div class="card">
+      <div class="card-body gen-form">
+        <label>Preset</label>
+        <select id="genPreset">
+          <option value="matter_only">Matter Only</option>
+          <option value="vacuum_plus_matter">Vacuum + Matter</option>
+        </select>
+        <label>Alpha_mem Grid (comma-separated)</label>
+        <input id="genGrid" value="0.0,0.1,0.333333333,0.5,1.0"/>
+        <label>Start Redshift</label>
+        <input id="genStartZ" type="number" value="2.0" step="0.1"/>
+        <label>Time Step (years)</label>
+        <input id="genDt" type="number" value="100000"/>
+        <label>Steps</label>
+        <input id="genSteps" type="number" value="300"/>
+        <button class="gen-btn" id="genBtn" onclick="generateSweep()">Generate Sweep</button>
+        <div class="gen-progress" id="genProgress"></div>
+      </div>
+    </div>
+    <div class="card" id="genResults" style="display:none;margin-top:16px;">
+      <div class="card-header">Results</div>
+      <div class="card-body">
+        <pre class="json-block" id="genResultsBody"></pre>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== STATUS BAR ===== -->
+<div id="status-bar">
+  <span id="sbEngine">engine: --</span>
+  <span id="sbCanon">canon: --</span>
+  <span id="sbSession">session: --</span>
+  <span id="sbAI">ai: --</span>
+</div>
+
+<script>
+// ===== State =====
+const STATE = {
+  sessionId: null,
+  runCount: 0,
+  expCount: 0,
+  lastCharts: { hz: null, fs8: null },
+  runHistory: [],
+  topics: [],
+  sending: false,
+};
+
+let dashHzChart = null, dashFs8Chart = null;
+let chartCounter = 0;
+
+// ===== Theme =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('grut-theme', next);
+  // Update chart colors if charts exist
+  updateChartColors();
+}
+(function initTheme() {
+  const saved = localStorage.getItem('grut-theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function getChartColors() {
+  const s = getComputedStyle(document.documentElement);
+  return {
+    line1: s.getPropertyValue('--chart-line-1').trim(),
+    line2: s.getPropertyValue('--chart-line-2').trim(),
+    text: s.getPropertyValue('--text-secondary').trim(),
+    grid: s.getPropertyValue('--border-light').trim(),
+  };
+}
+
+function updateChartColors() {
+  [dashHzChart, dashFs8Chart].forEach(c => {
+    if (!c) return;
+    const colors = getChartColors();
+    c.options.scales.x.ticks.color = colors.text;
+    c.options.scales.y.ticks.color = colors.text;
+    c.options.scales.x.grid.color = colors.grid;
+    c.options.scales.y.grid.color = colors.grid;
+    c.update();
+  });
+}
+
+// ===== Tabs =====
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    // Load data for tabs
+    if (btn.dataset.tab === 'library') loadLibrary();
+    if (btn.dataset.tab === 'grutipedia') loadTopics();
+  });
+});
+
+// ===== Init =====
+async function init() {
+  // Check health
+  try {
+    const r = await fetch('/health');
+    const d = await r.json();
+    document.getElementById('engineVersion').textContent = 'engine: ' + (d.engine_version || '--').slice(0, 20);
+    document.getElementById('sbEngine').textContent = 'engine: ' + (d.engine_version || '--');
+    document.getElementById('sbCanon').textContent = 'canon: ' + (d.params_hash || '--').slice(0, 12);
+  } catch(e) {
+    document.getElementById('engineVersion').textContent = 'engine: offline';
+  }
+
+  // New session
+  try {
+    const r = await fetch('/rai/session/new', { method: 'POST' });
+    const d = await r.json();
+    STATE.sessionId = d.session_id;
+    document.getElementById('sessionId').textContent = d.session_id;
+    document.getElementById('sbSession').textContent = 'session: ' + d.session_id.slice(0, 8);
+  } catch(e) {
+    STATE.sessionId = 'local-' + Date.now();
+    document.getElementById('sessionId').textContent = STATE.sessionId;
+  }
+
+  // Check AI status
+  try {
+    const r = await fetch('/rai/status');
+    const d = await r.json();
+    const el = document.getElementById('aiStatus');
+    if (d.ai_available) {
+      el.textContent = 'AI: online';
+      el.style.color = 'var(--green)';
+      document.getElementById('sbAI').textContent = 'ai: online';
+    } else {
+      el.textContent = 'AI: deterministic';
+      el.style.color = 'var(--amber)';
+      document.getElementById('sbAI').textContent = 'ai: deterministic';
+    }
+  } catch(e) {
+    document.getElementById('aiStatus').textContent = 'AI: --';
+    document.getElementById('sbAI').textContent = 'ai: --';
+  }
+
+  // Init dashboard charts
+  initDashCharts();
+}
+
+function initDashCharts() {
+  const colors = getChartColors();
+  const baseOpts = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: colors.text, maxTicksLimit: 8 }, grid: { color: colors.grid } },
+      y: { ticks: { color: colors.text, maxTicksLimit: 6 }, grid: { color: colors.grid } },
+    },
+  };
+
+  dashHzChart = new Chart(document.getElementById('dashHzChart'), {
+    type: 'line',
+    data: { labels: [], datasets: [{ data: [], borderColor: colors.line1, borderWidth: 2, pointRadius: 0, fill: false }] },
+    options: { ...baseOpts },
+  });
+
+  dashFs8Chart = new Chart(document.getElementById('dashFs8Chart'), {
+    type: 'line',
+    data: { labels: [], datasets: [{ data: [], borderColor: colors.line2, borderWidth: 2, pointRadius: 0, fill: false }] },
+    options: { ...baseOpts },
+  });
+}
+
+// ===== Chat =====
+function addMessage(role, content, charts) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+
+  if (role === 'assistant') {
+    const mdDiv = document.createElement('div');
+    mdDiv.className = 'md-content';
+    mdDiv.innerHTML = marked.parse(content || '');
+    div.appendChild(mdDiv);
+
+    // Render inline charts
+    if (charts && charts.length) {
+      charts.forEach(ch => {
+        if (ch.data) {
+          const wrap = document.createElement('div');
+          wrap.className = 'chart-container';
+          const canvas = document.createElement('canvas');
+          canvas.id = 'inlineChart_' + (++chartCounter);
+          canvas.style.maxHeight = '200px';
+          wrap.appendChild(canvas);
+          div.appendChild(wrap);
+
+          setTimeout(() => {
+            const colors = getChartColors();
+            const lineColor = ch.type === 'fs8' ? colors.line2 : colors.line1;
+            const labels = ch.data.z || [];
+            const values = ch.data[ch.type === 'fs8' ? 'fsigma8' : 'H'] || [];
+            new Chart(canvas, {
+              type: 'line',
+              data: {
+                labels: labels.map(v => typeof v === 'number' ? v.toFixed(2) : v),
+                datasets: [{ data: values, borderColor: lineColor, borderWidth: 2, pointRadius: 1, fill: false }],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false }, title: { display: true, text: ch.type === 'fs8' ? 'fsigma8(z)' : 'H(z)', color: colors.text, font: { size: 12 } } },
+                scales: {
+                  x: { title: { display: true, text: 'z', color: colors.text }, ticks: { color: colors.text, maxTicksLimit: 8 }, grid: { color: colors.grid } },
+                  y: { ticks: { color: colors.text, maxTicksLimit: 6 }, grid: { color: colors.grid } },
+                },
+              },
+            });
+          }, 50);
+        }
+      });
+    }
+  } else {
+    div.textContent = content;
+  }
+
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTyping() {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'typing-indicator';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg || STATE.sending) return;
+
+  STATE.sending = true;
+  document.getElementById('sendBtn').disabled = true;
+  addMessage('user', msg);
+  input.value = '';
+  showTyping();
+
+  try {
+    const r = await fetch('/rai/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: STATE.sessionId,
+        message: msg,
+        observer_profile: document.getElementById('profileSelect').value,
+      }),
+    });
+    const d = await r.json();
+    hideTyping();
+
+    const text = d.response?.text_markdown || d.assistant_message || d.detail || 'No response';
+    const charts = d.response?.charts || [];
+    addMessage('assistant', text, charts);
+
+    // Update inspector
+    if (d.response?.certificate_summary) {
+      updateInspectorNIS(d.response.certificate_summary, d.response.nis_status);
+    }
+    if (d.response?.suggestions) {
+      updateInspectorSuggestions(d.response.suggestions);
+    }
+
+    // Update charts
+    if (charts.length) {
+      charts.forEach(ch => {
+        if (ch.type === 'hz' && ch.data) {
+          STATE.lastCharts.hz = ch.data;
+          updateDashChart(dashHzChart, ch.data.z, ch.data.H);
+        }
+        if (ch.type === 'fs8' && ch.data) {
+          STATE.lastCharts.fs8 = ch.data;
+          updateDashChart(dashFs8Chart, ch.data.z, ch.data.fsigma8);
+        }
+      });
+    }
+
+    // Update run count
+    if (d.response?.run_ids?.length) {
+      STATE.runCount += d.response.run_ids.length;
+      document.getElementById('dashRunCount').textContent = STATE.runCount;
+      d.response.run_ids.forEach(id => {
+        STATE.runHistory.unshift({ run_id: id, status: d.response.nis_status || 'PASS' });
+      });
+      updateRunHistory();
+    }
+
+  } catch(e) {
+    hideTyping();
+    addMessage('assistant', '**Error**: ' + e.message);
+  }
+
+  STATE.sending = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function quickAction(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+// Enter to send
+document.getElementById('chatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+// Auto-resize textarea
+document.getElementById('chatInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// ===== Inspector Updates =====
+function updateInspectorNIS(cert, status) {
+  const el = document.getElementById('inspectorNIS');
+  const statusClass = (status || 'pass').toLowerCase();
+  el.innerHTML = `
+    <div style="margin-bottom:8px;"><span class="status-badge ${statusClass}">${status || 'PASS'}</span></div>
+    <div class="metric-row"><span class="label">Canon Hash</span><span class="value">${(cert.canon_hash || '--').slice(0, 12)}...</span></div>
+    <div class="metric-row"><span class="label">Repro Hash</span><span class="value">${(cert.repro_hash || '--').slice(0, 12)}...</span></div>
+    <div class="metric-row"><span class="label">Observables</span><span class="value">${(cert.observables_emitted || []).join(', ') || '--'}</span></div>
+  `;
+}
+
+function updateInspectorSuggestions(suggestions) {
+  const el = document.getElementById('inspectorSuggestions');
+  if (!suggestions || !suggestions.length) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;">No suggestions</div>';
+    return;
+  }
+  el.innerHTML = suggestions.map(s => `
+    <div class="suggestion-card" onclick="quickAction('${(s.label || s.action || '').replace(/'/g, "\\'")}')">
+      <div class="sg-title">${s.label || s.action || '?'}</div>
+      <div class="sg-reason">${s.reason || s.description || ''}</div>
+    </div>
+  `).join('');
+}
+
+function updateRunHistory() {
+  const el = document.getElementById('runHistory');
+  if (!STATE.runHistory.length) return;
+  el.innerHTML = STATE.runHistory.slice(0, 5).map(r => `
+    <div class="run-history-item">
+      <span class="status-badge ${(r.status || 'pass').toLowerCase()}" style="margin-right:6px;">${r.status || '?'}</span>
+      ${(r.run_id || '').slice(0, 8)}...
+    </div>
+  `).join('');
+}
+
+function updateDashChart(chart, labels, data) {
+  if (!chart || !labels || !data) return;
+  chart.data.labels = labels.map(v => typeof v === 'number' ? v.toFixed(2) : v);
+  chart.data.datasets[0].data = data;
+  chart.update();
+}
+
+// ===== Experiments =====
+const EXP_CONFIG = {
+  zeta_tau_scaling: {
+    statusEl: 'expStatusZeta',
+    endpoint: '/experiments/zeta_tau_scaling',
+    title: 'Zeta-Tau Scaling',
+    extractMetrics: (d) => [
+      { label: 'Best Family', value: d.best_match?.family || '--' },
+      { label: 'Rel Error', value: typeof d.best_match?.rel_err === 'number' ? (d.best_match.rel_err * 100).toFixed(3) + '%' : '--' },
+      { label: 'p-value', value: typeof d.null_model?.p_value === 'number' ? d.null_model.p_value.toFixed(4) : '--' },
+      { label: 'Zeros Tested', value: d.tested_counts?.zeros_n || '--' },
+    ],
+    extractDetails: (d) => {
+      let html = '';
+      if (d.best_match) html += `<strong>Match:</strong> n=${d.best_match.n}, tau_pred=${typeof d.best_match.tau_pred_myr === 'number' ? d.best_match.tau_pred_myr.toFixed(3) : '?'} Myr<br>`;
+      if (d.robustness) html += `<strong>Robustness:</strong> H0 slope=${typeof d.robustness.h0_slope === 'number' ? d.robustness.h0_slope.toFixed(6) : '?'}, stable=${d.robustness.h0_robust ? 'YES' : 'NO'}<br>`;
+      if (d.message) html += `<em>${d.message}</em>`;
+      return html;
+    },
+  },
+  casimir_density_sweep: {
+    statusEl: 'expStatusCasimir',
+    endpoint: '/experiments/casimir_density_sweep',
+    title: 'Casimir Density Sweep',
+    extractMetrics: (d) => [
+      { label: 'S_thy', value: typeof d.computed?.S_thy === 'number' ? d.computed.S_thy.toFixed(4) : '--' },
+      { label: 'Baseline Rel Err', value: typeof d.computed?.rel_err_S === 'number' ? (d.computed.rel_err_S * 100).toFixed(4) + '%' : '--' },
+      { label: 'Best-fit H0', value: typeof d.two_loop_argmin?.H0_km_s_Mpc === 'number' ? d.two_loop_argmin.H0_km_s_Mpc.toFixed(1) + ' km/s/Mpc' : '--' },
+      { label: 'Best-fit Rel Err', value: typeof d.two_loop_argmin?.rel_err_S === 'number' ? (d.two_loop_argmin.rel_err_S * 100).toFixed(4) + '%' : '--' },
+    ],
+    extractDetails: (d) => {
+      let html = '';
+      if (d.computed) html += `<strong>Computed:</strong> S_thy=${typeof d.computed.S_thy === 'number' ? d.computed.S_thy.toFixed(4) : '?'}, tau_Lambda=${typeof d.computed.tau_lambda_gyr === 'number' ? d.computed.tau_lambda_gyr.toFixed(3) + ' Gyr' : '?'}<br>`;
+      if (d.nis) html += `<strong>NIS:</strong> ${d.nis.status || '?'} | stamp: ${(d.nis.determinism_stamp || '--').slice(0, 16)}...<br>`;
+      if (d.metadata) html += `<strong>alpha_vac:</strong> ${d.metadata.alpha_vac || '?'}, n_g(0)=${typeof d.metadata.n_g0 === 'number' ? d.metadata.n_g0.toFixed(6) : '?'}<br>`;
+      return html;
+    },
+  },
+  pta_dispersion_probe: {
+    statusEl: 'expStatusPTA',
+    endpoint: '/experiments/pta_dispersion_probe',
+    title: 'PTA Dispersion Probe',
+    extractMetrics: (d) => [
+      { label: 'Min v_phase/c', value: typeof d.min_v_phase_over_c_over_band === 'number' ? d.min_v_phase_over_c_over_band.toFixed(12) : '--' },
+      { label: 'Max |dv_phase|', value: typeof d.max_abs_delta_v_phase_over_c_over_band === 'number' ? d.max_abs_delta_v_phase_over_c_over_band.toExponential(3) : '--' },
+      { label: 'Worst Margin', value: typeof d.worst_speed_margin_over_band === 'number' ? d.worst_speed_margin_over_band.toExponential(3) : '--' },
+      { label: 'Worst Freq', value: typeof d.worst_freq_hz === 'number' ? d.worst_freq_hz.toExponential(1) + ' Hz' : '--' },
+    ],
+    extractDetails: (d) => {
+      let html = '';
+      if (d.conclusion) html += `<strong>Conclusion:</strong> ${d.conclusion}<br>`;
+      if (d.hf_check_100Hz) html += `<strong>100 Hz check:</strong> v_phase/c = ${typeof d.hf_check_100Hz.v_phase_over_c === 'number' ? d.hf_check_100Hz.v_phase_over_c.toFixed(15) : '?'}<br>`;
+      return html;
+    },
+  },
+  glass_transition_sweep: {
+    statusEl: 'expStatusGlass',
+    endpoint: '/experiments/glass_transition_sweep',
+    title: 'Glass Transition Sweep',
+    extractMetrics: (d) => [
+      { label: 'z_crit', value: typeof d.crossing?.z_crit === 'number' ? d.crossing.z_crit.toFixed(2) : '--' },
+      { label: 'De (Deborah)', value: typeof d.crossing?.De === 'number' ? d.crossing.De.toFixed(6) : '--' },
+      { label: 'Age at crossing', value: typeof d.crossing?.age_myr === 'number' ? d.crossing.age_myr.toFixed(1) + ' Myr' : '--' },
+      { label: 'T at crossing', value: typeof d.crossing?.T_K === 'number' ? d.crossing.T_K.toFixed(0) + ' K' : '--' },
+    ],
+    extractDetails: (d) => {
+      let html = '';
+      if (d.crossing) html += `<strong>Crossing:</strong> z_crit=${typeof d.crossing.z_crit === 'number' ? d.crossing.z_crit.toFixed(2) : '?'}, De=${typeof d.crossing.De === 'number' ? d.crossing.De.toFixed(6) : '?'}, age=${typeof d.crossing.age_myr === 'number' ? d.crossing.age_myr.toFixed(1) : '?'} Myr<br>`;
+      if (d.certificate) html += `<strong>Certificate:</strong> ${d.certificate.status || '?'} — ${d.certificate.message || ''}<br>`;
+      return html;
+    },
+  },
+};
+
+let lastExpResult = null;
+let lastExpName = null;
+
+async function runExperimentDirect(name) {
+  const cfg = EXP_CONFIG[name];
+  if (!cfg) return;
+
+  const el = document.getElementById(cfg.statusEl);
+  if (el) el.innerHTML = '<span class="status-badge warn">Running...</span>';
+
+  // Hide previous results
+  document.getElementById('expResultsPanel').style.display = 'none';
+
+  try {
+    const r = await fetch(cfg.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),  // Use defaults
+    });
+
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({ message: r.statusText }));
+      if (el) el.innerHTML = `<span class="status-badge fail">ERROR</span>`;
+      showExpError(cfg.title, err.message || err.detail || 'Request failed');
+      return;
+    }
+
+    const d = await r.json();
+    lastExpResult = d;
+    lastExpName = name;
+
+    // Update status badge on card
+    const status = d.status || 'PASS';
+    const statusClass = status.toLowerCase();
+    if (el) el.innerHTML = `<span class="status-badge ${statusClass}">${status}</span>`;
+
+    // Show results panel
+    showExpResults(cfg, d);
+
+    // Update dashboard counter
+    STATE.expCount++;
+    document.getElementById('dashExpCount').textContent = STATE.expCount;
+
+    // Save run to history if we got a run_id
+    if (d.run_id) {
+      STATE.runHistory.unshift({ run_id: d.run_id, status: status });
+      STATE.runCount++;
+      document.getElementById('dashRunCount').textContent = STATE.runCount;
+      updateRunHistory();
+    }
+
+  } catch(e) {
+    if (el) el.innerHTML = `<span class="status-badge fail">ERROR</span>`;
+    showExpError(cfg.title, e.message);
+  }
+}
+
+function showExpResults(cfg, data) {
+  const panel = document.getElementById('expResultsPanel');
+  panel.style.display = 'block';
+
+  document.getElementById('expResultTitle').textContent = cfg.title + ' Results';
+
+  const status = data.status || 'PASS';
+  const statusEl = document.getElementById('expResultStatus');
+  statusEl.className = 'status-badge ' + status.toLowerCase();
+  statusEl.textContent = status;
+
+  // Metrics grid
+  const metrics = cfg.extractMetrics(data);
+  document.getElementById('expResultMetrics').innerHTML = metrics.map(m => `
+    <div style="background:var(--surface-alt,var(--bg-secondary));padding:10px 12px;border-radius:8px;border:1px solid var(--border);">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">${m.label}</div>
+      <div style="font-size:14px;font-weight:600;font-family:var(--mono);color:var(--text-primary);">${m.value}</div>
+    </div>
+  `).join('');
+
+  // Details
+  document.getElementById('expResultDetails').innerHTML = cfg.extractDetails(data);
+
+  // Certificate info
+  const certEl = document.getElementById('expResultCert');
+  if (data.run_id) {
+    certEl.innerHTML = `<strong>Run ID:</strong> <code>${data.run_id}</code>`;
+  } else {
+    certEl.innerHTML = '';
+  }
+
+  // Scroll results into view
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showExpError(title, message) {
+  const panel = document.getElementById('expResultsPanel');
+  panel.style.display = 'block';
+  document.getElementById('expResultTitle').textContent = title + ' — Error';
+  document.getElementById('expResultStatus').className = 'status-badge fail';
+  document.getElementById('expResultStatus').textContent = 'ERROR';
+  document.getElementById('expResultMetrics').innerHTML = '';
+  document.getElementById('expResultDetails').innerHTML = `<div style="color:var(--red,#ef4444);padding:8px 0;">${message}</div>`;
+  document.getElementById('expResultCert').innerHTML = '';
+}
+
+function askAIAboutExperiment() {
+  if (!lastExpName || !lastExpResult) return;
+  const status = lastExpResult.status || 'unknown';
+  quickAction(`Explain the ${lastExpName.replace(/_/g, ' ')} experiment result: status=${status}. What does this mean and what should I try next?`);
+  // Switch to chat tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="chat"]').classList.add('active');
+  document.getElementById('tab-chat').classList.add('active');
+}
+
+// ===== Library =====
+async function loadLibrary() {
+  try {
+    const r = await fetch('/library');
+    const d = await r.json();
+    const body = document.getElementById('libraryBody');
+    if (!d.runs || !d.runs.length) {
+      body.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted);">No runs found</td></tr>';
+      return;
+    }
+    body.innerHTML = d.runs.slice(0, 50).map(run => `
+      <tr>
+        <td style="font-family:var(--font-mono);font-size:11px;">${(run.run_id || '').slice(0, 12)}...</td>
+        <td>${run.kind || '--'}</td>
+        <td><span class="status-badge ${(run.status || 'pass').toLowerCase()}">${run.status || '--'}</span></td>
+        <td>${run.created_utc || '--'}</td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    document.getElementById('libraryBody').innerHTML = '<tr><td colspan="4" style="color:var(--text-muted);">Failed to load</td></tr>';
+  }
+}
+
+// ===== GRUTipedia =====
+async function loadTopics() {
+  try {
+    const r = await fetch('/grutipedia');
+    const d = await r.json();
+    STATE.topics = d.topics || [];
+    renderTopics(STATE.topics);
+  } catch(e) {
+    document.getElementById('topicGrid').innerHTML = '<div style="color:var(--text-muted);">Failed to load topics</div>';
+  }
+}
+
+function renderTopics(topics) {
+  document.getElementById('topicGrid').innerHTML = topics.map(t => {
+    const tags = (t.tags || []).map(tag => `<span class="topic-tag">${tag}</span>`).join(' ');
+    return `
+    <div class="card topic-card" onclick="showTopic('${t.slug}')">
+      <div class="topic-title">${t.title || t.slug}</div>
+      <div class="topic-cat">${tags}</div>
+    </div>`;
+  }).join('') || '<div style="color:var(--text-muted);">No topics found</div>';
+}
+
+function filterTopics() {
+  const q = document.getElementById('pediaSearch').value.toLowerCase();
+  const filtered = STATE.topics.filter(t =>
+    (t.title || '').toLowerCase().includes(q) ||
+    (t.slug || '').toLowerCase().includes(q) ||
+    ((t.tags || []).join(' ')).toLowerCase().includes(q)
+  );
+  renderTopics(filtered);
+}
+
+async function showTopic(slug) {
+  try {
+    const r = await fetch('/grutipedia/' + slug);
+    const d = await r.json();
+    // Build full body from definition_md + equations_md
+    let body = d.definition_md || '';
+    if (d.equations_md) {
+      body += '\n\n### Equations\n\n' + d.equations_md;
+    }
+    // Show tags
+    const tags = (d.tags || []).map(tag => `<span class="topic-tag">${tag}</span>`).join(' ');
+    const tagLine = tags ? `<div style="margin-bottom:12px;">${tags}</div>` : '';
+    // Show linked runs
+    let linksHtml = '';
+    if (d.links && d.links.length > 0) {
+      linksHtml = '<h4>Linked Runs</h4><ul>' + d.links.map(l =>
+        `<li><code>${l.run_id}</code> (${l.status || 'N/A'})${l.note_md ? ' — ' + l.note_md : ''}</li>`
+      ).join('') + '</ul>';
+    }
+    document.getElementById('topicDetail').style.display = 'block';
+    document.getElementById('topicDetailTitle').textContent = d.title || slug;
+    document.getElementById('topicDetailBody').innerHTML =
+      tagLine + marked.parse(body || '_No content_') + linksHtml;
+  } catch(e) {
+    document.getElementById('topicDetail').style.display = 'block';
+    document.getElementById('topicDetailTitle').textContent = slug;
+    document.getElementById('topicDetailBody').textContent = 'Failed to load topic';
+  }
+}
+
+// ===== Generate =====
+async function generateSweep() {
+  const btn = document.getElementById('genBtn');
+  const progress = document.getElementById('genProgress');
+  btn.disabled = true;
+  progress.textContent = 'Running sweep...';
+
+  const preset = document.getElementById('genPreset').value;
+  const grid = document.getElementById('genGrid').value;
+  const start_z = parseFloat(document.getElementById('genStartZ').value);
+  const dt = parseFloat(document.getElementById('genDt').value);
+  const steps = parseInt(document.getElementById('genSteps').value);
+
+  try {
+    const r = await fetch('/generate/sweep', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ preset, grid, start_z, dt_years: dt, steps }),
+    });
+    const d = await r.json();
+    document.getElementById('genResults').style.display = 'block';
+    document.getElementById('genResultsBody').textContent = JSON.stringify(d, null, 2);
+    progress.textContent = 'Sweep complete!';
+  } catch(e) {
+    progress.textContent = 'Error: ' + e.message;
+  }
+  btn.disabled = false;
+}
+
+// ===== Boot =====
+init();
+</script>
+</body>
+</html>

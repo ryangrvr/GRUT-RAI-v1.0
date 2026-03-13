@@ -1,0 +1,23 @@
+{
+  "center_mode": "com_positive",
+  "threshold_frac": 0.1,
+  "profile_bins": 20,
+  "r_max_arcsec": null,
+  "compare_to_model": true,
+  "model_response": "grut_gate_kspace_v0",
+  "smoothing_grid": [
+    1.0
+  ],
+  "k0_policy": "r_smooth",
+  "k0_value": null,
+  "metrics": {
+    "kappa": {
+      "rms_diff": 0.05717606298389712,
+      "max_abs_diff": 0.15631751550861733
+    },
+    "gamma_t": {
+      "rms_diff": 0.027982033333032806,
+      "max_abs_diff": 0.0494876960129112
+    }
+  }
+}

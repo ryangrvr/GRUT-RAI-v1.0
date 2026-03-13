@@ -1,0 +1,27 @@
+{
+  "sweep": {
+    "param": "alpha_mem",
+    "grid": [
+      0.1
+    ],
+    "run_config": {
+      "dt_years": 100000.0,
+      "steps": 300,
+      "integrator": "RK4",
+      "start_z": 2.0,
+      "rho_is_rho0": true
+    },
+    "init_state": {
+      "a": 1.0,
+      "rho": 0.2,
+      "p": 0.0,
+      "H": 1e-10,
+      "M_X": 0.0,
+      "rho_m0": 0.2
+    },
+    "canon": "canon/grut_canon_v0.3.json"
+  },
+  "run_folders": [
+    "artifacts/sweeps/_det_check_1/run_0_alpha_mem_0p1"
+  ]
+}

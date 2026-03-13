@@ -1,0 +1,30 @@
+{
+  "packet": "quantum_evidence_v0.1",
+  "output_files": [
+    "PACKET_INDEX.json",
+    "README_DATA.md",
+    "benchmarks/benchmark_controlled.json",
+    "benchmarks/benchmark_self_consistent.json",
+    "file_hashes.json",
+    "nis_quantum_certificate.json",
+    "scans/scan_mass_controlled.csv",
+    "scans/scan_mass_self_consistent.csv",
+    "scans/scan_omega_controlled.csv",
+    "summary.csv"
+  ],
+  "output_hashes": {
+    "README_DATA.md": "6245a2881ea4193b58d10fa9049a0cb1a59b0522e56c2aff6de8e55ab1231d9d",
+    "benchmarks/benchmark_controlled.json": "d4a2bbe58eaaf1802ea8935bf12f8bde3c8ef1c73bb7f255d3e14ebf669a5834",
+    "benchmarks/benchmark_self_consistent.json": "a83cd0ecd1c169e7203f860dc67868bb5c8a4c42a21b129d31c3355aca812d40",
+    "scans/scan_omega_controlled.csv": "8f22bd92721ebd8cf9c89d95403aed47265a31c5c98b80fa409ad0627ee2a033",
+    "scans/scan_mass_controlled.csv": "6fdf829251cc1142da64adc542d0e50ac934fd2d7729c27664a8f3764cc51e9e",
+    "scans/scan_mass_self_consistent.csv": "d00e55d72702a6ec05af153c4f5d5a4ac64ca02abf1a594881856ae4472f3a85",
+    "summary.csv": "2b0adbc26a1b98f00e0a3d5573e2745d467a83df01e4c13c1c7c2dbaace28825"
+  },
+  "input_hash": "9f9f455dbe88ca98326c44ac0ce37df33eed5364e1d2cfa058ba480a38c8d705",
+  "canon_hash": null,
+  "certificate": {
+    "output_digest": "374e16d6f7a85ac6ab9bc78dec9b7b584e879a21dd572423b8c795b7543c0d8e",
+    "input_hash": "9f9f455dbe88ca98326c44ac0ce37df33eed5364e1d2cfa058ba480a38c8d705"
+  }
+}

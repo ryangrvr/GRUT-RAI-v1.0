@@ -1,0 +1,14 @@
+{
+  "v_coll_kms": 1000.0,
+  "v_coll_angle_deg": 0.0,
+  "tau0_s": 1.0,
+  "delta_pred_kpc": 3.240779289960431e-14,
+  "pred_vector_kpc": {
+    "dx_kpc": 3.240779289960431e-14,
+    "dy_kpc": 0.0
+  },
+  "delta_obs_arcsec": 4.0,
+  "kpc_per_arcsec": 1.0,
+  "delta_obs_kpc": 4.0,
+  "delta_residual": 3.9999999999999676
+}

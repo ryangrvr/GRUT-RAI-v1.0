@@ -1,0 +1,19 @@
+{
+  "canon_hash": "N/A",
+  "tool_version": "v0.2",
+  "determinism_mode": "STRICT",
+  "input_hash": "bdc49aa99e80d99f9c39fb9cda50aeb970f274ab57d316a7bb508036517c6255",
+  "output_digest": "88c3441bf79c09f66de660fd0fb10c830127b5ffe7a43da947a6b5bc3899d510",
+  "mode": "phi_to_psi",
+  "A_psi": 1.0,
+  "output_hashes": {
+    "kappa.npy": "917db1353072a24e4b5100127a809b71c414962b8a4098b3e7057735b85b80fb",
+    "gamma1.npy": "ed76b4f6d856810f407964ddc65bc998f311da2928ffdb56108462e2ab7af1c8",
+    "gamma2.npy": "6340829fac746cdef1dc11ed947c131530adfdd663bb4ba835982d5ccd858678",
+    "summary.json": "e5f199db8ab5972c29def7f60edf756bdd30a0eac81fdba49f7869131f334c15",
+    "psi.npy": "0096b5eb83f7a0e5900553cd9b7dab119ca7b06642b39ec7043dde72c808c3ae",
+    "alpha_x.npy": "5438a8b04e99e65e0a26f2c93ebc3060c0009fc5f0af51ec1f3049c8653335e2",
+    "alpha_y.npy": "a80c4fa2beb0af6617114db4ae271f5b870d67fd0c63a1c1b6f025604f0bf8db"
+  },
+  "timestamp_utc": "2026-03-02T04:15:46.498921Z"
+}

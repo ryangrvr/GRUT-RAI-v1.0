@@ -1,0 +1,61 @@
+{
+  "version": "v0.1",
+  "tier": "B",
+  "ontology_summary": "Particles are localized excitations in a finite-bandwidth viscoelastic metric background; Tier B derivations do not emit Tier A observables.",
+  "existing_tier_a_dependencies": [
+    {
+      "id": "OP_QUANTUM_DECOHERE_001",
+      "notes": "Controlled omega policy and self-consistent m^-2/3 law." 
+    }
+  ],
+  "future_operators": [
+    {
+      "id": "OP_PARTICLE_LOCALIZATION_001",
+      "inputs": ["localized excitation profile", "bandwidth limit", "metric response kernel"],
+      "outputs": ["localization threshold", "spatial envelope", "decoherence bound"],
+      "requires": ["finite bandwidth limit", "r_sat"],
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "id": "OP_PARTICLE_MASS_SHIFT_001",
+      "inputs": ["baseline mass", "background response index", "phase coupling"],
+      "outputs": ["predicted mass shift", "sign bounds"],
+      "requires": ["UV anchor R", "response coupling"],
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "id": "OP_G_MINUS_2_001",
+      "inputs": ["charged lepton species", "background coupling scale"],
+      "outputs": ["delta a_l prediction band"],
+      "requires": ["UV anchor R", "response kernel"],
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "id": "OP_DECAY_CHANNEL_SHIFT_001",
+      "inputs": ["decay channel definition", "background response index"],
+      "outputs": ["relative decay-rate perturbation"],
+      "requires": ["finite bandwidth response model"],
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "id": "OP_NEUTRINO_DECOHERE_001",
+      "inputs": ["baseline oscillation parameters", "path length", "response kernel"],
+      "outputs": ["decoherence window", "suppression envelope"],
+      "requires": ["finite bandwidth metric response"],
+      "status": "NOT_IMPLEMENTED"
+    }
+  ],
+  "candidate_observables": [
+    "muon g-2 anomaly",
+    "Lamb shift / atomic precision corrections",
+    "neutrino oscillation decoherence windows",
+    "decay-rate perturbations",
+    "localization thresholds in mesoscopic matter",
+    "gravity-assisted spectral anomalies"
+  ],
+  "boundaries": [
+    "No Standard Model Lagrangian derivation is claimed.",
+    "No Tier A observables are added.",
+    "This spec defines a bounded path to future operators."
+  ]
+}

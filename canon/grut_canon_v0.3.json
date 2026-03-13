@@ -1,0 +1,1033 @@
+{
+  "meta": {
+    "schema_version": "v0.3",
+    "phase": "3",
+    "status": "v1.0",
+    "canon_hash": "RUNTIME_SHA256",
+    "created_utc": "REPLACED_AT_RUNTIME",
+    "notes": [
+      "v0.3 adds linear growth (fσ8) as a first-class observable without altering Phase-2 kernel equations.",
+      "v0.3.1 adds radial collapse solver (hole sector) reusing the same operator stack.",
+      "v0.3.2 adds Phase III: barrier dominance order parameter, constrained endpoint law, information ledger skeleton, exterior falsifier program.",
+      "v0.3.3 freezes WP2 (ringdown/echo) as candidate falsifier channel. WP2A-D complete; further progress requires interior PDE.",
+      "v0.3.4 revises WP2 freeze: PDE closure (Phase III-C) reclassifies interior from reactive_candidate (Q~515) to mixed_viscoelastic (Q~6-7.5). Proxy result superseded. Structural identity omega_0*tau=1 documented. WP3 null-result confirmation added.",
+      "v0.3.5 adds covariant interior closure: effective metric ansatz CONFIRMS PDE results. omega_0*tau=1 PRESERVED, Q~6 PRESERVED, mixed_viscoelastic PRESERVED. Reflection modified ±20% by metric corrections. Echo channel surviving at ~1.1%. 5 closures resolved, 7 remaining.",
+      "v0.3.6 adds covariant field equation framework (Phase III Final). Three candidate formulations evaluated: algebraic tensor (INSUFFICIENT), auxiliary scalar field (PREFERRED, scalarized first pass), nonlocal kernel (formal parent). Weak/strong-field reductions recover current solver at effective level. Bianchi compatibility at effective level. 7 closures remain. T^Phi_mu_nu is schematic/effective. Scalar is minimal closure; tensorial generalization open.",
+      "v1.0 release: Canonical Build (Phases I-III Complete). All classification strings synchronized (reactive_candidate -> reactive for Q>10). Default Q fallback updated to PDE value (7.5). Packages A (memory tensor), B (junction conditions), C (observables) added. 25 nonclaims. Status ladder applied consistently. Superseded results explicitly marked."
+    ]
+  },
+  "unit_system": {
+    "name": "GRUT_CODE_UNITS",
+    "time_unit": "years",
+    "a_unit": "dimensionless",
+    "H_unit": "1/years",
+    "rho_unit": "code_energy_density",
+    "p_unit": "code_energy_density"
+  },
+  "constants": {
+    "by_id": {
+      "CONST_LAMBDA_LOCK": {
+        "id": "CONST_LAMBDA_LOCK",
+        "symbol": "Λ_lock",
+        "value": 1.154700538,
+        "units": "dimensionless",
+        "description": "Geometric anchor approx 2/sqrt(3). Fundamental scaling ratio."
+      },
+      "CONST_TAU_0": {
+        "id": "CONST_TAU_0",
+        "symbol": "τ_0",
+        "value": 4.19e7,
+        "units": "years",
+        "description": "Canonical relaxation time derived in Phase 1."
+      },
+      "CONST_K0": {
+        "id": "CONST_K0",
+        "symbol": "K_0",
+        "value": -0.083333333,
+        "units": "dimensionless",
+        "description": "Base curvature anchor -1/12."
+      },
+      "PARAM_ALPHA_MEM": {
+        "id": "PARAM_ALPHA_MEM",
+        "symbol": "α_mem",
+        "value": 0.1,
+        "units": "dimensionless",
+        "bounds": [
+          0.0,
+          1.0
+        ],
+        "status": "TUNABLE",
+        "description": "Weight of memory-smoothed driver in H^2 correction. 0 disables memory correction."
+      },
+      "PARAM_C_RHO": {
+        "id": "PARAM_C_RHO",
+        "symbol": "C_ρ",
+        "value": 1.0,
+        "units": "1/years^2 per rho_unit",
+        "status": "UNLOCKED",
+        "description": "Maps rho to H^2 in code units (placeholder until GRUT normalization is locked)."
+      },
+      "PARAM_C_K": {
+        "id": "PARAM_C_K",
+        "symbol": "C_k",
+        "value": 1.0,
+        "units": "1/years^2",
+        "status": "UNLOCKED",
+        "description": "Curvature coupling coefficient in code units (placeholder)."
+      },
+      "PARAM_W_EOS": {
+        "id": "PARAM_W_EOS",
+        "symbol": "w",
+        "value": 0.0,
+        "units": "dimensionless",
+        "bounds": [
+          -1.5,
+          1.5
+        ],
+        "status": "TUNABLE",
+        "description": "Equation of state parameter p = w rho for baseline fluid evolution."
+      },
+      "PARAM_SIGMA8_0": {
+        "id": "PARAM_SIGMA8_0",
+        "symbol": "σ8,0",
+        "value": 0.811,
+        "units": "dimensionless",
+        "status": "TUNABLE",
+        "description": "Linear growth normalization at z=0 (baseline σ8)."
+      },
+      "PARAM_Z_START": {
+        "id": "PARAM_Z_START",
+        "symbol": "z_start",
+        "value": 2.0,
+        "units": "dimensionless",
+        "status": "TUNABLE",
+        "description": "Default starting redshift when start_z is not provided in run_config."
+      },
+      "PARAM_GROWTH_INIT_MODE": {
+        "id": "PARAM_GROWTH_INIT_MODE",
+        "symbol": "growth_init_mode",
+        "value": "growing_mode",
+        "units": "dimensionless",
+        "status": "TUNABLE",
+        "description": "Default growth initialization mode (D ∝ a)."
+      },
+      "NUM_A_MIN": {
+        "id": "NUM_A_MIN",
+        "symbol": "a_min",
+        "value": 1e-12,
+        "units": "dimensionless",
+        "status": "LOCKED",
+        "description": "Numerical floor for scale factor."
+      },
+      "NUM_H_CAP": {
+        "id": "NUM_H_CAP",
+        "symbol": "H_cap",
+        "value": 1000000.0,
+        "units": "1/years",
+        "status": "LOCKED",
+        "description": "Numerical cap for |H| used by stiffening guardrail."
+      },
+      "NUM_GAMMA_H": {
+        "id": "NUM_GAMMA_H",
+        "symbol": "γ_H",
+        "value": 0.0,
+        "units": "1/years",
+        "bounds": [
+          0.0,
+          1000000.0
+        ],
+        "status": "TUNABLE",
+        "description": "Positive-definite damping rate applied to H each step."
+      }
+    },
+    "aliases": {
+      "diamond_lock": "CONST_LAMBDA_LOCK",
+      "tau0": "CONST_TAU_0",
+      "k0": "CONST_K0",
+      "alpha_mem": "PARAM_ALPHA_MEM",
+      "C_rho": "PARAM_C_RHO",
+      "C_k": "PARAM_C_K",
+      "w": "PARAM_W_EOS",
+      "sigma8_0": "PARAM_SIGMA8_0",
+      "z_start": "PARAM_Z_START",
+      "growth_init_mode": "PARAM_GROWTH_INIT_MODE",
+      "a_min": "NUM_A_MIN",
+      "H_cap": "NUM_H_CAP",
+      "gamma_H": "NUM_GAMMA_H"
+    }
+  },
+  "primitives": {
+    "metric": "FLRW (+---)",
+    "state_vector": [
+      {
+        "name": "a",
+        "units": "dimensionless",
+        "description": "Scale factor"
+      },
+      {
+        "name": "H",
+        "units": "1/years",
+        "description": "Hubble parameter"
+      },
+      {
+        "name": "rho",
+        "units": "code_energy_density",
+        "description": "Effective density"
+      },
+      {
+        "name": "p",
+        "units": "code_energy_density",
+        "description": "Effective pressure"
+      },
+      {
+        "name": "M_X",
+        "units": "1/years^2",
+        "description": "Memory state for driver X (ODE equivalent)"
+      },
+      {
+        "name": "D",
+        "units": "dimensionless",
+        "description": "Linear growth factor"
+      },
+      {
+        "name": "Dp",
+        "units": "dimensionless",
+        "description": "dD/dln a"
+      }
+    ]
+  },
+  "genesis": {
+    "id": "GENESIS_001",
+    "memory_init": {
+      "mode": "steady_state",
+      "allowed": [
+        "steady_state",
+        "empty_history",
+        "explicit"
+      ],
+      "explicit_M_X": null,
+      "driver": "X = H_base^2"
+    }
+  },
+  "memory_kernel": {
+    "id": "KERNEL_RETARDED_001",
+    "type": "exponential_retarded_normalized",
+    "causality": "strictly_retarded (t>t')",
+    "kernel_definition": "K(s) = (1/τ_eff) exp(-s/τ_eff) Θ(s), with ∫_0^∞ K(s) ds = 1",
+    "ode_equivalent": {
+      "state_name": "M_X",
+      "driver_name": "X",
+      "definition": "τ_eff dM_X/dt + M_X = X(t)",
+      "driver_policy": {
+        "default": "X = H_base^2",
+        "allowed": [
+          "X = H_base^2"
+        ]
+      }
+    }
+  },
+  "operator_stack": {
+    "execution_order": [
+      "OP_GENESIS",
+      "OP_S_PHASE",
+      "OP_L_STIFF",
+      "OP_DISSIPATION",
+      "OP_TAU_COUPLING",
+      "OP_GROWTH_LINEAR"
+    ],
+    "definitions": {
+      "OP_GENESIS": {
+        "id": "OP_GENESIS_001",
+        "role": "Boundary condition solver (memory cold start)",
+        "bootstrap_only": true,
+        "parameters": [
+          "NUM_A_MIN",
+          "PARAM_W_EOS",
+          "PARAM_C_RHO",
+          "PARAM_C_K",
+          "CONST_K0"
+        ],
+        "math": [
+          "Sanitize inputs (a>=a_min, rho>=0, p=w*rho unless provided)",
+          "Compute H_base^2 from unmodified closure",
+          "Set M_X(t0) using genesis.memory_init.mode",
+          "Recompute H(t0) using GRUT closure with M_X(t0)",
+          "Compute tau_eff(H(t0))"
+        ]
+      },
+      "OP_S_PHASE": {
+        "id": "OP_S_PHASE_001",
+        "role": "State Preparation",
+        "parameters": [
+          "NUM_A_MIN"
+        ],
+        "math": [
+          "a := max(a, a_min)",
+          "require rho >= 0",
+          "set p := w * rho (baseline EOS unless overridden by caller)"
+        ]
+      },
+      "OP_L_STIFF": {
+        "id": "OP_L_STIFF_001",
+        "role": "Anti-Singularity Stiffening (Guardrail)",
+        "parameters": [
+          "NUM_H_CAP"
+        ],
+        "math": [
+          "If |H| > H_cap then H := sign(H) * H_cap and log warning L_STIFF_ACTIVATED"
+        ]
+      },
+      "OP_DISSIPATION": {
+        "id": "OP_DISSIP_001",
+        "role": "Positive-definite damping",
+        "parameters": [
+          "NUM_GAMMA_H"
+        ],
+        "math": [
+          "Apply per-step damping: H := H * exp(-γ_H Δt)",
+          "Constraint: γ_H >= 0"
+        ]
+      },
+      "OP_TAU_COUPLING": {
+        "id": "OP_COSMO_COUPLE_001",
+        "role": "τ_eff(H) coupling",
+        "parameters": [
+          "CONST_TAU_0"
+        ],
+        "math": [
+          "Define τ_eff(H) using τ0 and dimensionless (H τ0)",
+          "Baseline: τ_eff = τ0 / (1 + (H τ0)^2)"
+        ]
+      },
+      "OP_GROWTH_LINEAR": {
+        "id": "OP_GROWTH_LINEAR_001",
+        "role": "Linear structure growth (kinematic baseline: Geff=G)",
+        "bootstrap_only": false,
+        "parameters": [
+          "PARAM_SIGMA8_0",
+          "PARAM_Z_START",
+          "PARAM_GROWTH_INIT_MODE",
+          "PARAM_C_RHO"
+        ],
+        "math": [
+          "Integrate D and D' in ln a: D'' + [2 + dlnH/dlna] D' - 3/2 Ωm(a) D = 0",
+          "Ωm(a) = (C_ρ ρ) / H^2",
+          "f = D'/D",
+          "σ8(z) = σ8_0 * D/D0",
+          "fσ8(z) = f * σ8(z)"
+        ]
+      },
+      "OP_QUANTUM_DECOHERE": {
+        "id": "OP_QUANTUM_DECOHERE_001",
+        "role": "Quantum decoherence boundary evaluator (standalone)",
+        "bootstrap_only": true,
+        "parameters": [
+          "CONST_TAU_0"
+        ],
+        "math": [
+          "Compute t_dp and t_grut under selected ω policy",
+          "Emit t_dec=t_grut and enhancement=t_grut/t_dp",
+          "Optional scan over ω or m (context-driven)"
+        ]
+      },
+      "OP_RADIAL_COLLAPSE": {
+        "id": "OP_RADIAL_COLLAPSE_001",
+        "role": "Spherically symmetric dust collapse with memory coupling",
+        "bootstrap_only": false,
+        "parameters": [
+          "CONST_TAU_0",
+          "PARAM_ALPHA_MEM",
+          "NUM_H_CAP",
+          "NUM_GAMMA_H"
+        ],
+        "state_vector": ["R", "V", "M_drive"],
+        "math": [
+          "dR/dt = V",
+          "dV/dt = -a_net;  a_net = a_inward - a_outward;  a_inward = (1-alpha)*GM/R^2 + alpha*M_drive;  a_outward = a_Q",
+          "dM_drive/dt = (GM/R^2 - M_drive)/tau_eff",
+          "tau_eff = tau_0 / (1 + (|V/R| * tau_0)^2)",
+          "Post-step L_stiff: if |V/R| > H_cap then V = -H_cap*R",
+          "Post-step dissipation: V *= exp(-gamma*dt)"
+        ],
+        "derived_quantities": [
+          "r_sat (CANDIDATE under OP_QPRESS_001: R_eq/r_s = epsilon_Q^(1/beta_Q). Without barrier: L_stiff artifact.)",
+          "compactness C = 2GM/(Rc^2)",
+          "Kretschner K = 48(GM)^2/(c^4 R^6)",
+          "apparent horizon crossings (C >= 1)",
+          "collapse_class: stall | arrested_prehorizon | arrested_posthorizon | plunging | singular",
+          "tau0/t_dyn: timescale competition ratio (key hole-sector control parameter)",
+          "bounce_exclusion_tier: sign_definite | numerical | violated"
+        ],
+        "sign_theorem": {
+          "status": "TWO_TIER",
+          "tier_1": "M <= ~10^24 kg: sign-definite (a_net > 0 always, M_drive > 0 always). STRUCTURAL.",
+          "tier_2": "M >= ~10^30 kg: M_drive and a_net can go transiently negative. V <= 0 holds numerically. CONDITIONAL.",
+          "note": "The originally claimed universal sign-definiteness does NOT survive into the astrophysical regime."
+        }
+      }
+    }
+  },
+  "core_equations": {
+    "baseline_model": "Minimal FLRW + memory-smoothed closure (DRAFT)",
+    "equations": [
+      {
+        "id": "EQ_A_001",
+        "name": "Scale factor kinematics",
+        "math": "da/dt = a H"
+      },
+      {
+        "id": "EQ_RHO_001",
+        "name": "Fluid continuity (baseline)",
+        "math": "dρ/dt = -3 H (ρ + p)"
+      },
+      {
+        "id": "EQ_HBASE_001",
+        "name": "Base closure (placeholder coefficients)",
+        "math": "H_base^2 = C_ρ ρ + C_k K0/a^2"
+      },
+      {
+        "id": "EQ_MEM_001",
+        "name": "Memory ODE (driver X = H_base^2)",
+        "math": "τ_eff dM_X/dt + M_X = H_base^2"
+      },
+      {
+        "id": "EQ_HCORR_001",
+        "name": "Memory-smoothed corrected closure",
+        "math": "H^2 = (1-α_mem) H_base^2 + α_mem M_X"
+      },
+      {
+        "id": "EQ_GROWTH_001",
+        "name": "Linear growth in ln a",
+        "math": "D'' + [2 + dlnH/dlna] D' - (3/2) Ωm(a) D = 0"
+      },
+      {
+        "id": "EQ_SUSCEPT_001",
+        "name": "Susceptibility (frequency domain)",
+        "math": "chi(omega) = alpha_vac / (1 - i * omega * tau_0)"
+      },
+      {
+        "id": "EQ_ELCDM_001",
+        "name": "LCDM reference expansion",
+        "math": "E_LCDM(z) = sqrt( Omega_m*(1+z)^3 + Omega_k*(1+z)^2 + Omega_Lambda + Omega_r*(1+z)^4 )"
+      },
+      {
+        "id": "EQ_TDEC_001",
+        "name": "Master quantum decoherence (self-consistent)",
+        "math": "t_dec = [ (hbar * ell * tau_0^2) / (alpha_vac * G) ]^(1/3) * m^(-2/3)"
+      },
+      {
+        "id": "EQ_TDP_001",
+        "name": "Diosi-Penrose baseline decoherence",
+        "math": "t_DP = (hbar * ell) / (G * m^2)"
+      },
+      {
+        "id": "EQ_COLLAPSE_AEFF_001",
+        "name": "Collapse net acceleration (canonical decomposition)",
+        "math": "a_inward = (1-alpha)*GM/R^2 + alpha*M_drive;  a_outward = a_Q (OP_QPRESS_001);  a_net = a_inward - a_outward"
+      },
+      {
+        "id": "EQ_COLLAPSE_MEM_001",
+        "name": "Collapse memory ODE",
+        "math": "dM_drive/dt = (GM/R^2 - M_drive) / tau_eff(|V/R|)"
+      },
+      {
+        "id": "EQ_COLLAPSE_BOUNCE_001",
+        "name": "Bounce exclusion (two-tier)",
+        "math": "Tier 1 (M <= ~10^24 kg): a_net > 0, M_drive > 0 always — sign-definite. Tier 2 (M >= ~10^30 kg): V <= 0 holds numerically despite transient a_net < 0 — conditional.",
+        "status": "TWO_TIER"
+      },
+      {
+        "id": "EQ_COLLAPSE_TIMESCALE_001",
+        "name": "Timescale competition law",
+        "math": "tau0/t_dyn = tau0 / ((pi/2)*sqrt(R0^3/(2GM))) controls collapse regime: >>1 freezes, ~1 participates, <<1 approaches GR"
+      }
+    ]
+  },
+  "numeric_policy": {
+    "float": "float64",
+    "integrator": "RK4",
+    "dt_years_default": 100000.0,
+    "max_steps_default": 2000,
+    "strict_nan_check": true
+  },
+  "assumptions_registry": {
+    "deterministic_run": {
+      "default": true,
+      "description": "No randomization; stable hashing of inputs/outputs."
+    },
+    "baseline_eos_p_equals_w_rho": {
+      "default": true,
+      "description": "Use p=w rho with PARAM_W_EOS unless overridden."
+    },
+    "growth_enabled": {
+      "default": true,
+      "description": "Compute linear growth fσ8 observable."
+    }
+  },
+  "quantum": {
+    "bridge": {
+      "version": "m-2/3"
+    },
+    "decoherence": {
+      "operator_id": "OP_QUANTUM_DECOHERE_001"
+    },
+    "constants": {
+      "ALPHA_VAC": {
+        "value": 0.3333333333333333,
+        "units": "dimensionless",
+        "source": "bridge_m-2/3"
+      },
+      "TAU0_S": {
+        "value": 1.3225e15,
+        "units": "s",
+        "derived_from": "CONST_TAU_0",
+        "note": "TAU0_S = CONST_TAU_0 (years) * 365.25*24*3600"
+      }
+    },
+    "policies": {
+      "omega_policy": [
+        "controlled",
+        "self_consistent"
+      ],
+      "omega_exp_units": "rad_per_s"
+    },
+    "observables": {
+      "OBS_TDEC": "t_dec",
+      "OBS_ENHANCEMENT": "t_grut/t_dp",
+      "OBS_SLOPE": "predicted log-log slope in mass scan"
+    }
+  },
+  "collapse": {
+    "operator_id": "OP_RADIAL_COLLAPSE_001",
+    "analogy": "Oppenheimer-Snyder interior = closed FRW; same operator stack governs both",
+    "state_vector": {
+      "R": {"units": "m", "description": "Shell radius"},
+      "V": {"units": "m/s", "description": "dR/dt, V <= 0 during collapse"},
+      "M_drive": {"units": "m/s^2", "description": "Memory state tracking gravitational drive"}
+    },
+    "quantum_pressure_barrier": {
+      "operator_id": "OP_QPRESS_001",
+      "status": "CANDIDATE",
+      "equation": "a_Q = (GM/R^2) * epsilon_Q * (r_s/R)^beta_Q",
+      "equilibrium": "R_eq/r_s = epsilon_Q^(1/beta_Q)",
+      "preferred_constrained_law": {
+        "status": "CONSTRAINED (not fully derived)",
+        "epsilon_Q": "alpha_vac^2 = 1/9",
+        "beta_Q": 2,
+        "endpoint": "R_eq/r_s = alpha_vac = 1/3",
+        "compactness": "C_eq = 1/alpha_vac = 3",
+        "derivation_track": "curvature_linked_occupancy",
+        "audit_result": "ALL 11 CRITERIA PASS (Phase III-B benchmark_phase3b_audit.py)",
+        "note": "Preferred constrained law. NOT a fully first-principles-derived Tier A result. Micro-derivation of alpha_vac^2 coupling remains open."
+      },
+      "parameters": {
+        "epsilon_Q": {
+          "default": 0.0,
+          "constrained_value": 0.1111111111111111,
+          "status": "CONSTRAINED",
+          "description": "Quantum pressure coupling. 0=off, >0 activates barrier. Preferred constrained value: alpha_vac^2 = 1/9."
+        },
+        "beta_Q": {
+          "default": 2,
+          "constrained_value": 2,
+          "status": "CONSTRAINED",
+          "description": "Barrier steepness exponent. Constrained by Kretschner curvature scaling: K ∝ C^2 gives beta_Q = 2."
+        }
+      },
+      "properties": {
+        "mass_independent": "R_eq/r_s does not depend on M",
+        "negligible_at_large_R": "a_Q/a_grav = epsilon_Q*(r_s/R)^beta_Q -> 0 for R >> r_s",
+        "asymptotically_stable": "Restoring force on both sides of R_eq (d(a_net)/dR > 0)",
+        "endpoint_motion": "EMPIRICAL — classified by runs as sign_definite_infall, equilibrium_restoring, overshoot_damped, or bounce_violation. NOT assumed sign-definite."
+      },
+      "note": "Candidate endpoint operator. Default OFF (epsilon_Q=0). Preferred constrained values (epsilon_Q=1/9, beta_Q=2) pass the full anti-artifact acceptance suite. Micro-derivation required for promotion to fully derived.",
+      "phase_III_B_benchmark": {
+        "script": "benchmark_phase3b_audit.py",
+        "result": "ALL 11 CRITERIA PASS",
+        "R_f_over_r_s": 0.333333,
+        "force_balance_residual": 0.0,
+        "vtol_spread": 1.0,
+        "r0_spread": 1.0,
+        "hcap_spread": 1.000002,
+        "artifact_deviation_pct": 52.1,
+        "stability_indicator": "positive (restoring)",
+        "endpoint_motion_class": "sign_definite_infall",
+        "analytical_match_error_pct": 0.0
+      },
+      "derivation_tracks": {
+        "status": "ACTIVE / RESEARCH TARGET",
+        "preferred": "curvature_linked_occupancy",
+        "tracks": {
+          "curvature_linked_occupancy": {
+            "beta_Q_constraint": "beta_Q = 2 from Kretschner curvature scaling (C^2 = (r_s/R)^2)",
+            "epsilon_Q_candidate": "epsilon_Q = alpha_vac^2 = 1/9",
+            "endpoint_law": "R_eq / r_s = alpha_vac = 1/3",
+            "endpoint_compactness": "C_eq = 1/alpha_vac = 3",
+            "status": "CONSTRAINED (not fully derived)",
+            "missing_closures": [
+              "Micro-derivation of why epsilon_Q = alpha_vac^2",
+              "Curvature-to-force mapping from vacuum stiffness gradient",
+              "Covariant extension of Newtonian-gauge power law"
+            ]
+          },
+          "bandwidth_saturation": {
+            "concept": "Vacuum susceptibility gradient creates effective pressure",
+            "status": "MOTIVATIONAL (does not fix parameters)",
+            "note": "Compatible with curvature track but does not independently determine epsilon_Q or beta_Q"
+          },
+          "anomaly_bridge": {
+            "concept": "3-loop anomaly residue as UV-IR bridge",
+            "status": "SPECULATIVE (no structural derivation path)",
+            "note": "Deferred to Phase III-B or later"
+          }
+        }
+      }
+    },
+    "derived": {
+      "r_sat": {
+        "status": "CANDIDATE",
+        "description": "Saturation radius where collapse halts at force balance. Falls out of ODE integration where a_net -> 0 under quantum pressure barrier.",
+        "general_law": "r_sat = epsilon_Q^(1/beta_Q) * r_s",
+        "constrained_law": "r_sat = alpha_vac * r_s = (1/3) r_s (under preferred constrained values epsilon_Q = 1/9, beta_Q = 2)",
+        "note": "Physical endpoint requires OP_QPRESS_001. Without barrier (epsilon_Q = 0): r_sat is UNDEMONSTRATED (L_stiff artifact). With constrained law: r_sat = (1/3) r_s passes all 11 anti-artifact acceptance criteria."
+      },
+      "compactness": {
+        "definition": "C = 2GM/(Rc^2)",
+        "trapped_criterion": "C >= 1"
+      },
+      "t_dyn": {
+        "status": "LOCKED",
+        "definition": "t_ff = (pi/2)*sqrt(R0^3/(2GM))",
+        "units": "s",
+        "description": "Free-fall time. The hole-sector dynamical timescale."
+      },
+      "tau0_over_t_dyn": {
+        "status": "LOCKED",
+        "definition": "tau0 / t_ff",
+        "description": "Key hole-sector control parameter. Governs whether memory participates in collapse: >>1 freezes, ~1 participates, <<1 approaches GR."
+      },
+      "collapse_class": {
+        "status": "LOCKED",
+        "values": ["stall", "arrested_prehorizon", "arrested_posthorizon", "plunging", "singular"],
+        "description": "Physics-level classification of collapse outcome, independent of integration termination."
+      },
+      "bounce_exclusion_tier": {
+        "status": "LOCKED",
+        "values": ["sign_definite", "numerical", "violated"],
+        "description": "Tier 1: a_net > 0, M_drive > 0 throughout. Tier 2: V <= 0 but signs not definite. Tier 3: bounce detected."
+      },
+      "barrier_dominance": {
+        "status": "LOCKED",
+        "definition": "Phi = a_outward / a_inward",
+        "description": "Primary order parameter for the Quantum Fluid to Barrier-Dominated Compact Core transition. Phi=0: fluid regime; Phi~0.5: crystallization threshold; Phi->1: force-balanced core.",
+        "note": "LOCKED in current solver language. Phi is computed from canonical force decomposition and recorded at endpoint as barrier_dominance_final.",
+        "phase_III_B_mapping": {
+          "transition_type": "SMOOTH",
+          "transition_width_rs": 0.703,
+          "crystallization_R_over_rs": 0.4715,
+          "crystallization_compactness": 2.12,
+          "crystallization_is_post_horizon": true,
+          "endpoint_Phi": 1.0,
+          "note": "Mapping from benchmark run M=1e30 kg, constrained law. Transition characteristics for other mass ranges not yet tested."
+        },
+        "phase_vocabulary": {
+          "quantum_fluid": {"criterion": "Phi < 0.01", "status": "LOCKED — solver-backed in benchmark regime"},
+          "crystallization_threshold": {"criterion": "Phi ~ 0.5", "status": "CANDIDATE — benchmark places this at R/r_s ≈ 0.47, post-horizon"},
+          "phase_boundary": {"criterion": "Phi -> 1 minus epsilon", "status": "CANDIDATE"},
+          "barrier_dominated_compact_core": {"criterion": "Phi > 0.99", "status": "CANDIDATE — reached at R_eq under constrained law"},
+          "whole_hole": {"criterion": "Barrier-Dominated Core + post-horizon (C > 1)", "status": "ACTIVE / RESEARCH TARGET — exterior observables not yet computed"}
+        }
+      },
+      "information_ledger": {
+        "status": "ACTIVE / RESEARCH TARGET",
+        "module": "grut/information.py",
+        "variables": {
+          "I_fields": "Bekenstein-Hawking-like area proxy: pi R^2 / l_P^2 (CLASSICAL, not quantum)",
+          "I_metric_memory": "Proxy: I_fields * memory_tracking_ratio * barrier_dominance",
+          "I_total": "I_fields + I_metric_memory (additivity HYPOTHESIZED, not proven)",
+          "archive_access_status": "OPEN (pre-horizon) / FROZEN (post-horizon) / UNKNOWN",
+          "conservation_domain": "UNDEFINED — not yet specified as local or global",
+          "conservation_status": "UNTESTED — no dynamic conservation check implemented"
+        },
+        "nonclaims": [
+          "Does NOT prove information conservation",
+          "Does NOT solve the black hole information paradox",
+          "Does NOT derive unitarity from GRUT structure",
+          "All quantities are PROXY definitions, not fundamental measures"
+        ]
+      }
+    },
+    "exterior_falsifier_program": {
+      "status": "ACTIVE / RESEARCH TARGET",
+      "phase": "III-C",
+      "description": "Exterior observable predictions from the candidate interior endpoint at R_eq = (1/3) r_s. WP1 (exterior matching) and WP2 (ringdown echo) complete; WP3 (shadow/accretion null-result) confirmed. Covariant interior closure CONFIRMS PDE structural results.",
+      "work_packages": {
+        "WP1_exterior_matching": {
+          "status": "ANALYSIS COMPLETE — conditional GO for WP2/WP3",
+          "question": "What exterior metric or effective matching behavior is implied by a barrier-dominated compact core at 1/3 r_s?",
+          "deliverable": "grut/exterior_matching.py — minimal matching module",
+          "result": {
+            "exterior_model": "schwarzschild_like (leading candidate)",
+            "birkhoff_status": "preserved_candidate (conditional)",
+            "confidence": "moderate — consistent with solver, not proven",
+            "conditions": [
+              "M_drive is matter-local (not a spacetime field)",
+              "OP_QPRESS_001 has no exterior gravitational self-energy"
+            ],
+            "wp2_decision": "CONDITIONAL GO — interior echoes can be computed under Schwarzschild background",
+            "wp3_decision": "CONDITIONAL GO — expected null result under Schwarzschild exterior",
+            "missing_closure": "Covariant treatment required for rigorous determination"
+          }
+        },
+        "WP2_ringdown_echo": {
+          "status": "FROZEN CANDIDATE FALSIFIER CHANNEL — PDE-informed constrained estimate (mixed_viscoelastic, Q~6-7.5, echo ~1.1%)",
+          "question": "Could inward-propagating perturbations interact with the core/transition region to generate echoes or modified ringdown?",
+          "deliverable": "grut/ringdown.py — parameterized + impedance echo module",
+          "result": {
+            "echo_delay_scaling": "delta_t ∝ M (linear in mass)",
+            "echo_delay_30_Msun": "0.52 ms",
+            "leading_echo_amplitude": "~1.1% of main QNM signal (PDE-informed, mixed_viscoelastic)",
+            "superseded_echo_amplitude": "~3.7% (pre-PDE proxy, reactive_candidate — SUPERSEDED)",
+            "channel_assessment": "CANDIDATE FALSIFIER CHANNEL — weakened but surviving under PDE closure; negligible under Boltzmann model",
+            "leading_classification": "mixed_viscoelastic (Q ~ 6-7.5, PDE-informed)",
+            "superseded_classification": "reactive_candidate (Q ~ 515, pre-PDE proxy — SUPERSEDED)",
+            "confidence": "order_of_magnitude — Schwarzschild tortoise coordinate used inside horizon",
+            "exterior_assumption": "Schwarzschild-like (WP1 conditional)"
+          },
+          "impedance_model": {
+            "status": "SUPERSEDED BY PDE — sharp-boundary approximation retained as baseline comparison",
+            "formula_implemented": "eta = omega_core * R_eq / c; r_surface_amp = |1 - eta| / (1 + eta)",
+            "pde_note": "PDE closure corrects omega_core (proxy had extra 1/R_eq factor). With PDE-corrected sound speed c_s = omega_eff * R_eq, r_PDE ≈ 0.30 replaces r_proxy ≈ 0.98 as leading estimate",
+            "mass_scaling": "eta decreases with mass (approximately M^{-1/2} confirmed numerically)",
+            "note_amplitude_vs_power": "r_surface_amp is AMPLITUDE coefficient; power = r_amp^2",
+            "sharp_boundary_caveat": "Assumes sharp transition at R_eq; Phase III-B transition has finite width; transition-width corrections remain open",
+            "nonclaims": [
+              "Physically motivated estimate, not rigorous derivation",
+              "Actual r_surface_amp requires interior wave equation on GRUT metric",
+              "Boltzmann model (r_amp ≈ 0) remains viable if BDCC is dissipative",
+              "Mass scaling is consequence of impedance model, not universal",
+              "Pre-PDE r_amp ~ 0.98 is SUPERSEDED — do not use as leading estimate"
+            ]
+          },
+          "interior_wave_model": {
+            "status": "SUPERSEDED BY PDE CLOSURE — historical proxy retained as baseline",
+            "module": "grut/interior_waves.py",
+            "approach": "Damped harmonic oscillator with storage (stability eigenvalue) and loss (memory-mediated damping) channels",
+            "superseded_note": "This proxy used omega_core^2 = beta_Q*GM/R_eq^4 (extra 1/R_eq factor). The PDE-correct eigenfrequency is omega_0^2 = beta_Q*GM/R_eq^3. The proxy underestimated omega*tau by a factor of sqrt(R_eq) ~ 172 at 30 M_sun, placing the system in the low-damping regime instead of the correct peak-damping regime.",
+            "quality_factor_Q": "PROXY: Q = 515 (reactive). SUPERSEDED by PDE: Q = 6-7.5 (mixed_viscoelastic)",
+            "loss_tangent": "PROXY: tan(delta) ≈ 0.001. SUPERSEDED by PDE: tan(delta) ≈ 0.07-0.08",
+            "viscoelastic_classification": {
+              "reactive": "Q > 10, storage-dominated, high reflection",
+              "mixed_viscoelastic": "1 < Q < 10, both channels active, band-limited echoes (CURRENT PDE RESULT)",
+              "dissipative": "Q < 1, loss-dominated, low reflection"
+            },
+            "dominant_damping": "memory-mediated (from tau_eff coupling), not solver gamma_diss",
+            "proxy_result_30_Msun": {
+              "Q": 515.6,
+              "tan_delta": 0.00097,
+              "r_interior_amp": 0.980,
+              "response_class": "reactive_candidate",
+              "status": "SUPERSEDED — eigenfrequency error identified by PDE closure"
+            },
+            "pde_result_30_Msun": {
+              "Q": 7.46,
+              "tan_delta": 0.067,
+              "r_pde_amp": 0.303,
+              "response_class": "mixed_viscoelastic",
+              "status": "LEADING — PDE-informed constrained estimate"
+            },
+            "nonclaims": [
+              "Does NOT solve wave equation on GRUT interior metric",
+              "Does NOT assume information saturation implies elasticity (tested from params)",
+              "Does NOT assume dissipation disappears at endpoint (memory damping modeled)",
+              "Proxy reactive classification is SUPERSEDED — PDE gives mixed_viscoelastic",
+              "Classification thresholds are ORDER OF MAGNITUDE conventions",
+              "Single-mode oscillator model may miss continuous spectrum features",
+              "PDE closure is itself approximate — derived from ODE linearisation, not covariant"
+            ]
+          },
+          "transition_width_correction": {
+            "status": "VALIDATED — sharp-boundary approximation confirmed (WP2D)",
+            "module": "grut/interior_waves.py",
+            "grading_factor_30_Msun": 0.996,
+            "multimode_factor": 0.99999,
+            "combined_factor": 0.996,
+            "echo_channel_status": "weakened_modestly",
+            "lambda_over_width": 11.96,
+            "transition_regime": "quasi_sharp",
+            "conclusion": "Sharp-boundary impedance is EXCELLENT approximation (< 1% correction)"
+          },
+          "freeze_note": {
+            "status": "FROZEN — PDE-informed constrained estimate (candidate falsifier channel, weakened but surviving)",
+            "date_initial": "2026-03-10",
+            "date_revised": "2026-03-11",
+            "revision_reason": "PDE closure (Phase III-C) corrected the WP2C proxy eigenfrequency error and reclassified the interior from reactive_candidate to mixed_viscoelastic. The freeze is revised to reflect PDE as the leading classification.",
+            "rationale": "WP2 was stress-tested through four proxy levels (WP2A-D), then the PDE closure identified a proxy eigenfrequency error (extra 1/R_eq in omega_core). The corrected PDE dispersion relation yields the structural identity omega_0*tau=1 and universal Q=6, reclassifying the BDCC as mixed_viscoelastic. Echo channel weakened from ~3.7% to ~1.1% but not collapsed.",
+            "locked_items": [
+              "Phi-profile as zeroth-order graded transition model",
+              "Transition-width corrections small in benchmark regime (< 1%)",
+              "Multi-mode corrections negligible under canon dissipation",
+              "WP2 mature enough to freeze as candidate falsifier channel",
+              "PDE structural identity omega_0*tau=1 (exact within current closure)",
+              "Universal Q_PDE = beta_Q/alpha_vac = 6.0 (mass-independent)"
+            ],
+            "leading_classification": {
+              "response_class": "mixed_viscoelastic",
+              "Q_PDE": "6-7.5 (mass-independent)",
+              "r_pde_amp": "0.30 (30 M_sun)",
+              "echo_amplitude": "~1.1% of QNM signal",
+              "basis": "PDE-informed constrained estimate (best current)"
+            },
+            "superseded_proxy_result": {
+              "response_class": "reactive_candidate",
+              "Q_proxy": "515 (30 M_sun)",
+              "r_proxy_amp": "0.98 (30 M_sun)",
+              "echo_amplitude": "~3.7% of QNM signal",
+              "status": "SUPERSEDED — eigenfrequency error identified (extra 1/R_eq factor)",
+              "note": "Useful historical step. Proxy correctly captured functional form of damping; only the eigenfrequency magnitude was wrong."
+            },
+            "active_research_targets": [
+              "Covariant interior wave equation (beyond ODE linearisation)",
+              "Ab initio mode spectrum from metric perturbation theory",
+              "Mass-dependence of Phi profile",
+              "Kerr generalization for rotating black holes",
+              "Nonlinear mode coupling at large perturbation amplitudes",
+              "Detector inference pipeline",
+              "Independent verification of omega_0*tau=1 via covariant treatment — RESOLVED (covariant_closure confirms)"
+            ]
+          },
+          "pde_closure": {
+            "status": "ANALYSIS COMPLETE — approximate, zeroth-order. Covariant closure CONFIRMS structural results.",
+            "module": "grut/interior_pde.py",
+            "approach": "Linearised perturbation equation from collapse ODE system around BDCC equilibrium",
+            "dispersion_relation": "omega^2 = omega_0^2 + 2*alpha*omega_g^2 / (1 + i*omega*tau_eff)",
+            "eigenfrequency": {
+              "correct": "omega_0^2 = beta_Q * GM / R_eq^3 (from linearisation of force balance)",
+              "superseded_proxy": "omega_core^2 = beta_Q * GM / R_eq^4 (extra 1/R_eq — WRONG)",
+              "error_factor": "sqrt(R_eq) ~ 172 at 30 M_sun"
+            },
+            "structural_identity": {
+              "statement": "omega_0 * tau_local = 1.0 (exact, mass-independent)",
+              "proof": "omega_0 = sqrt(beta_Q * GM / R_eq^3), tau_local ~ sqrt(R_eq^3 / (2GM)). Product = sqrt(beta_Q/2) = 1.0 for beta_Q = 2.",
+              "scope": "Exact within the current PDE closure framework (Tier-0 local tau, constrained endpoint law, linearised ODE)",
+              "interpretation": "The oscillation timescale and local memory-relaxation timescale are locked together. The BDCC always sits at peak of the memory damping function. This naturally favors a mixed viscoelastic regime.",
+              "not_claimed_as": [
+                "A universal law independent of the closure used",
+                "Final canon beyond its current framework",
+                "Proof of bandwidth saturation in an absolute sense",
+                "Valid under alternative tau closures without re-derivation"
+              ]
+            },
+            "universal_Q": {
+              "value": "Q_PDE = beta_Q / alpha_vac = 6.0",
+              "mass_dependence": "None — mass-independent for all astrophysical masses tested (10 to 10^9 M_sun)",
+              "regime": "mixed_viscoelastic (1 < Q < 10)",
+              "note": "Consequence of the structural identity. When omega*tau = 1, Q depends only on the ratio of barrier parameters to memory coupling."
+            },
+            "response_class": "mixed_viscoelastic (LEADING — best current candidate classification)",
+            "impact_on_echo_channel": "Echo amplitude reduced from ~3.7% to ~1.1% — candidate falsifier channel weakened but surviving",
+            "key_numbers_30_Msun": {
+              "Q_PDE": 7.46,
+              "gamma_PDE_rad_per_s": 1465,
+              "omega_eff_rad_per_s": 18987,
+              "r_pde_amp": 0.303,
+              "echo_A1_over_A0_pct": 1.13
+            },
+            "nonclaims": [
+              "PDE is derived from ODE linearisation, NOT covariant wave equation",
+              "Spatial structure from Regge-Wheeler separation, not GRUT metric",
+              "Memory coupling simplified to single tau_eff at equilibrium",
+              "Q = 6 (mixed) replaces Q = 515 (reactive) from proxy — proxy is SUPERSEDED",
+              "Structural identity omega_0*tau=1 is exact within THIS closure only",
+              "Result needs independent verification via covariant treatment",
+              "Does not constitute proof of bandwidth saturation",
+              "Does not claim mixed_viscoelastic is the final answer — alternative closures may shift Q"
+            ]
+          },
+          "covariant_closure": {
+            "status": "FIRST COVARIANT PASS — effective metric ansatz CONFIRMS PDE structural results",
+            "module": "grut/interior_covariant.py",
+            "memo": "docs/PHASE_III_C_COVARIANT_CLOSURE.md",
+            "approach": "Effective interior metric ansatz with barrier-corrected lapse and memory-dressed radial metric. Perturbation equation in effective Regge-Wheeler form.",
+            "key_finding": "k^2 = F_PDE(omega) / c_eff^2. Eigenfrequencies are zeros of F_PDE, independent of c_eff. PDE dispersion relation SURVIVES in covariant framework.",
+            "structural_results": {
+              "omega_0_tau": "1.0 PRESERVED (mass-independent)",
+              "Q_cov": "~6.5 PRESERVED (mixed_viscoelastic)",
+              "response_class": "mixed_viscoelastic PRESERVED",
+              "pde_agreement": "confirmed"
+            },
+            "reflection": {
+              "r_cov_amp_30_Msun": 0.367,
+              "r_pde_amp_30_Msun": 0.303,
+              "change_from_pde": "+21% (within ±30% bound)",
+              "echo_cov_pct": 1.1,
+              "echo_channel_status": "preserved"
+            },
+            "resolved_closures": [
+              "Covariant form of perturbation equation (effective Regge-Wheeler with memory)",
+              "Interior metric ansatz (effective lapse with barrier correction)",
+              "How memory enters covariantly (constitutive relation in B_eff)",
+              "Whether PDE structural identity survives (CONFIRMED)",
+              "Whether mixed_viscoelastic classification survives (CONFIRMED)"
+            ],
+            "remaining_closures": [
+              "Explicit GRUT covariant field equations (fundamental theory)",
+              "Propagating memory field equation (memory as tensor field)",
+              "Interior tortoise coordinate (full radial metric profile)",
+              "Israel junction conditions at transition boundary",
+              "Tidal Love numbers (potential non-null channel)",
+              "Kerr extension (spin effects)",
+              "Nonlinear mode coupling"
+            ],
+            "nonclaims": [
+              "Effective metric ansatz is NOT derived from covariant GRUT field equations",
+              "Angular structure from Schwarzschild separation, NOT from GRUT metric tensor",
+              "Memory enters as local constitutive relation, NOT as propagating field",
+              "Eigenfrequencies PRESERVED from PDE (same dispersion relation), NOT rederived",
+              "Reflection coefficient APPROXIMATE (metric-corrected impedance, ±20%)",
+              "mixed_viscoelastic classification PRESERVED but NOT proven final",
+              "Covariant pass does NOT resolve the fundamental GRUT field equations"
+            ]
+          }
+        },
+        "WP3_shadow_accretion": {
+          "status": "ANALYSIS COMPLETE — null at leading order (conditional on Schwarzschild-like exterior)",
+          "question": "Could a core at 1/3 r_s affect observable shadow/photon-region/accretion behavior?",
+          "deliverable": "docs/PHASE_III_C_WP3_NULL_RESULT.md — null-result analysis + benchmark_phase3c_wp3_null.py",
+          "result": {
+            "shadow": "IDENTICALLY NULL — b_crit = 3*sqrt(3)*M, standard Schwarzschild",
+            "photon_sphere": "IDENTICALLY NULL — r_ph = 3M = (3/2)*r_s, standard Schwarzschild",
+            "isco": "IDENTICALLY NULL — r_ISCO = 6M = 3*r_s, standard Schwarzschild",
+            "radiative_efficiency": "IDENTICALLY NULL — eta = 1 - sqrt(8/9) = 5.72%",
+            "eddington_luminosity": "IDENTICALLY NULL — L_Edd depends only on M (conserved)",
+            "disk_spectrum": "IDENTICALLY NULL — Novikov-Thorne depends on exterior metric only"
+          },
+          "causal_argument": "BDCC at R_eq = r_s/3 is inside the horizon (compactness C=3). All static observables (shadow, photon sphere, ISCO) are determined by the exterior metric at r > r_s. The BDCC has no causal influence on these observables at leading order.",
+          "underdetermined": {
+            "tidal_love_numbers": "NOT COMPUTED — potential non-null observable (reflecting boundary at R_eq could break TLN=0)",
+            "echo_accretion_coupling": "NOT COMPUTED — second-order effect at ~1% echo amplitude level"
+          },
+          "wp1_revision_required": false,
+          "only_non_null_channel": "WP2 echoes (~1.1% amplitude, dynamic observable, not static)",
+          "nonclaims": [
+            "Null results are CONDITIONAL on WP1 Schwarzschild-like exterior",
+            "Does NOT prove BDCC is undetectable (WP2 echo channel survives)",
+            "Tidal Love numbers NOT computed — remain an open observable",
+            "Kerr NOT attempted — all results for non-rotating BHs only",
+            "No EHT, LIGO, or detector-level predictions made"
+          ]
+        }
+      },
+      "nonclaims": [
+        "Ringdown echo estimates are CONDITIONAL on WP1 exterior assessment and PDE closure model",
+        "WP3 shadow/accretion null-result is CONDITIONAL on Schwarzschild-like exterior — if exterior is modified, all null results need re-evaluation",
+        "The impedance model is a sharp-boundary approximation; WP2D confirms < 1% transition-width correction",
+        "The Boltzmann model (r_amp ≈ 0) remains a viable alternative if the BDCC is dissipative",
+        "Echoes are NOT predicted to exist — the module computes what they WOULD look like under assumptions",
+        "The pre-PDE proxy result (Q~515, r~0.98, ~3.7% echo) is SUPERSEDED — do not cite as current best estimate",
+        "PDE closure is approximate (ODE linearisation) — confirmed by first covariant pass but not the final word on interior response",
+        "Structural identity omega_0*tau=1 is exact within the current closure framework — confirmed by covariant ansatz but not proven universal",
+        "Covariant closure is an effective metric ansatz, NOT derived from fundamental GRUT field equations",
+        "7 missing closures remain (fundamental field equations, propagating memory, Kerr, junction conditions, tidal Love numbers, tortoise coordinate, nonlinear modes)"
+      ],
+      "field_equations": {
+        "status": "FIRST COVARIANT PASS — auxiliary memory field (scalarized first pass)",
+        "module": "grut/field_equations.py",
+        "memo": "docs/PHASE_III_FINAL_FIELD_EQUATIONS.md",
+        "preferred_formulation": {
+          "name": "auxiliary_scalar",
+          "label": "Candidate 2: Auxiliary Memory Field (scalarized first pass)",
+          "field_equation": "G_μν = (8πG/c⁴)(T_μν + T^Φ_μν) [T^Φ schematic/effective]",
+          "memory_equation": "τ_eff u^α ∇_α Φ + Φ = X[g, T]",
+          "memory_type": "scalar_field (minimal closure; tensorial generalization open)",
+          "T_phi_status": "SCHEMATIC/EFFECTIVE — not derived from Lagrangian"
+        },
+        "candidate_assessments": {
+          "algebraic_tensor": "INSUFFICIENT — no independent dynamics, cannot capture retardation/relaxation",
+          "auxiliary_scalar": "PREFERRED — minimal implementable closure, maps directly to both sector ODEs",
+          "nonlocal_kernel": "FORMAL PARENT — local realization via Candidate 2 for exponential kernel along observer flow"
+        },
+        "conservation": {
+          "fundamental": "∇_μ(T^μν + T^Φ_μν) = 0 (combined conservation)",
+          "status": "compatible at the EFFECTIVE LEVEL — not proven from variational principles",
+          "cosmo_sector": "approximate separate conservation in weak-field regime",
+          "collapse_sector": "no separate conservation — energy exchange between matter, memory, barrier"
+        },
+        "alpha_coupling": {
+          "alpha_mem": 0.1,
+          "alpha_vac": 0.333333,
+          "unification_status": "OPEN — active research target. Treated as distinct symbols. NOT unified. NOT declared fundamentally distinct."
+        },
+        "sector_reductions": {
+          "weak_field": "RECOVERED at effective level — matches engine.py memory ODE and modified Friedmann",
+          "strong_field": "RECOVERED at effective level — matches collapse.py force balance, endpoint law, structural identity"
+        },
+        "remaining_closures": [
+          "Explicit form of T^Φ_μν (memory stress-energy from Lagrangian)",
+          "Curvature dependence of τ_eff (Ricci? Kretschner?)",
+          "Propagation equation for Φ beyond local relaxation",
+          "Israel junction conditions with memory field",
+          "Kerr extension (spin effects)",
+          "Tidal Love numbers with memory",
+          "Nonlinear mode coupling"
+        ],
+        "nonclaims": [
+          "NOT derived from first principles or covariant action",
+          "T^Φ_μν is SCHEMATIC/EFFECTIVE — not a fully specified stress-energy tensor",
+          "Scalar is MINIMAL closure, not final memory ontology — tensorial open",
+          "Bianchi compatibility at EFFECTIVE LEVEL, not proven from variational principles",
+          "Reductions RECOVER current solver structure — do not derive it",
+          "α_mem / α_vac unification is OPEN",
+          "Constrained endpoint law is CONSISTENT with formulation, NOT derived from it",
+          "Kerr, tidal Love numbers, junction conditions NOT attempted",
+          "No detector-level or observational predictions made"
+        ]
+      }
+    },
+    "local_tau_hypothesis": {
+      "status": "RESEARCH_TARGET",
+      "equation": "tau_eff_local = tau0 * F(rho, C, K, t_dyn)",
+      "description": "Cosmological tau0 is too large for direct reuse in stellar collapse. The local memory timescale must be a derived function of local conditions. Deriving F is the next research objective.",
+      "note": "Phase G showed that the collapse sector is governed by a timescale-competition law, not by a universal fixed-memory constant applied blindly across regimes."
+    },
+    "step_budget_diagnostics": {
+      "status": "LOCKED",
+      "fields": ["step_budget_fraction", "step_budget_exhausted", "t_total_over_t_ff"],
+      "description": "First-class audit fields. When step_budget_exhausted=true AND t_total_over_t_ff << 1, the result is step-budget-contaminated."
+    },
+    "observables": {
+      "OBS_RSAT": "r_sat (saturation radius — CANDIDATE under OP_QPRESS_001)",
+      "OBS_TSAT": "t_sat (time to saturation)",
+      "OBS_KSAT": "K_kretschner at saturation",
+      "OBS_BOUNCE": "bounce_detected (must be false)",
+      "OBS_COLLAPSE_CLASS": "collapse_class (stall/arrested/plunging/singular)",
+      "OBS_TAU_TDYN": "tau0_over_t_dyn (timescale competition ratio)",
+      "OBS_BUDGET": "step_budget_fraction (step-budget contamination flag)"
+    }
+  },
+  "observables": {
+    "primary_targets": [
+      {
+        "id": "OBS_HZ_001",
+        "name": "H(z)",
+        "definition": "Emit arrays of (z, H) where z=1/a-1 for a0=1",
+        "fields": [
+          "a",
+          "H"
+        ]
+      },
+      {
+        "id": "OBS_FS8_001",
+        "name": "fσ8(z)",
+        "definition": "Emit arrays of (z, fsigma8, f, sigma8, D_over_D0) from linear growth",
+        "fields": [
+          "z",
+          "fsigma8",
+          "f",
+          "sigma8",
+          "D_over_D0"
+        ]
+      }
+    ]
+  }
+}

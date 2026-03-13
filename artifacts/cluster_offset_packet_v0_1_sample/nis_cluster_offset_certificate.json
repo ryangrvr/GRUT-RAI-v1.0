@@ -1,0 +1,26 @@
+{
+  "tool_version": "v0.1",
+  "determinism_mode": "STRICT",
+  "input_hash": "408205d225d9e2cbcee0a6b44c08c2707ae479bd96fefdc0c8db53903b2af384",
+  "output_digest": "690ab10af3ea9a638c8ee6c41b83d41698cb7a37d49a59f137c087f01630dcb0",
+  "output_hashes": {
+    "centroids_summary.json": "470d22950d242fea8267fa6569a20d7dc5b7e211dd02881091b82f15145d4472",
+    "offsets.csv": "849a0be9b9e560f4d8c007f95bde7f3f021d402439939e766a281cdc760b8f72",
+    "prediction_summary.json": "ffe6b73891f4271ecd6150380ac7554cfbfc2e2cab9b7c5f6c14d2103596d9d3"
+  },
+  "config": {
+    "peak_mode": "com_positive_kappa",
+    "gas_centroid_mode": "com_positive",
+    "normalize_mode": "none",
+    "pixel_scale_arcsec": 1.0,
+    "smoothing_grid": [
+      0.0
+    ],
+    "threshold_grid": [
+      0.1
+    ],
+    "v_coll_kms": 1000.0,
+    "v_coll_angle_deg": null,
+    "kpc_per_arcsec": 1.0
+  }
+}

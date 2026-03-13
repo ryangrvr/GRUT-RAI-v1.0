@@ -1,0 +1,18 @@
+{
+  "tool_version": "v0.1",
+  "determinism_mode": "STRICT",
+  "input_hash": "fa4972bd86d7da7f2bbc913a0d01fe015289932a7e3437ebc157b9e87fd1a24d",
+  "output_digest": "61776bd893db702de098a64efbc9fbc664bad9ec1ba946ce99a73cb7b5cec952",
+  "output_hashes": {
+    "curves.csv": "e65ade7b6871df11cb254c5ca6f7ed8f78e3cb7082fd3cc4351578440883159b",
+    "metrics.json": "bc28f1521f10bedb932ea594cb30650dbecc37b51a7ad4431eeb4230e5d8175f"
+  },
+  "config": {
+    "response_model": "radial_gate_v0",
+    "alpha_mem": 0.2,
+    "r0_policy": "median_radius",
+    "r0_kpc": null,
+    "ups_star": 1.0,
+    "ups_bulge": 1.0
+  }
+}

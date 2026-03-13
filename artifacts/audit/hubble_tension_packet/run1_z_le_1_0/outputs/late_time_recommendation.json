@@ -1,0 +1,58 @@
+{
+  "candidates": [
+    {
+      "chi2_E_bao": null,
+      "chi2_E_cc": 3.0267472776482363,
+      "chi2_E_total": 3.0267472776482363,
+      "chi2_total_planck": 4.7944257584952155,
+      "chi2_total_shoes": 10.483451466070312,
+      "compare_window_policy": "z_le_1_0",
+      "n_excluded": 3,
+      "n_points_used": 7,
+      "preset": "vacuum_plus_matter",
+      "status": "OUT_OF_DOMAIN_HIGH_Z",
+      "worst_point_resid_sigma_E": 1.4386130021925116,
+      "worst_point_tracer": "CC",
+      "worst_point_z": 0.88
+    },
+    {
+      "chi2_E_bao": null,
+      "chi2_E_cc": 8.99449011660251,
+      "chi2_E_total": 8.99449011660251,
+      "chi2_total_planck": 15.941927537732415,
+      "chi2_total_shoes": 27.78132484119738,
+      "compare_window_policy": "z_le_1_0",
+      "n_excluded": 3,
+      "n_points_used": 7,
+      "preset": "matter_only",
+      "status": "VIABLE",
+      "worst_point_resid_sigma_E": 2.4322632125040378,
+      "worst_point_tracer": "CC",
+      "worst_point_z": 0.88
+    },
+    {
+      "chi2_E_bao": 27.144430096607593,
+      "chi2_E_cc": 8.99449011660251,
+      "chi2_E_total": 36.1389202132101,
+      "chi2_total_planck": 239.76814377501498,
+      "chi2_total_shoes": 327.94773274433487,
+      "compare_window_policy": "full",
+      "n_excluded": 1,
+      "n_points_used": 9,
+      "preset": "matter_only",
+      "status": "VIABLE",
+      "worst_point_resid_sigma_E": 4.56074471836846,
+      "worst_point_tracer": "BAO",
+      "worst_point_z": 1.53
+    }
+  ],
+  "caution": "Tier A non-fitted recommendation; domain-limited.",
+  "chi2_E_total": 3.0267472776482363,
+  "chi2_total_planck": 4.7944257584952155,
+  "chi2_total_shoes": 10.483451466070312,
+  "n_excluded": 3,
+  "n_points_used": 7,
+  "rationale": "Selected lowest chi2_E_total; tie-breaker lowest chi2_total_planck.",
+  "recommended_compare_window_policy": "z_le_1_0",
+  "recommended_preset": "vacuum_plus_matter"
+}

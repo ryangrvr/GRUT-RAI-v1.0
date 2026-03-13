@@ -1,0 +1,20 @@
+{
+  "tool_version": "quantum_evidence_v0.1",
+  "determinism_mode": "STRICT",
+  "canon_hash": "d2da4b3bb7fe6cc8147f5d964ba5c5ef1af59554689dfd19abb7ef5eff5182cb",
+  "input_hash": "915c5bff1a507b70a4bf8a3d52119e7a97bdb7c5fab530d56d4bc711b2f53c19",
+  "output_digest": "507d569b94d5e7a379126db92c057f09d6e6e071276ee8f9b7486744e8cad2dd",
+  "output_hashes": {
+    "README_DATA.md": "6245a2881ea4193b58d10fa9049a0cb1a59b0522e56c2aff6de8e55ab1231d9d",
+    "benchmarks/benchmark_controlled.json": "2b055119a6cd1eeab8a18c40bfed6d59835a07a6f7f408afc1a2608ae6a3d77b",
+    "benchmarks/benchmark_self_consistent.json": "aa2f0dfeec9b828852c831bf0bdf6413dc590a3a037cafa64ec7aa984cdef640",
+    "scans/scan_omega_controlled.csv": "6f6483a830f9c1606f6731a81f2c3151cc93b47e100b6c64fedbc406ea2310c3",
+    "scans/scan_mass_controlled.csv": "26b28962da8ea78bda28860ccd8ec2904a9f8d98e2cfa6856940b3c66744eb4a",
+    "scans/scan_mass_self_consistent.csv": "652383c918dbd50af071cdcfed4afa18a814627090169ba8793786761f0af6e0",
+    "summary.csv": "16c84a0f6ab93fdf864a5bd380def9b5695c7847d63e8a804a4efccf8b73699c",
+    "file_hashes.json": "5e0799f38ed10b802b06c7e82d5537d69083d5dab630efbbf5a37aabbe0aae6e",
+    "nis_quantum_certificate.json": "f65ae3667627242b92fc5c0b4cce7315c8a26fffc4bad4bf81ea6e88d7c5a988",
+    "PACKET_INDEX.json": "c66e0f3e881753bb7e202f494dfcde05579745643166f14a6d74a2847a525de3"
+  },
+  "timestamp_utc": null
+}

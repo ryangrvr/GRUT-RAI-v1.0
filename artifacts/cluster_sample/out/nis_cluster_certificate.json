@@ -1,0 +1,14 @@
+{
+  "tool_version": "v0.3",
+  "determinism_mode": "STRICT",
+  "input_hash": "47ff6207410162b3692262f9a73d19cab8eae50ee8880c00900bfea28ceacb14",
+  "output_digest": "5c43aabdda5de44e6ed56213a39f5aac3c7addf61d12d6366469d69023611491",
+  "output_hashes": {
+    "centroids_summary.json": "c8498f1828aee66dc08216fc36de3e0714ea09e5612d4fb731ecb4376db7c046",
+    "offsets.csv": "c967e829e49e77a9675af07f05b32405a0605b3201f5d1d91e2941118f13f7b4"
+  },
+  "grid_counts": {
+    "smoothing": 3,
+    "threshold": 2
+  }
+}

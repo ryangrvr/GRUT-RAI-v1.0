@@ -1,0 +1,7 @@
+{
+  "baseline_response_model": "identity",
+  "centroid_shift_px": 1.5888218580782548e-14,
+  "centroid_shift_arcsec": 1.5888218580782548e-14,
+  "rms_kappa_diff": 0.021201098756553217,
+  "corr_kappa": 0.9999999995117465
+}
