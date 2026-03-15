@@ -37,3 +37,4 @@ artifacts/hff_raw/
 artifacts/lensing_packet_v0_2/
 artifacts/lensing_packet_v0_2_padded/
 artifacts/release_bundle_v0_1/
+storage/*.db
