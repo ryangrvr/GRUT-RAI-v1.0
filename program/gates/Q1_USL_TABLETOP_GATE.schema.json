@@ -1,0 +1,92 @@
+{
+  "gate": "Q1_USL_TABLETOP",
+  "version": "1.1",
+  "date": "2026-09-07",
+  "governs": "program/gates/Q1_USL_TABLETOP_GATE.md",
+  "vocabulary_rule": "dispositions (OPEN/GATED/ON/OFF/ANSWERED) grade the investigation; claim statuses (register tiers / corpus labels) are never modified by this gate",
+  "required_sections": [
+    "0 · Record reconstruction",
+    "A · Target observable",
+    "B · The GRUT hypothesis",
+    "C · Standard baseline",
+    "D · The analogue mapping",
+    "E · Degeneracy test",
+    "F · Parameter audit",
+    "G · Controls",
+    "H · Falsifiers",
+    "Decision tree",
+    "Design-time routing"
+  ],
+  "decision_routes": [
+    "PROCEED TO COMPUTATION",
+    "REFUSE"
+  ],
+  "falsifiers": [
+    "F1 mapping-unjustified",
+    "F2 environmental-degeneracy",
+    "F3 vanishes-at-realistic-parameters",
+    "F4 staked-or-unresolved-inputs",
+    "F5 standard-physics-identical",
+    "F6 unmeasurable-precision",
+    "F7 analysis-choice-dependence",
+    "F8 quiet-or-faint-governs-real-coupling"
+  ],
+  "design_time_routing": {
+    "route": "REFUSE",
+    "obstruction": "analogue-mapping (F1 AND F2 AND F5, with F4); non-engineered version governed by F8",
+    "computed_from_record": true,
+    "no_computation_performed": true
+  },
+  "record_dependencies": [
+    {
+      "file": "provenance/claims.json",
+      "node": "rung8_falsifier",
+      "needles": [
+        "quiet-or-faint",
+        "7-47 orders",
+        "1.22 hbar omega_c",
+        "10^-7..10^-47"
+      ],
+      "read_only": true
+    },
+    {
+      "file": "calc/RESULTS_energy_basis.md",
+      "needles": [
+        "ΔE = 1.22 ħω_c",
+        "Staked inputs (on the ledger, +2)"
+      ],
+      "read_only": true
+    },
+    {
+      "file": "calc/RESULTS_q1_magnitude.md",
+      "needles": [
+        "7–47 orders below"
+      ],
+      "read_only": true
+    },
+    {
+      "file": "calc/q1_energy_basis_magnitude.py",
+      "needles": [
+        "[A_diag, H_S] = 0"
+      ],
+      "read_only": true
+    },
+    {
+      "file": "provenance/claims.json",
+      "node": "u1_form_universality",
+      "needles": [
+        "GENERIC"
+      ],
+      "read_only": true
+    }
+  ],
+  "instrument_requirements_if_ever_authorized": [
+    "de-pinned verdict extraction",
+    "mutation battery executed at least once",
+    "plants that must detect",
+    "N1-N10 negative controls",
+    "full baseline of section C at realistic parameters"
+  ],
+  "authorization": "numerical computation requires explicit owner authorization; this gate does not grant it",
+  "audit_note": "v1.1 after pre-commit compliance audit: needle 10^-7..10^-47 repointed from the py (where it appears only in runtime output) to the rung8 node text; static carrier calc/RESULTS_q1_magnitude.md added; boxed-question provenance reconciled in the gate (two phrasings, routing read against both)."
+}

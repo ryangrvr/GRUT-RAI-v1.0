@@ -8,7 +8,7 @@
 > status update). OFF ≠ not-yet-investigated; ON ≠ true. Entries are updated, never
 > deleted.
 
-## Q1 · The USL analogue signal — OPEN (rank 1)
+## Q1 · The USL analogue signal — GATED (rank 1; gate built and rendered 2026-09-07)
 
 > **Gate question:** Can a physically realizable open system make a GRUT-class response
 > large enough to distinguish it from that same apparatus's standard QM/environmental
@@ -25,6 +25,14 @@ The bar on record: parameter-free DP is already excluded at Gran Sasso. Must be 
 ON: an analogue-system modeling layer (BEC / high-Q optomechanics). Forbidden shortcuts:
 inheriting the peak; treating "GRUT-like" as "GRUT"; amplitude claims without the
 degeneracy row.
+
+**GATE RECORD (2026-09-07):** `program/gates/Q1_USL_TABLETOP_GATE.md` built design-first
+(no computation). Design-time routing: **REFUSE — analogue-mapping obstruction** (the
+engineered signal sits inside the baseline's freedom by construction; nothing
+GRUT-specific transfers; the real-coupling version is governed by the record's own
+quiet-or-faint 7–47-order verdict — which the reconstruction CONFIRMED as the record's
+own figure, correcting this ledger's earlier doubt above). Owner decision owed: accept
+(Q1 → OFF, evaluation = the gate) or contest. Claim statuses untouched.
 
 ## Q2 · Stochastic KMS-bath dynamics — OPEN (rank 2)
 
