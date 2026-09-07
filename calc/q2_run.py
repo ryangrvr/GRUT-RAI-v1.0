@@ -32,6 +32,9 @@ def main(argv):
     stages = [("primary instrument", ["q2_stochastic_sy.py", cfg_path]),
               ("control battery",    ["q2_controls.py", cfg_path]),
               ("independent audit",  ["q2_audit.py"])]
+    # execution marker: lets the auditor distinguish "not yet run" from "run and crashed"
+    marker = os.path.join(HERE, ".q2_execution_attempted")
+    open(marker, "w").write(f"config={cfg_path}\n")
     t0 = time.time()
     rc = 0
     for name, cmd in stages:

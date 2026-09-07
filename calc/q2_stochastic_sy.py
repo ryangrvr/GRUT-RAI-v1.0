@@ -253,6 +253,37 @@ def stationary_variance(times, vars_, t_burn):
 
 
 # ============================================================ main
+def evaluate(results, anchors, tol):
+    """Apply the FROZEN tolerances and emit MACHINE labels.  De-pinned: every label is
+    computed from the measured value and the frozen tolerance; no outcome is pre-selected,
+    and no scientific PASS/FAIL is emitted.  (An audit found the tolerances previously lived
+    only in prose 'criterion' strings that nothing read, so the instrument could emit no
+    label but INVALID_RUN -- the definitional-gate pattern in another form.)"""
+    pr = results.get("primary_rate", {})
+    if pr.get("mean") is None:
+        return {"primary": "INVALID_RUN", "reason": pr.get("reason", "no usable rate")}
+    m, spread = pr["mean"], pr.get("seed_spread_relative")
+    out = {"measured_rate": m}
+    for name, key in (("target_A", "target_A_naive_meff_over_3H"),
+                      ("target_B", "target_B_sy_fp_eigenvalue")):
+        tgt = anchors[key]
+        rel = abs(m - tgt) / tgt
+        out[name] = {"target": tgt, "relative_deviation": rel,
+                     "label": "OBSERVED" if rel <= tol["tol_rate"] else "NOT_OBSERVED"}
+    out["seed_stability"] = {
+        "spread": spread,
+        "label": ("CONVERGED" if (spread is not None and spread <= tol["tol_seed"])
+                  else ("NONCONVERGED" if spread is not None else "INCONCLUSIVE"))}
+    both = [out["target_A"]["label"], out["target_B"]["label"]]
+    out["discrimination"] = ("INCONCLUSIVE" if both == ["OBSERVED", "OBSERVED"]
+                             else ("NOT_OBSERVED" if both == ["NOT_OBSERVED", "NOT_OBSERVED"]
+                                   else "OBSERVED"))
+    out["note"] = ("Labels are machine states, not scientific verdicts. Adjudication against "
+                   "the frozen decision tree (prereg section 18) is the audit layer's and the "
+                   "owner's. 'OBSERVED' for a target means only: consistent within tol_rate.")
+    return out
+
+
 def main(argv):
     cfg_path = argv[1] if len(argv) > 1 else os.path.join(HERE, "q2_config.json")
     cfg = load_config(cfg_path)
@@ -333,6 +364,7 @@ def main(argv):
     else:
         results["primary_rate"] = {"label": "INVALID_RUN", "reason": "no usable rate fits"}
 
+    results["evaluation"] = evaluate(results, anchors, cfg["tolerances"])
     manifest["wall_seconds"] = time.time() - t0
     out = {"manifest": manifest, "analytic_anchors": anchors, "runs": runs,
            "results": results,

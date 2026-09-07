@@ -77,6 +77,14 @@ def main(argv):
           findings)
     check("control_C11_estimator_calibration" in src_c, FAIL,
           "C11 planted-Lambda calibration of the primary estimator exists", findings)
+    check(cfg["tolerances"]["tol_converge"] >= 0.20, FAIL,
+          f"tol_converge ({cfg['tolerances']['tol_converge']}) exceeds the measured "
+          f"ladder-step scatter (5.8-13.1%); a tighter value would label good data "
+          f"NONCONVERGED ~84% of the time", findings)
+    src_e = open(os.path.join(HERE, "q2_stochastic_sy.py")).read()
+    check("def evaluate(" in src_e and 'results["evaluation"]' in src_e, FAIL,
+          "the instrument HAS an evaluation layer that applies the frozen tolerances "
+          "(they are not prose-only)", findings)
     check(cfg["tolerances"]["tol_rate"] >= 0.20, FAIL,
           f"tol_rate ({cfg['tolerances']['tol_rate']}) is not tighter than the estimator's "
           f"measured precision (~7-11% scatter); a tighter value would make CONVERGED "
@@ -256,9 +264,17 @@ def main(argv):
           "reference m_eff^2 (dynamics are free of the tested phenomenon)", findings)
 
     # ---- 4. post-execution checks (skipped cleanly if not yet run) -----------------
+    attempted = os.path.exists(os.path.join(HERE, ".q2_execution_attempted"))
     if not os.path.exists(res_path):
-        findings.append({"status": OK,
-                         "check": "results absent -- PRE-EXECUTION audit only (expected in setup)"})
+        if attempted:
+            check(False, FAIL,
+                  "EXECUTION WAS ATTEMPTED but RESULTS_q2_stochastic_sy.json is ABSENT -- the "
+                  "run crashed or was killed. A missing result is a FAILURE, never a pass",
+                  findings)
+        else:
+            findings.append({"status": OK,
+                             "check": "results absent and no execution marker -- PRE-EXECUTION "
+                                      "audit only (expected in setup)"})
     else:
         R = json.load(open(res_path))
         m = R.get("manifest", {})
@@ -286,9 +302,26 @@ def main(argv):
               "seed set used equals the preregistered seed set", findings)
         # the instrument must not have emitted a scientific verdict
         blob = json.dumps(R).lower()
+        ev = R.get("results", {}).get("evaluation")
+        check(ev is not None, FAIL,
+              "the instrument EMITTED an evaluation (frozen tolerances actually applied, "
+              "machine labels produced) -- not merely prose criteria nothing reads", findings)
+        if ev:
+            valid = {"OBSERVED", "NOT_OBSERVED", "INCONCLUSIVE", "INVALID_RUN",
+                     "CONVERGED", "NONCONVERGED"}
+            emitted = [v.get("label") for v in ev.values() if isinstance(v, dict)]
+            emitted += [ev.get("discrimination")] if "discrimination" in ev else []
+            check(all(e in valid for e in emitted if e), FAIL,
+                  f"every emitted label is in the declared machine-label set ({emitted})",
+                  findings)
         for forbidden in ("confirmed", "prediction", "success", "verdict: pass"):
             check(forbidden not in blob, FAIL,
                   f"output contains no scientific adjudication token '{forbidden}'", findings)
+    if attempted and not os.path.exists(ctl_path):
+        check(False, FAIL,
+              "EXECUTION WAS ATTEMPTED but RESULTS_q2_controls.json is ABSENT -- the control "
+              "battery crashed or was killed; an absent battery is a FAILURE, never silence",
+              findings)
     if os.path.exists(ctl_path):
         C = json.load(open(ctl_path))
         check(C.get("config_sha256") == sha(cfg_path), FAIL,

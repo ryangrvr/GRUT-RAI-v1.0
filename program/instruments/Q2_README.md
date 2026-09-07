@@ -102,9 +102,9 @@ change after that commit is a NEW preregistration, not an edit.
 
 | file | sha256 |
 |---|---|
-| `calc/q2_run.py` | `686375a3dc7da88b8fc780b49506317c40a7c7b8e93bfc1a5ec5ac0075148733` |
-| `calc/q2_stochastic_sy.py` | `8c264037d71510e572d0065a6cbcbdcae6ebfeb93a847d93c784eedb7d5cb8da` |
+| `calc/q2_run.py` | `8cf91b8743eaad56d346988dac40a6fa1679aaada8451dd6a4b347480d4b329b` |
+| `calc/q2_stochastic_sy.py` | `3cda78997eaa5314f043594e6ce554e2734812f392fdd8882a326a3c1b6ad2b9` |
 | `calc/q2_controls.py` | `edbce973040f6306c5e4ae36881abb68868199df5d5e170930fc57ffb1db1169` |
-| `calc/q2_audit.py` | `b49c1047ebe32bb327291556adc11ec8061057e0845d9fd826df59dbbf34b5d6` |
-| `calc/q2_config.json` | `2ba11cb6028b0486abc46caf7f0071be8fd23a8f316bf41e6f2cb60922947c4b` |
-| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `c5a0569782ea9a7904a6aab386479f7c8d9504df25e0a9a48027a106fe35bb46` |
+| `calc/q2_audit.py` | `cdeefa5a43128bd510ae77a052c575063f82f9d38325c792e832d0c3b59d77c1` |
+| `calc/q2_config.json` | `4aac62a44ac0ad65afe574d6e05eee5c5f3484e17e641aa680d08e5ae91ff4dc` |
+| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `53abc24ede659695e2e4790a709a6057a5e7ed3b68fe81b6407616853d4239fc` |

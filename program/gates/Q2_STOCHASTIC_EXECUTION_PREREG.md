@@ -187,6 +187,53 @@ match to either target, and claiming it could was the defect. Branches I-a/I-b a
 decided as *"which target is consistent, and is the other excluded"*, never as a 5%
 agreement.
 
+### 2.5 · Hostile pre-execution refutation — what dissolved and what was repaired
+
+An adversarial pre-execution analysis ran an **independent Fokker–Planck spectral solve** of
+the very equation this package integrates (deterministic; no ensemble) and used it to predict
+the run's behavior before running it. Reported straight, in both directions:
+
+**Independently confirmed:** Λ₁ = 0.008892 = **0.08892 √λ H**, agreeing with the
+preregistered literature coefficient 0.0885 to **0.5%** — an independent verification of
+target B. Also ⟨φ²⟩_eq = 1.317646 against the analytic 1.317645. *(Target B stays frozen at
+0.0885 √λ H; 0.5% is far inside tol_rate and re-pegging a preregistered target mid-audit
+would be exactly the churn this document forbids.)*
+
+**Three suspicions dissolved under computation, and are recorded as dissolved:** (i) the
+connected estimator carries **no rate bias** — the (1 − 1/n) factor is identical at every lag
+including L = 0, so it cancels exactly in ln(C/C₀), and subtracting the two per-origin means
+is the correct estimator even from a totally unrelaxed ensemble; (ii) Euler–Maruyama is
+nowhere near unstable — at 4σ with dt = 0.04 the amplification factor is 0.9916, and
+oscillation onset needs 61.6σ, Boltzmann-suppressed by e^(−1.6×10⁶); (iii) the feared
+A-vs-B lag-range asymmetry never materializes — C/C₀ at τ = 120 is 0.346, so reaching the
+amplitude cut is a 17.7σ excursion and the fit range is deterministic on every seed.
+
+**Three further defects found and repaired here** (three others it found were already
+repaired in the preceding commit — the control-coverage gap and the tol_rate/tol_seed floor):
+
+1. **`tol_converge` was narrower than the ladder's own scatter.** Propagating the stationary
+   covariance through the exact geometry gives ladder-step difference scatter of 5.8% (C4
+   last step, correlated seeds) and 13.1% (C10 last step) against `tol_converge = 0.05` —
+   making the run **~84% likely to be labelled NONCONVERGED on correct data.** Raised to 0.25.
+2. **No tolerance except `tol_null` was evaluated by any code, and no machine label was ever
+   emitted for the primary result.** Every threshold lived in prose `criterion` strings that
+   nothing read; the declared label set was unreachable — the instrument could emit only
+   `INVALID_RUN`. *The definitional-gate pattern in another form.* **Repair:** an
+   `evaluate()` layer now applies the frozen tolerances to the measured rate and emits
+   `OBSERVED / NOT_OBSERVED` per target, `CONVERGED / NONCONVERGED` for seed stability, and a
+   discrimination state — computed from the data, never pre-selected. The auditor fails the
+   run if the evaluation is absent or emits a label outside the declared set.
+3. **A crashed run produced AUDIT_OK and exit 0.** Missing results were treated as
+   "pre-execution, expected"; a missing control battery produced no finding at all.
+   **Repair:** `q2_run.py` writes an execution marker, and the auditor now fails hard on
+   *attempted-but-missing* results or controls. A missing result is a failure, never silence.
+
+**Declared systematics (measured, not hidden):** effective independent samples are ~590, not
+the nominal 16 400 — the origin span is only ~0.96 relaxation times, so any naive sd is
+overstated ~5.3× and **the emitted r² is not a precision estimate**; and a ~+1% fast bias
+from short-lag contamination (no minimum-lag exclusion; the Λ₃ mode, 6× Λ₁, is alive near
+τ = 0). Both are inside C11's empirically measured total bias and 25× smaller than tol_rate.
+
 ## 3 · Unresolved inputs (exposed, not invented)
 
 U1. **The scalar→graviton gap** (§1.1) — structural, unbridged, blocks any O2 claim.

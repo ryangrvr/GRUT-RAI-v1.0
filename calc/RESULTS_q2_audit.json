@@ -1,8 +1,8 @@
 {
  "auditor": "calc/q2_audit.py (independent; imports no Q2 analysis module)",
- "auditor_sha256": "b49c1047ebe32bb327291556adc11ec8061057e0845d9fd826df59dbbf34b5d6",
- "config_sha256": "2ba11cb6028b0486abc46caf7f0071be8fd23a8f316bf41e6f2cb60922947c4b",
- "instrument_sha256": "8c264037d71510e572d0065a6cbcbdcae6ebfeb93a847d93c784eedb7d5cb8da",
+ "auditor_sha256": "cdeefa5a43128bd510ae77a052c575063f82f9d38325c792e832d0c3b59d77c1",
+ "config_sha256": "4aac62a44ac0ad65afe574d6e05eee5c5f3484e17e641aa680d08e5ae91ff4dc",
+ "instrument_sha256": "3cda78997eaa5314f043594e6ce554e2734812f392fdd8882a326a3c1b6ad2b9",
  "controls_sha256": "edbce973040f6306c5e4ae36881abb68868199df5d5e170930fc57ffb1db1169",
  "findings": [
   {
@@ -64,6 +64,14 @@
   {
    "status": "AUDIT_OK",
    "check": "C11 planted-Lambda calibration of the primary estimator exists"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "tol_converge (0.25) exceeds the measured ladder-step scatter (5.8-13.1%); a tighter value would label good data NONCONVERGED ~84% of the time"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the instrument HAS an evaluation layer that applies the frozen tolerances (they are not prose-only)"
   },
   {
    "status": "AUDIT_OK",
@@ -183,7 +191,7 @@
   },
   {
    "status": "AUDIT_OK",
-   "check": "results absent -- PRE-EXECUTION audit only (expected in setup)"
+   "check": "results absent and no execution marker -- PRE-EXECUTION audit only (expected in setup)"
   }
  ],
  "n_fail": 0,
