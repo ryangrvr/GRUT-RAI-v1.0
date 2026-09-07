@@ -46,6 +46,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REQUIRED_PHYSICAL = ["H", "m2_over_H2", "lambda_self", "phi0_over_H", "noise_amplitude_rule"]
 REQUIRED_NUMERICAL = ["dt", "t_max", "n_traj", "seed_base", "n_seeds", "burn_in_fraction",
                       "fit_windows", "sample_stride", "ac_traj", "ac_lag_max_t",
+                      "ac_fit_frac", "ac_origin_stride", "ac_amplitude_cut",
                       "burn_in_time", "fit_window_coordinate",
                       "autocorrelation_lag_coordinate", "seed_list_explicit",
                       "rng_implementation"]
@@ -183,7 +184,8 @@ def fit_log_rate(times, values, t_lo, t_hi):
     return -slope, r2, n
 
 
-def autocorrelation_rate(ac_rows, ac_times, lag_max_t, origin_stride=10, fit_frac=0.6):
+def autocorrelation_rate(ac_rows, ac_times, lag_max_t, origin_stride, fit_frac,
+                         amplitude_cut):
     """PRIMARY rate estimator O1a: spectral gap from the stationary autocorrelation
     C(tau) = <(phi(t)-<phi>)(phi(t+tau)-<phi>)>_stationary ~ exp(-Lambda_1 tau).
 
@@ -223,7 +225,7 @@ def autocorrelation_rate(ac_rows, ac_times, lag_max_t, origin_stride=10, fit_fra
     # fit over the first fit_frac of the lag range where C stays comfortably positive
     xs, ys = [], []
     for t, c in zip(taus, cs):
-        if c / c0 > 0.05 and t <= fit_frac * taus[-1]:
+        if c / c0 > amplitude_cut and t <= fit_frac * taus[-1]:
             xs.append(t); ys.append(math.log(c / c0))
     if len(xs) < 5:
         return {"rate": None, "reason": "too few usable lags"}
@@ -234,7 +236,11 @@ def autocorrelation_rate(ac_rows, ac_times, lag_max_t, origin_stride=10, fit_fra
     slope = sxy / sxx if sxx else None
     r2 = (sxy * sxy) / (sxx * syy) if (sxx and syy) else None
     return {"rate": (-slope if slope is not None else None), "r2": r2, "n_lags": n,
-            "C0": c0, "tau_max": taus[-1]}
+            "C0": c0, "tau_max": taus[-1],
+            "tau_fitted_max": max(xs) if xs else None,
+            "knobs": {"origin_stride": origin_stride, "fit_frac": fit_frac,
+                      "amplitude_cut": amplitude_cut},
+            "n_origins": len(origins)}
 
 
 def stationary_variance(times, vars_, t_burn):
@@ -303,7 +309,9 @@ def main(argv):
     for s in seeds:
         r = evolve_ensemble(cfg, m2, lam, s, ac_traj=N["ac_traj"])
         # O1a PRIMARY: autocorrelation (no SNR cliff)
-        ac = autocorrelation_rate(r["ac_rows"], r["ac_times"], N["ac_lag_max_t"])
+        ac = autocorrelation_rate(r["ac_rows"], r["ac_times"], N["ac_lag_max_t"],
+                                  N["ac_origin_stride"], N["ac_fit_frac"],
+                                  N["ac_amplitude_cut"])
         # O1b CROSS-CHECK: ensemble-mean decay fit over EVERY preregistered window
         windows = []
         for (w0, w1) in N["fit_windows"]:

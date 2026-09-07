@@ -9,7 +9,7 @@
 
 | estimator | coordinate | phase | range | e-folds at A / B |
 |---|---|---|---|---|
-| **O1a autocorrelation (PRIMARY)** | **LAG** | stationary [300, 600] | τ ≤ 200 | **6.67 / 1.77** |
+| **O1a autocorrelation (PRIMARY)** | **LAG** | stationary [300, 600] | available τ ≤ 200; **effective fitted τ ≤ 90 (A) / 160 (B)** | available 6.67 / 1.77; **EFFECTIVE FITTED 3.00 / 1.42** ← the operative figures |
 | O1b decay fit (cross-check) | **ABSOLUTE TIME** | transient (before burn-in 300) | [5,40] [5,65] [30,70] | 1.17·2.00·1.33 / 0.31·0.53·0.35 |
 
 `burn_in_time = 300.0` (= 0.5 × t_max). The O1b windows lie before it **by design**:
@@ -103,8 +103,8 @@ change after that commit is a NEW preregistration, not an edit.
 | file | sha256 |
 |---|---|
 | `calc/q2_run.py` | `686375a3dc7da88b8fc780b49506317c40a7c7b8e93bfc1a5ec5ac0075148733` |
-| `calc/q2_stochastic_sy.py` | `a2ad35267d5cc447b9dcac0c42c7f7155d94d628103b64d2996a2926c409087e` |
-| `calc/q2_controls.py` | `c97d63a8e64e38534878d285b23f1a28f5f17b3a980e8869e8ce5ccb7609d12a` |
-| `calc/q2_audit.py` | `0e4a9ed608833c478c2bdba352a6ef7264e77d617fbba0a60efcc9f7a5761e04` |
-| `calc/q2_config.json` | `ea73943c8ed708dea3a476c92fbf6bdb190a475225f1106db4b2878c8b7e8761` |
-| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `e2e79e425743d18886cce6382c65668ad960b19fb7adfe492180ce7d5478e650` |
+| `calc/q2_stochastic_sy.py` | `8c264037d71510e572d0065a6cbcbdcae6ebfeb93a847d93c784eedb7d5cb8da` |
+| `calc/q2_controls.py` | `edbce973040f6306c5e4ae36881abb68868199df5d5e170930fc57ffb1db1169` |
+| `calc/q2_audit.py` | `b49c1047ebe32bb327291556adc11ec8061057e0845d9fd826df59dbbf34b5d6` |
+| `calc/q2_config.json` | `2ba11cb6028b0486abc46caf7f0071be8fd23a8f316bf41e6f2cb60922947c4b` |
+| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `c5a0569782ea9a7904a6aab386479f7c8d9504df25e0a9a48027a106fe35bb46` |

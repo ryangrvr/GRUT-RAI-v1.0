@@ -28,7 +28,9 @@ def _rate_from(cfg, m2, lam, seed, noise_scale=1.0, drift_scale=1.0, with_ac=Tru
     w0, w1 = N["fit_windows"][0]           # controls use the FIRST preregistered window
     rate, r2, n = Q2.fit_log_rate(r["t"], r["mean"], w0, w1)
     var = Q2.stationary_variance(r["t"], r["var"], N["burn_in_fraction"] * N["t_max"])
-    ac = (Q2.autocorrelation_rate(r["ac_rows"], r["ac_times"], N["ac_lag_max_t"])
+    ac = (Q2.autocorrelation_rate(r["ac_rows"], r["ac_times"], N["ac_lag_max_t"],
+                                  N["ac_origin_stride"], N["ac_fit_frac"],
+                                  N["ac_amplitude_cut"])
           if with_ac else {"rate": None, "reason": "ac disabled for this control"})
     return {"rate": rate, "r2": r2, "fit_points": n, "stationary_var": var,
             "ac_rate": ac.get("rate"), "ac_r2": ac.get("r2"), "ac_detail": ac, "raw": r}
@@ -210,7 +212,9 @@ def control_C11_estimator_calibration(cfg):
             for i in range(n_t):
                 rows.append(phi[:]); times.append(N["burn_in_time"] + i * dt_s)
                 phi = [a * p + sg * rng.gauss(0, 1) for p in phi]
-            r = Q2.autocorrelation_rate(rows, times, N["ac_lag_max_t"])
+            r = Q2.autocorrelation_rate(rows, times, N["ac_lag_max_t"],
+                                        N["ac_origin_stride"], N["ac_fit_frac"],
+                                        N["ac_amplitude_cut"])
             if r.get("rate"):
                 ests.append(r["rate"])
         if ests:

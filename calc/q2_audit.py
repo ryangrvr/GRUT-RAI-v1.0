@@ -185,11 +185,34 @@ def main(argv):
           findings)
     ackey = [k for k in efolds if k.startswith("O1a_")][0]
     acA, acB = efolds[ackey]["efolds_at_A"], efolds[ackey]["efolds_at_B"]
-    check(acA >= 1.0 and acB >= 1.0, FAIL,
-          f"FIREWALL: the PRIMARY estimator's LAG range ({ackey}) spans >= 1 e-fold at BOTH "
-          f"targets (A {acA:.2f}, B {acB:.2f}) -- these are the 6.7/1.77 figures, and they "
-          f"refer to the autocorrelation LAG range, never to the O1b absolute-time windows",
+    # EFFECTIVE fitted span: the fit keeps lags with tau <= fit_frac*tau_max AND
+    # C/C0 > amplitude_cut, so the span actually used is the MIN of the two limits.
+    # (A pre-execution audit found the certified figures described the AVAILABLE range,
+    # 1.67x wider than any fit uses; the check now certifies what the fit actually spans.)
+    ff = cfg["numerical"]["ac_fit_frac"]; cut = cfg["numerical"]["ac_amplitude_cut"]
+    eff = {}
+    for nm, k in (("A", targetA), ("B", targetB)):
+        frac_lim = ff * lagmax
+        amp_lim = math.log(1.0 / cut) / k
+        e = min(frac_lim, amp_lim)
+        eff[nm] = {"tau_fitted_max": e, "efolds": k * e,
+                   "limited_by": "amplitude_cut" if amp_lim < frac_lim else "fit_frac"}
+    labels["effective_fitted_span"] = eff
+    labels["available_lag_range_efolds"] = {"A": acA, "B": acB}
+    check(eff["A"]["efolds"] >= 1.0 and eff["B"]["efolds"] >= 1.0, FAIL,
+          f"FIREWALL: the PRIMARY estimator's EFFECTIVE FITTED span exceeds 1 e-fold at BOTH "
+          f"targets (A {eff['A']['efolds']:.2f} to tau={eff['A']['tau_fitted_max']:.0f} "
+          f"[{eff['A']['limited_by']}], B {eff['B']['efolds']:.2f} to "
+          f"tau={eff['B']['tau_fitted_max']:.0f} [{eff['B']['limited_by']}]). The AVAILABLE "
+          f"lag range spans {acA:.2f}/{acB:.2f} -- that is NOT what the fit uses",
           findings)
+    check(all(k in cfg["numerical"] for k in ("ac_fit_frac", "ac_origin_stride",
+                                              "ac_amplitude_cut")), FAIL,
+          "the three analysis knobs are in the FROZEN CONFIG, not hardcoded Python defaults",
+          findings)
+    src_k = open(os.path.join(HERE, "q2_stochastic_sy.py")).read()
+    check("origin_stride=10, fit_frac=0.6" not in src_k and "c / c0 > 0.05" not in src_k,
+          FAIL, "no hardcoded analysis-knob defaults remain in the instrument", findings)
     winA = [v["efolds_at_A"] for k, v in efolds.items() if k.startswith("O1b_")]
     winB = [v["efolds_at_B"] for k, v in efolds.items() if k.startswith("O1b_")]
     check(max(winA) >= 1.0, FAIL,

@@ -53,7 +53,11 @@
       20260911
     ],
     "rng_implementation": "python stdlib random.Random (Mersenne Twister MT19937), .gauss(0,1)",
-    "_rng_note": "Recorded explicitly for cross-environment reproducibility. One Random instance per ensemble run, seeded from seed_list_explicit; draws are consumed in trajectory-index order within each timestep."
+    "_rng_note": "Recorded explicitly for cross-environment reproducibility. One Random instance per ensemble run, seeded from seed_list_explicit; draws are consumed in trajectory-index order within each timestep.",
+    "ac_fit_frac": 0.8,
+    "ac_origin_stride": 10,
+    "ac_amplitude_cut": 0.05,
+    "_ac_analysis_knobs_note": "PREREGISTERED analysis parameters, lifted out of hardcoded Python defaults after a pre-execution audit found they were absent from the frozen config and never inspected by the auditor -- while prereg section 5 classifies every analysis range as a preregistered design decision. ac_fit_frac raised 0.6 -> 0.8 so the EFFECTIVE fitted span exceeds 1 e-fold at the slower target with margin (1.42 rather than 1.06). The fit uses lags with tau <= ac_fit_frac*tau_max AND C/C0 > ac_amplitude_cut, so the EFFECTIVE span is min(ac_fit_frac*tau_max, ln(1/ac_amplitude_cut)/k) -- NOT the full lag range."
   },
   "controls": {
     "_class": "CONTROL -- battery configuration",

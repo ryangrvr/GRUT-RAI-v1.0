@@ -1,9 +1,9 @@
 {
  "auditor": "calc/q2_audit.py (independent; imports no Q2 analysis module)",
- "auditor_sha256": "0e4a9ed608833c478c2bdba352a6ef7264e77d617fbba0a60efcc9f7a5761e04",
- "config_sha256": "ea73943c8ed708dea3a476c92fbf6bdb190a475225f1106db4b2878c8b7e8761",
- "instrument_sha256": "a2ad35267d5cc447b9dcac0c42c7f7155d94d628103b64d2996a2926c409087e",
- "controls_sha256": "c97d63a8e64e38534878d285b23f1a28f5f17b3a980e8869e8ce5ccb7609d12a",
+ "auditor_sha256": "b49c1047ebe32bb327291556adc11ec8061057e0845d9fd826df59dbbf34b5d6",
+ "config_sha256": "2ba11cb6028b0486abc46caf7f0071be8fd23a8f316bf41e6f2cb60922947c4b",
+ "instrument_sha256": "8c264037d71510e572d0065a6cbcbdcae6ebfeb93a847d93c784eedb7d5cb8da",
+ "controls_sha256": "edbce973040f6306c5e4ae36881abb68868199df5d5e170930fc57ffb1db1169",
  "findings": [
   {
    "status": "AUDIT_OK",
@@ -135,7 +135,15 @@
   },
   {
    "status": "AUDIT_OK",
-   "check": "FIREWALL: the PRIMARY estimator's LAG range (O1a_autocorrelation_LAG_range[0,200]) spans >= 1 e-fold at BOTH targets (A 6.67, B 1.77) -- these are the 6.7/1.77 figures, and they refer to the autocorrelation LAG range, never to the O1b absolute-time windows"
+   "check": "FIREWALL: the PRIMARY estimator's EFFECTIVE FITTED span exceeds 1 e-fold at BOTH targets (A 3.00 to tau=90 [amplitude_cut], B 1.42 to tau=160 [fit_frac]). The AVAILABLE lag range spans 6.67/1.77 -- that is NOT what the fit uses"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the three analysis knobs are in the FROZEN CONFIG, not hardcoded Python defaults"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "no hardcoded analysis-knob defaults remain in the instrument"
   },
   {
    "status": "AUDIT_OK",
@@ -220,6 +228,22 @@
   },
   "efolds_semantics": "O1a figures are LAG-range x rate in the STATIONARY phase; O1b figures are ABSOLUTE-TIME span x rate in the TRANSIENT phase. They are different coordinates and are never mixed.",
   "autocorr_origin_span": 100.0,
+  "effective_fitted_span": {
+   "A": {
+    "tau_fitted_max": 89.87196820661973,
+    "efolds": 2.995732273553991,
+    "limited_by": "amplitude_cut"
+   },
+   "B": {
+    "tau_fitted_max": 160.0,
+    "efolds": 1.416,
+    "limited_by": "fit_frac"
+   }
+  },
+  "available_lag_range_efolds": {
+   "A": 6.666666666666667,
+   "B": 1.77
+  },
   "burnin_in_slow_relaxation_times": 2.6550000000000002,
   "seeds": [
    20260907,

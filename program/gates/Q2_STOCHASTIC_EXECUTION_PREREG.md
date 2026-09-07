@@ -130,7 +130,7 @@ C(τ) ∼ e^{−Λ₁τ}, which has no SNR cliff because it is a stationary aver
 ensemble-mean decay fit is demoted to a cross-check and run over **three** preregistered
 windows [5,40], [5,65], [30,70] — window-dependence is itself a control, since a genuine
 exponential gives one rate across all three and a power law does not; (iii) n_traj raised
-4000 → 8000. (iv) the integration horizon was extended t_max 300 → 600 so that the burn-in (50% = 300
+(iv) the integration horizon was extended t_max 300 → 600 so that the burn-in (50% = 300
 Hubble times) exceeds **2.66 relaxation times of the SLOWER candidate** — the autocorrelation
 route requires genuine stationarity for both candidates, not only the faster one; (v) a
 **connected (mean-subtracted)** autocorrelation replaced the raw second moment, because an
@@ -224,6 +224,7 @@ internal balance only, against an independent quadrature anchor.
 | 7 | dt, t_max, n_traj, stride | 0.01, **600**, 4000, 25 | COMPUTATIONAL (horizon extended at design time per §2.3) | no |
 | 8 | seeds | 20260907 + 0…4 | COMPUTATIONAL (fixed list) | no |
 | 9 | fit windows (3) + autocorrelation lag range | [5,40] [5,65] [30,70]; τ ≤ 200 | **DESIGN DECISION, preregistered** | **no** |
+| 9b | ac_fit_frac / ac_origin_stride / ac_amplitude_cut | 0.8 / 10 / 0.05 | **DESIGN DECISION, preregistered** — lifted out of hardcoded defaults; they set the EFFECTIVE fitted span | **no** |
 | 10 | tolerances | §8 | **DESIGN DECISION, preregistered** | **no — may not be relaxed after results** |
 | 11 | measured rate, stationary moments | — | **DERIVED FROM THE RUN** (outputs, never inputs) | n/a |
 
@@ -308,11 +309,28 @@ they span 0.31 / 0.53 / 0.35 — inadequate, so **if the measured rate is near B
 reported INCONCLUSIVE for that route and may not invalidate the O1a primary.** Without this
 rule a legitimate slow-rate result would be failed for a purely statistical reason.
 
-**E-FOLD FIGURES, disambiguated.** The figures **6.67 (A) and 1.77 (B)** refer to the **O1a
-autocorrelation LAG range** (τ ≤ 200) multiplied by each target rate. They do **not** refer
-to the O1b absolute-time windows, whose spans are given above. The auditor recomputes both
-sets from the frozen config, labels each by coordinate, and fails the run if the O1a range
-falls below 1 e-fold at either target.
+**E-FOLD FIGURES, disambiguated — and the distinction that matters.** Three different spans
+exist and were previously conflated (a pre-execution audit caught this; the certified figure
+described a range 1.67× wider than any fit uses):
+
+| span | A | B | meaning |
+|---|---|---|---|
+| O1b decay windows (ABSOLUTE TIME) | 1.17 / 2.00 / 1.33 | 0.31 / 0.53 / 0.35 | cross-check only |
+| O1a **available** lag range (τ ≤ 200) | 6.67 | 1.77 | what is *collected* |
+| O1a **EFFECTIVE FITTED** span | **3.00** (to τ=90, amplitude-limited) | **1.42** (to τ=160, frac-limited) | **what the fit actually uses — the operative number** |
+
+The fit keeps lags with τ ≤ `ac_fit_frac`·τ_max **and** C/C₀ > `ac_amplitude_cut`, so the
+effective span is min(fit_frac·τ_max, ln(1/cut)/k). **The auditor certifies the EFFECTIVE
+span**, not the available range, and fails the run if it drops below 1 e-fold at either
+target. `ac_fit_frac` was raised 0.6 → 0.8 at design time so the slower target clears the
+threshold with margin (1.42 rather than 1.06, which sat barely above the very threshold it
+was tested against).
+
+**The three analysis knobs are now IN THE FROZEN CONFIG** (`ac_fit_frac`,
+`ac_origin_stride`, `ac_amplitude_cut`). They were hardcoded Python defaults, absent from
+the config and never inspected — despite §5 classifying every analysis range as a
+preregistered design decision. The instrument now takes them as required arguments with no
+defaults, and the auditor fails if any hardcoded default reappears.
 **Primary O2 — stationary variance** ⟨φ²⟩ over t > 150; units H²; compared to the
 independent SY quadrature anchor; artifact controls C6/C7/C9.
 **Secondary S1** — fit quality r² of the rate fit (a poor fit is itself informative:
