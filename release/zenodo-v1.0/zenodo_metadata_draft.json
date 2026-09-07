@@ -1,0 +1,19 @@
+{
+  "_comment": "DRAFT Zenodo deposit metadata. TWO OWNER DECISIONS REQUIRED before upload: (1) 'license' — none has been chosen for the program; common choices: cc-by-4.0 (record+books) or mit (code); Zenodo requires one. (2) confirm the creator entry / any affiliation. Nothing here should be treated as final until the owner signs off.",
+  "metadata": {
+    "title": "GRUT-RAI: Frozen Research Record, Books Working Edition (I–X), and RAI Audit Infrastructure — Release zenodo-v1.0",
+    "upload_type": "publication",
+    "publication_type": "workingpaper",
+    "publication_date": "2026-09-07",
+    "creators": [
+      { "name": "Grover, D. Ryan" }
+    ],
+    "version": "zenodo-v1.0",
+    "license": "TODO-OWNER-DECISION",
+    "description": "First public release of the GRUT research program in its present, frozen state: (1) the frozen technical record — model framework, program freeze and stopping rule, the Γ_T prediction gate and its computed closure, the signature audit, and the 74-node claims register; (2) the GRUT Books Working Edition — a ten-book corpus presenting the constitutive-relational framework with every substantive claim labeled by epistemic status inline (DERIVED / RECOVERED / ASSUMPTION / HYPOTHESIS / UNRESOLVED / CLOSED / UNMAPPED / REVERSED), governed by a corpus charter and canonical status table; the PREDICTED set is empty and the corpus says so; (3) the RAI audit infrastructure — five adversarial multi-agent instrument records with executable verification gates. This is a working edition and a publishing pass over the frozen record: no scientific substance was altered in preparation. Markdown files are the authoritative sources; PDFs are generated from them. See README.md for the reading order and MANIFEST.md for per-file SHA-256 integrity.",
+    "keywords": ["gravitation", "open quantum systems", "Schwinger-Keldysh", "influence functional", "KMS condition", "fluctuation-dissipation", "constitutive framework", "research program audit", "epistemic status labeling", "adversarial verification"],
+    "related_identifiers": [
+      { "relation": "isSupplementTo", "identifier": "https://github.com/ryangrvr/GRUT-RAI/tree/v4", "resource_type": "software" }
+    ]
+  }
+}
