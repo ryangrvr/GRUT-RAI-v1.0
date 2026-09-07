@@ -1,0 +1,214 @@
+{
+ "auditor": "calc/q2_audit.py (independent; imports no Q2 analysis module)",
+ "findings": [
+  {
+   "status": "AUDIT_OK",
+   "check": "config section 'physical' present"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "config section 'numerical' present"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "config section 'controls' present"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "config section 'tolerances' present"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "noise rule frozen to Gibbons-Hawking H/2pi"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "primary run starts from BARE MASSLESS (relaxation must be generated)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "lambda=0.01 reproduces the record's m_eff^2 = 0.1 H^2 via sqrt(lambda)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "every fit window lies strictly inside the integration horizon"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "every fit window excludes t=0 and is well ordered"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "at least three fit windows preregistered (window-dependence is itself a control)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "ensemble-mean SNR at the latest window end is >=5 (recomputed: 5.3)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "autocorrelation route (primary estimator) is configured"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "record-rule rate recomputes to m_eff^2/(3H) = 0.03333H"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "instrument enforces required config keys with no fallback defaults"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "instrument emits no PASS/FAIL label value (machine labels only)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the declared machine-label set excludes PASS/FAIL"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: no mass is supplied to the primary dynamics (m_bare^2 = 0); a nonzero bare mass would inject the very relaxation being tested"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: the physical-input set is exactly {H, m2=0, lambda, phi0, noise-rule} -- no rate-valued parameter enters the dynamics"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: timestep resolves both targets (dt*k = 3.3e-04, 8.9e-05; both must be << 1)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "prereg declares the O1b fit windows are ABSOLUTE_TIME"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "prereg declares the O1a autocorrelation range is a LAG"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "CODE MATCHES PREREG: the decay fit is applied to absolute times r['t'] (not lags, not post-burn-in-shifted times)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "CODE MATCHES PREREG: autocorrelation sampling starts exactly at the declared burn_in_time"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "CODE MATCHES PREREG: burn-in is applied to the autocorrelation sample collection"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "CODE MATCHES PREREG: the stationary-variance observable applies burn-in"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "declared burn_in_time equals burn_in_fraction x t_max (no drift between them)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "O1b decay windows lie entirely in the transient phase (before burn_in_time) -- required, because relaxation-from-initial-condition cannot be measured after the system has relaxed"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "stationary phase is longer than the lag range (origin span 100 > 0)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: the PRIMARY estimator's LAG range (O1a_autocorrelation_LAG_range[0,200]) spans >= 1 e-fold at BOTH targets (A 6.67, B 1.77) -- these are the 6.7/1.77 figures, and they refer to the autocorrelation LAG range, never to the O1b absolute-time windows"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "at least one O1b cross-check window spans >= 1 e-fold at the FASTER target (max 2.00)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "DECLARED EXPECTATION: at the SLOWER target the O1b windows span < 1 e-fold (max 0.53) -- so if the measured rate is near B, O1b is expected to be weak and its window-consistency criterion is INCONCLUSIVE by the frozen gating rule, and may not invalidate O1a"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: burn-in is >= 2 relaxation times of the SLOWER target (2.66) -- the autocorrelation route requires real stationarity"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: the reference value m_eff^2/H^2 = 0.1 is NOT a primary-run input (it is a comparison target only)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the five RNG seeds are explicit, distinct, and consistent with seed_base: [20260907, 20260908, 20260909, 20260910, 20260911]"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the RNG implementation is named explicitly for cross-environment reproducibility"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: the autocorrelation is CONNECTED (mean-subtracted), so an unrelaxed <phi> cannot bias the fitted rate toward the slower target"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: both targets are emitted as ANCHORS, not used as dynamics inputs (0.0885 appears only in the anchor block)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "FIREWALL: the integrator body contains neither target value nor the reference m_eff^2 (dynamics are free of the tested phenomenon)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "results absent -- PRE-EXECUTION audit only (expected in setup)"
+  }
+ ],
+ "n_fail": 0,
+ "n_warn": 0,
+ "independent_values": {
+  "independent_snr_at_worst_window_end": 5.342899017057863,
+  "independent_D": 0.012665147955292224,
+  "independent_expected_rate_from_record_rule": 0.03333333333333333,
+  "independent_target_B_sy_eigenvalue": 0.00885,
+  "target_A": 0.03333333333333333,
+  "target_B": 0.00885,
+  "physical_input_keys": [
+   "H",
+   "lambda_self",
+   "m2_over_H2",
+   "noise_amplitude_rule",
+   "phi0_over_H"
+  ],
+  "dt_times_targetA": 0.0003333333333333333,
+  "dt_times_targetB": 8.850000000000001e-05,
+  "efolds_spanned": {
+   "O1b_decay_window_ABSOLUTE_TIME[5.0,40.0]": {
+    "span": 35.0,
+    "efolds_at_A": 1.1666666666666667,
+    "efolds_at_B": 0.30975
+   },
+   "O1b_decay_window_ABSOLUTE_TIME[5.0,65.0]": {
+    "span": 60.0,
+    "efolds_at_A": 2.0,
+    "efolds_at_B": 0.531
+   },
+   "O1b_decay_window_ABSOLUTE_TIME[30.0,70.0]": {
+    "span": 40.0,
+    "efolds_at_A": 1.3333333333333333,
+    "efolds_at_B": 0.354
+   },
+   "O1a_autocorrelation_LAG_range[0,200]": {
+    "span": 200.0,
+    "efolds_at_A": 6.666666666666667,
+    "efolds_at_B": 1.77
+   }
+  },
+  "efolds_semantics": "O1a figures are LAG-range x rate in the STATIONARY phase; O1b figures are ABSOLUTE-TIME span x rate in the TRANSIENT phase. They are different coordinates and are never mixed.",
+  "autocorr_origin_span": 100.0,
+  "burnin_in_slow_relaxation_times": 2.6550000000000002,
+  "seeds": [
+   20260907,
+   20260908,
+   20260909,
+   20260910,
+   20260911
+  ]
+ },
+ "label": "AUDIT_OK",
+ "note": "machine labels only; scientific adjudication is the owner's"
+}

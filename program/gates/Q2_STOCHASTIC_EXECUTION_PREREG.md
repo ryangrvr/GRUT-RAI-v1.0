@@ -103,6 +103,22 @@ which is the correctness anchor. A measurement consistent with neither is branch
 **Because B supersedes A as physics, "the run reproduced 0.0333H" may never be reported as a
 vindication of the record's number without this paragraph attached.**
 
+**GUARD — "B supersedes A for this equation" is NOT "B is the expected GRUT answer."** The
+licensed hierarchy is: *the equation* → *its spectral gap B*. Target **A is retained only as
+a record-consistency diagnostic.** Neither is a GRUT prediction: the equation is the SY
+scalar channel (§1.1), not gravity, and λ is unresolved (U2). Reproducing B would mean the
+implementation agrees with the registered spectral-gap calculation of the equation it
+integrates — an instrument-and-literature agreement, nothing more. **This run must not
+become a hunt for 0.00885.** Preregistered outcome meanings:
+
+| outcome | what it means (and does not) |
+|---|---|
+| B reproduced | the nonlinear instrument is consistent with its registered spectral-gap result. NOT evidence for GRUT, NOT a prediction, NOT O2 |
+| A reproduced, B not | an implementation-vs-literature discrepancy to adjudicate against control C2 (the exact λ = 0 OU limit); until adjudicated, no physics reading |
+| neither | a discrepancy requiring investigation; report both gaps and the measured value |
+| neither, with numerical pathology | INVALID_RUN / NONCONVERGED — no physics reading at all |
+| either value reproduced *in a control* that should not exhibit it | **not** evidence for the intended mechanism; it indicts the instrument (C3 in particular voids the primary) |
+
 ### 2.3 · Signal-to-noise defect found and repaired BEFORE execution
 
 The original configuration (n_traj = 4000, single fit window [5, 120]) was defective: the
@@ -200,10 +216,16 @@ last ladder step of both dt and n within tolerance, seed spread within tolerance
 three decay-fit windows mutually consistent within tol_window_consistency;
 anything else is **NONCONVERGED**.
 
-## 9 · Seed policy
+## 9 · Seed policy and RNG
 
-Fixed list [20260907, 20260908, 20260909, 20260910, 20260911], preregistered here and in
-the config. No seed may be added, dropped, or reordered after execution; a rerun with
+Fixed list of five explicit integers — **[20260907, 20260908, 20260909, 20260910,
+20260911]** — preregistered here and stored as `seed_list_explicit` in the config (the
+instrument uses the explicit list, not the `seed_base + i` formula, and raises if the two
+disagree). **RNG implementation, recorded for cross-environment reproducibility:** Python
+stdlib `random.Random` (Mersenne Twister MT19937), `.gauss(0, 1)`; one instance per ensemble
+run; draws consumed in trajectory-index order within each timestep. The emitted manifest
+carries the RNG name, the resolved class, the Python version, and the explicit seeds; the
+auditor fails the run if any differs from this declaration. No seed may be added, dropped, or reordered after execution; a rerun with
 different seeds is a NEW run requiring its own record.
 
 ## 10 · Controls — Q2-C1…C10 (numbering fence)
@@ -233,9 +255,25 @@ C(τ) = ⟨φ(t)φ(t+τ)⟩: least-squares slope of ln[C(τ)/C(0)] over lags τ 
 trajectories, origins strided); units H; expected null behavior: no decay for the C3 null;
 artifact controls C3/C4/C5/C10; interpretation **EXPLORATORY** pending audit.
 **Cross-check O1b — ensemble-mean decay fit** over the three preregistered windows
-[5,40], [5,65], [30,70]; consistency across windows within tol_window_consistency (20%) is
-required for CONVERGED — inconsistency is itself the informative signal that the decay is
-not a single exponential.
+[5,40], [5,65], [30,70]. **Coordinate: ABSOLUTE SIMULATION TIME, in the TRANSIENT phase
+(before burn_in_time = 300).** This is deliberate and not an inconsistency with the burn-in:
+O1b measures relaxation *from the initial condition*, which by definition can only be
+observed before the system has relaxed. O1a, by contrast, is a **LAG** coordinate computed
+in the **stationary** phase [300, 600]. *The two estimators use different coordinates in
+different regimes and their spans are never compared to one another.*
+
+**GATING RULE (frozen ex ante).** Window-consistency within tol_window_consistency (20%)
+gates CONVERGED **only when the measured rate is fast enough for the windows to span ≥ 1
+e-fold**. At target A the windows span 1.17 / 2.00 / 1.33 e-folds — adequate. At target B
+they span 0.31 / 0.53 / 0.35 — inadequate, so **if the measured rate is near B, O1b is
+reported INCONCLUSIVE for that route and may not invalidate the O1a primary.** Without this
+rule a legitimate slow-rate result would be failed for a purely statistical reason.
+
+**E-FOLD FIGURES, disambiguated.** The figures **6.67 (A) and 1.77 (B)** refer to the **O1a
+autocorrelation LAG range** (τ ≤ 200) multiplied by each target rate. They do **not** refer
+to the O1b absolute-time windows, whose spans are given above. The auditor recomputes both
+sets from the frozen config, labels each by coordinate, and fails the run if the O1a range
+falls below 1 e-fold at either target.
 **Primary O2 — stationary variance** ⟨φ²⟩ over t > 150; units H²; compared to the
 independent SY quadrature anchor; artifact controls C6/C7/C9.
 **Secondary S1** — fit quality r² of the rate fit (a poor fit is itself informative:

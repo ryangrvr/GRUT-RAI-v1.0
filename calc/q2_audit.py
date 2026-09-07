@@ -121,17 +121,66 @@ def main(argv):
     # reported per target so a weak range cannot silently masquerade as a measurement.
     efolds = {}
     for w0, w1 in cfg["numerical"]["fit_windows"]:
-        efolds[f"win[{w0},{w1}]"] = {"A": targetA * (w1 - w0), "B": targetB * (w1 - w0)}
+        efolds[f"O1b_decay_window_ABSOLUTE_TIME[{w0},{w1}]"] = {
+            "span": w1 - w0, "efolds_at_A": targetA * (w1 - w0),
+            "efolds_at_B": targetB * (w1 - w0)}
     lagmax = cfg["numerical"]["ac_lag_max_t"]
-    efolds["autocorr_lags"] = {"A": targetA * lagmax, "B": targetB * lagmax}
+    efolds["O1a_autocorrelation_LAG_range[0,%g]" % lagmax] = {
+        "span": lagmax, "efolds_at_A": targetA * lagmax, "efolds_at_B": targetB * lagmax}
     labels["efolds_spanned"] = efolds
-    check(efolds["autocorr_lags"]["A"] >= 1.0 and efolds["autocorr_lags"]["B"] >= 1.0, FAIL,
-          "FIREWALL: the PRIMARY (autocorrelation) range spans >= 1 e-fold at BOTH targets "
-          f"(A {efolds['autocorr_lags']['A']:.1f}, B {efolds['autocorr_lags']['B']:.2f})",
+    labels["efolds_semantics"] = ("O1a figures are LAG-range x rate in the STATIONARY phase; "
+                                  "O1b figures are ABSOLUTE-TIME span x rate in the TRANSIENT "
+                                  "phase. They are different coordinates and are never mixed.")
+    # COORDINATE-SEMANTICS VERIFICATION: the code's interpretation must equal the prereg's
+    src_i = open(os.path.join(HERE, "q2_stochastic_sy.py")).read()
+    check(cfg["numerical"]["fit_window_coordinate"] == "ABSOLUTE_TIME", FAIL,
+          "prereg declares the O1b fit windows are ABSOLUTE_TIME", findings)
+    check(cfg["numerical"]["autocorrelation_lag_coordinate"] == "LAG", FAIL,
+          "prereg declares the O1a autocorrelation range is a LAG", findings)
+    check('fit_log_rate(r["t"], r["mean"], w0, w1)' in src_i, FAIL,
+          "CODE MATCHES PREREG: the decay fit is applied to absolute times r['t'] (not lags, "
+          "not post-burn-in-shifted times)", findings)
+    check('ac_t0 = ac_start if ac_start is not None else N["burn_in_time"]' in src_i, FAIL,
+          "CODE MATCHES PREREG: autocorrelation sampling starts exactly at the declared "
+          "burn_in_time", findings)
+    check('step * dt >= ac_t0' in src_i, FAIL,
+          "CODE MATCHES PREREG: burn-in is applied to the autocorrelation sample collection",
           findings)
-    check(max(v["A"] for k, v in efolds.items() if k.startswith("win")) >= 1.0, FAIL,
-          "FIREWALL: at least one cross-check window spans >= 1 e-fold at the faster target",
+    check('stationary_variance(r["t"], r["var"], N["burn_in_fraction"] * N["t_max"])' in src_i
+          or 'stationary_variance(r["t"], r["var"], N["burn_in_time"])' in src_i, FAIL,
+          "CODE MATCHES PREREG: the stationary-variance observable applies burn-in", findings)
+    check(abs(cfg["numerical"]["burn_in_time"]
+              - cfg["numerical"]["burn_in_fraction"] * cfg["numerical"]["t_max"]) < 1e-9, FAIL,
+          "declared burn_in_time equals burn_in_fraction x t_max (no drift between them)",
           findings)
+    # O1b windows are TRANSIENT by design: assert they lie BEFORE burn-in, as declared
+    check(all(w1 <= cfg["numerical"]["burn_in_time"] for _, w1 in cfg["numerical"]["fit_windows"]),
+          FAIL, "O1b decay windows lie entirely in the transient phase (before burn_in_time) "
+          "-- required, because relaxation-from-initial-condition cannot be measured after "
+          "the system has relaxed", findings)
+    # the autocorrelation must have origin room inside the stationary phase
+    origin_span = cfg["numerical"]["t_max"] - cfg["numerical"]["burn_in_time"] - lagmax
+    labels["autocorr_origin_span"] = origin_span
+    check(origin_span > 0, FAIL,
+          f"stationary phase is longer than the lag range (origin span {origin_span:g} > 0)",
+          findings)
+    ackey = [k for k in efolds if k.startswith("O1a_")][0]
+    acA, acB = efolds[ackey]["efolds_at_A"], efolds[ackey]["efolds_at_B"]
+    check(acA >= 1.0 and acB >= 1.0, FAIL,
+          f"FIREWALL: the PRIMARY estimator's LAG range ({ackey}) spans >= 1 e-fold at BOTH "
+          f"targets (A {acA:.2f}, B {acB:.2f}) -- these are the 6.7/1.77 figures, and they "
+          f"refer to the autocorrelation LAG range, never to the O1b absolute-time windows",
+          findings)
+    winA = [v["efolds_at_A"] for k, v in efolds.items() if k.startswith("O1b_")]
+    winB = [v["efolds_at_B"] for k, v in efolds.items() if k.startswith("O1b_")]
+    check(max(winA) >= 1.0, FAIL,
+          f"at least one O1b cross-check window spans >= 1 e-fold at the FASTER target "
+          f"(max {max(winA):.2f})", findings)
+    check(max(winB) < 1.0, WARN,
+          f"DECLARED EXPECTATION: at the SLOWER target the O1b windows span < 1 e-fold "
+          f"(max {max(winB):.2f}) -- so if the measured rate is near B, O1b is expected to be "
+          f"weak and its window-consistency criterion is INCONCLUSIVE by the frozen gating "
+          f"rule, and may not invalidate O1a", findings)
     # FIREWALL-5 (stationarity): burn-in must exceed ~2 relaxation times of the SLOWER target
     burn = cfg["numerical"]["burn_in_fraction"] * cfg["numerical"]["t_max"]
     labels["burnin_in_slow_relaxation_times"] = burn * targetB
@@ -142,6 +191,16 @@ def main(argv):
     check(0.1 not in (phys["m2_over_H2"], phys["phi0_over_H"]), FAIL,
           "FIREWALL: the reference value m_eff^2/H^2 = 0.1 is NOT a primary-run input "
           "(it is a comparison target only)", findings)
+    sl = cfg["numerical"]["seed_list_explicit"]
+    check(sl == [cfg["numerical"]["seed_base"] + i for i in range(cfg["numerical"]["n_seeds"])]
+          and len(set(sl)) == len(sl) == cfg["numerical"]["n_seeds"], FAIL,
+          f"the five RNG seeds are explicit, distinct, and consistent with seed_base: {sl}",
+          findings)
+    check("Mersenne" in cfg["numerical"]["rng_implementation"]
+          and "random.Random" in cfg["numerical"]["rng_implementation"], FAIL,
+          "the RNG implementation is named explicitly for cross-environment reproducibility",
+          findings)
+    labels["seeds"] = sl
     src_ctl = open(os.path.join(HERE, "q2_stochastic_sy.py")).read()
     check("CONNECTED" in src_ctl and "- ma) * (b[i] - mb)" in src_ctl, FAIL,
           "FIREWALL: the autocorrelation is CONNECTED (mean-subtracted), so an unrelaxed "
@@ -176,8 +235,11 @@ def main(argv):
             check(abs(anch["target_A_naive_meff_over_3H"] - rate_here) < 1e-12, FAIL,
                   "emitted target A equals the independently recomputed value", findings)
         seeds_used = sorted(p["seed"] for p in R["runs"]["primary"])
-        seeds_cfg = sorted(cfg["numerical"]["seed_base"] + i
-                           for i in range(cfg["numerical"]["n_seeds"]))
+        seeds_cfg = sorted(cfg["numerical"]["seed_list_explicit"])
+        check(m.get("rng_implementation") == cfg["numerical"]["rng_implementation"], FAIL,
+              "emitted RNG implementation matches the frozen declaration", findings)
+        check(m.get("seeds_explicit") == cfg["numerical"]["seed_list_explicit"], FAIL,
+              "emitted seed list equals the explicit frozen integers", findings)
         check(seeds_used == seeds_cfg, FAIL,
               "seed set used equals the preregistered seed set", findings)
         # the instrument must not have emitted a scientific verdict

@@ -45,7 +45,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # --- keys that MUST be present; no defaults anywhere in this file -------------------
 REQUIRED_PHYSICAL = ["H", "m2_over_H2", "lambda_self", "phi0_over_H", "noise_amplitude_rule"]
 REQUIRED_NUMERICAL = ["dt", "t_max", "n_traj", "seed_base", "n_seeds", "burn_in_fraction",
-                      "fit_windows", "sample_stride", "ac_traj", "ac_lag_max_t"]
+                      "fit_windows", "sample_stride", "ac_traj", "ac_lag_max_t",
+                      "burn_in_time", "fit_window_coordinate",
+                      "autocorrelation_lag_coordinate", "seed_list_explicit",
+                      "rng_implementation"]
 MACHINE_LABELS = {"OBSERVED", "NOT_OBSERVED", "INCONCLUSIVE", "INVALID_RUN",
                   "CONVERGED", "NONCONVERGED"}
 
@@ -138,7 +141,7 @@ def evolve_ensemble(cfg, m2, lam, seed, noise_scale=1.0, drift_scale=1.0,
     times, means, vars_ = [], [], []
     ac_rows, ac_times = [], []          # stationary samples for the autocorrelation route
     ac_n = min(ac_traj, n_traj)
-    ac_t0 = ac_start if ac_start is not None else N["burn_in_fraction"] * N["t_max"]
+    ac_t0 = ac_start if ac_start is not None else N["burn_in_time"]   # declared, not recomputed
     for step in range(n_steps + 1):
         if step % stride == 0:
             s = sum(phi); s2 = sum(p * p for p in phi)
@@ -257,6 +260,13 @@ def main(argv):
         "config_sha256": sha256_file(cfg_path),
         "config_echo": cfg,
         "python": sys.version.split()[0],
+        "rng_implementation": cfg["numerical"]["rng_implementation"],
+        "rng_module_state_class": type(random.Random()).__module__ + "." +
+                                  type(random.Random()).__name__,
+        "seeds_explicit": cfg["numerical"]["seed_list_explicit"],
+        "fit_window_coordinate": cfg["numerical"]["fit_window_coordinate"],
+        "autocorrelation_lag_coordinate": cfg["numerical"]["autocorrelation_lag_coordinate"],
+        "burn_in_time": cfg["numerical"]["burn_in_time"],
         "scope_fence": ("scalar SY channel; NOT the interacting graviton zero-mode; "
                         "cannot discharge reopening key #1"),
         "verdict_discipline": "machine labels only; no scientific PASS/FAIL emitted",
@@ -284,7 +294,9 @@ def main(argv):
 
     t0 = time.time()
     runs, results = {}, {}
-    seeds = [N["seed_base"] + i for i in range(N["n_seeds"])]
+    seeds = list(N["seed_list_explicit"])          # the explicit integers, not a formula
+    if seeds != [N["seed_base"] + i for i in range(N["n_seeds"])]:
+        raise SystemExit("CONFIG ERROR: seed_list_explicit disagrees with seed_base/n_seeds")
 
     # ---- PRIMARY: the interacting physics run, replicated across frozen seeds ----
     primary = []

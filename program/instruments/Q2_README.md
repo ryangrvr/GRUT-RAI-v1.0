@@ -5,6 +5,18 @@
 > The next prompt authorizes execution and needs to choose nothing.
 > Preregistration: `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` (binding).
 
+## Time-coordinate semantics (read before interpreting any span)
+
+| estimator | coordinate | phase | range | e-folds at A / B |
+|---|---|---|---|---|
+| **O1a autocorrelation (PRIMARY)** | **LAG** | stationary [300, 600] | τ ≤ 200 | **6.67 / 1.77** |
+| O1b decay fit (cross-check) | **ABSOLUTE TIME** | transient (before burn-in 300) | [5,40] [5,65] [30,70] | 1.17·2.00·1.33 / 0.31·0.53·0.35 |
+
+`burn_in_time = 300.0` (= 0.5 × t_max). The O1b windows lie before it **by design**:
+relaxation-from-initial-condition cannot be measured after the system has relaxed. The two
+estimators are never compared span-to-span, and the auditor verifies that the code's
+interpretation equals this table.
+
 ## Scope fence (read first)
 
 This package evolves the **scalar** Starobinsky–Yokoyama channel. It does **not** compute
@@ -78,13 +90,13 @@ Branch `master` → `origin/v4`. Q1 untouched (`20fd3d4`, GATED, REFUSE). Regist
 (74 nodes, sha256 prefix `beaeb84e8a6f8468`). See the commit for this package for the exact
 hash manifest.
 
-## SHA-256 manifest (frozen at setup, after the design-time repairs of prereg §2.3)
+## SHA-256 manifest (frozen; recomputed after the coordinate/seed/RNG clarification)
 
 | file | sha256 |
 |---|---|
 | `calc/q2_run.py` | `686375a3dc7da88b8fc780b49506317c40a7c7b8e93bfc1a5ec5ac0075148733` |
-| `calc/q2_stochastic_sy.py` | `36e10c8f0e6d09b14b6a9b20239c2726873a5c9e8b9a7ad08a99a5d64ce9ee88` |
+| `calc/q2_stochastic_sy.py` | `eeb7eaac9eae4ad3e22d6d6569165fd9bbba40b601032a39bc36187de7abefc9` |
 | `calc/q2_controls.py` | `9af6c3b5cbf53de99a54bd47b4a6189d819fafb8a049f2f8e4d0128739afbc55` |
-| `calc/q2_audit.py` | `9ebd0b8bd446834cfe945fc29e03600057f80b95b290a3382d303af3cd244142` |
-| `calc/q2_config.json` | `5e66be4914aa28c11879d98d85f06f8dfe5985cfc106ae3004aada3ce2134c9b` |
-| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `8cc89f061629e95cb9d6fb21681f8e99b04aae780e62e8feb4edcb149edcd7a1` |
+| `calc/q2_audit.py` | `9e807c6c7776c2967a01b49f564fce6bc480e0bcac18846a72db4ef401cbc22f` |
+| `calc/q2_config.json` | `a737eb070b1484116adc9ea0a08b84731668ad93fbb62fbbb2a43b3a7f0b106f` |
+| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `2dc4f0995b9a20265a9f4c1fb9370131f8952f9393640d39bdaea72fafd868fe` |
