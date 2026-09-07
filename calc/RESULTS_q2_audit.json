@@ -207,7 +207,75 @@
   },
   {
    "status": "AUDIT_OK",
-   "check": "results absent and no execution marker -- PRE-EXECUTION audit only (expected in setup)"
+   "check": "emitted config hash matches the on-disk config (no post-hoc edit)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "emitted instrument hash matches the on-disk instrument"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "output schema contains 'analytic_anchors'"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "output schema contains 'runs'"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "output schema contains 'results'"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "BOTH comparison targets were emitted (neither selectable post hoc)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "emitted target A equals the independently recomputed value"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "emitted RNG implementation matches the frozen declaration"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "emitted seed list equals the explicit frozen integers"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "seed set used equals the preregistered seed set"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the instrument EMITTED an evaluation (frozen tolerances actually applied, machine labels produced) -- not merely prose criteria nothing reads"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "every emitted label is in the declared machine-label set (['NOT_OBSERVED', 'OBSERVED', 'CONVERGED', 'OBSERVED'])"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "output contains no scientific adjudication token 'confirmed'"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "output contains no scientific adjudication token 'prediction'"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "output contains no scientific adjudication token 'success'"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "output contains no scientific adjudication token 'verdict: pass'"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "control battery ran against the same frozen config"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "C3 NULL control reports no manufactured relaxation (voids primary if it does)"
   }
  ],
  "n_fail": 0,

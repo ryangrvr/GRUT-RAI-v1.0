@@ -1,0 +1,189 @@
+{
+ "battery": "Q2-C1..C11 (NOT the house N1-N10; see numbering fence)",
+ "config_sha256": "4aac62a44ac0ad65afe574d6e05eee5c5f3484e17e641aa680d08e5ae91ff4dc",
+ "controls_sha256": "edbce973040f6306c5e4ae36881abb68868199df5d5e170930fc57ffb1db1169",
+ "instrument_sha256": "3cda78997eaa5314f043594e6ce554e2734812f392fdd8882a326a3c1b6ad2b9",
+ "C1": {
+  "control": "Q2-C1",
+  "measured_rate": 0.03333889012376569,
+  "analytic_drift_rate": 0.03333333333333333,
+  "stationary_var_should_be_zero": {
+   "mean": -9.621442919109378e-28,
+   "sd": 2.2363101249250023e-26,
+   "n_samples": 1201
+  },
+  "criterion": "|measured-target|/target <= tol_rate AND var -> 0"
+ },
+ "C2": {
+  "control": "Q2-C2",
+  "measured_rate": 0.033888323850994884,
+  "analytic_rate": 0.03333333333333333,
+  "measured_var": {
+   "mean": 0.3831546656873231,
+   "sd": 0.0073461512597294875,
+   "n_samples": 1201
+  },
+  "analytic_var": 0.3799544386587667,
+  "criterion": "both within tol; this is the strongest correctness anchor"
+ },
+ "C3": {
+  "control": "Q2-C3",
+  "measured_rate_MUST_BE_null": 0.0001816918658895481,
+  "PRIMARY_ac_rate_MUST_BE_null": 0.00024800159040366446,
+  "max_relative_deviation_from_2Dt": 0.07479745538293489,
+  "criterion": "rate is None or |rate| <= tol_null AND var tracks 2Dt within tol",
+  "role": "voids the primary run if it reports relaxation"
+ },
+ "C4": {
+  "control": "Q2-C4",
+  "ladder": [
+   {
+    "dt": 0.04,
+    "rate": 0.0068505984455819145
+   },
+   {
+    "dt": 0.02,
+    "rate": 0.006977372041429559
+   },
+   {
+    "dt": 0.01,
+    "rate": 0.006963967332276746
+   },
+   {
+    "dt": 0.005,
+    "rate": 0.006935232460961513
+   }
+  ],
+  "criterion": "successive |rate(dt_k)-rate(dt_k+1)|/rate <= tol_converge"
+ },
+ "C5": {
+  "control": "Q2-C5",
+  "seeds": [
+   20260907,
+   20260908,
+   20260909,
+   20260910,
+   20260911
+  ],
+  "primary_ac_rates": [
+   0.009916783754546143,
+   0.009642116142770338,
+   0.009236259217764626,
+   0.008866147551328373,
+   0.008418889115869198
+  ],
+  "crosscheck_o1b_rates": [
+   0.006963967332276746,
+   0.0066057109507208335,
+   0.006643056657129667,
+   0.006554475004332125,
+   0.0065387579390242916
+  ],
+  "mean": 0.009216039156455736,
+  "sd": 0.0005349515423746109,
+  "relative_spread": 0.0580457106673514,
+  "criterion": "relative_spread <= tol_seed"
+ },
+ "C6": {
+  "control": "Q2-C6",
+  "rows": [
+   {
+    "phi0": 0.5,
+    "stationary_var": {
+     "mean": 1.3176336020089376,
+     "sd": 0.016414833390318604,
+     "n_samples": 1201
+    }
+   },
+   {
+    "phi0": 1.0,
+    "stationary_var": {
+     "mean": 1.3163238338638221,
+     "sd": 0.016788238176107324,
+     "n_samples": 1201
+    }
+   },
+   {
+    "phi0": 2.0,
+    "stationary_var": {
+     "mean": 1.314552271221422,
+     "sd": 0.01764808618620056,
+     "n_samples": 1201
+    }
+   }
+  ],
+  "criterion": "stationary variances agree within tol across phi0"
+ },
+ "C7": {
+  "control": "Q2-C7",
+  "measured_increment_variance": 0.00025364573711595675,
+  "target": 0.0002533029591058445,
+  "relative_error": 0.0013532333428801842,
+  "criterion": "relative_error <= tol_noise (statistical, ~1/sqrt(n_draws))"
+ },
+ "C8": {
+  "control": "Q2-C8",
+  "planted_m2_over_H2": 0.3,
+  "planted_exact_spectral_gap": 0.09999999999999999,
+  "recovered_PRIMARY_ac_rate": 0.10165498607639128,
+  "recovered_crosscheck_o1b_rate": 0.09278754462134302,
+  "ac_relative_error": 0.016549860763912932,
+  "criterion": "the PRIMARY route must recover the planted exact gap within tol_rate; this is the only control that calibrates O1a against a known answer inside the real SDE pipeline"
+ },
+ "C9": {
+  "control": "Q2-C9",
+  "measured_var": {
+   "mean": 1.3163238338638221,
+   "sd": 0.016788238176107324,
+   "n_samples": 1201
+  },
+  "quadrature_phi2": 1.3176451787101378,
+  "criterion": "|measured - quadrature|/quadrature <= tol_moment"
+ },
+ "C10": {
+  "control": "Q2-C10",
+  "ladder": [
+   {
+    "n_traj": 500,
+    "ac_rate": 0.008765726203973197,
+    "o1b_rate": 0.00620568927297529
+   },
+   {
+    "n_traj": 1000,
+    "ac_rate": 0.00990622603793106,
+    "o1b_rate": 0.007014876876210132
+   },
+   {
+    "n_traj": 2000,
+    "ac_rate": 0.010326506649497075,
+    "o1b_rate": 0.007125689029881737
+   },
+   {
+    "n_traj": 4000,
+    "ac_rate": 0.009916783754546143,
+    "o1b_rate": 0.006963967332276746
+   }
+  ],
+  "criterion": "successive differences shrink and last step <= tol_converge"
+ },
+ "C11": {
+  "control": "Q2-C11",
+  "rows": [
+   {
+    "planted_lambda": 0.0333,
+    "recovered_mean": 0.03243337059038665,
+    "bias_rel": -0.02602490719559612,
+    "scatter_rel": 0.0976437152267223,
+    "n_replicas": 6
+   },
+   {
+    "planted_lambda": 0.00885,
+    "recovered_mean": 0.008717267022604058,
+    "bias_rel": -0.014998076541914344,
+    "scatter_rel": 0.07476517485530629,
+    "n_replicas": 6
+   }
+  ],
+  "criterion": "measured |bias| and scatter must lie inside tol_rate/tol_seed; if not, the run's precision claim is void (tolerances were set FROM this calibration, preregistered)"
+ }
+}
