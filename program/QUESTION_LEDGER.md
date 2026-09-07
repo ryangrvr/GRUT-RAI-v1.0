@@ -34,7 +34,7 @@ quiet-or-faint 7–47-order verdict — which the reconstruction CONFIRMED as th
 own figure, correcting this ledger's earlier doubt above). Owner decision owed: accept
 (Q1 → OFF, evaluation = the gate) or contest. Claim statuses untouched.
 
-## Q2 · Stochastic KMS-bath dynamics — OPEN (rank 2)
+## Q2 · Stochastic KMS-bath dynamics — GATED (rank 2; execution package frozen 2026-09-07, NOT run)
 
 > **Gate question:** Do the legitimately specified GRUT constitutive equations, evolved
 > numerically as a stochastic realization, exhibit structure (fixed points, spectra,
@@ -49,6 +49,18 @@ frontier-reserved fences (transport Σ, the dS trace sector) bind the simulation
 as they bind analysis. Must be built if ON: the stochastic instrument class itself —
 discretization + convergence controls, mutation batteries, plants, ensemble negative
 controls; "the computer found a fixed point" is treated as a pass-label until de-pinned.
+
+**EXECUTION PACKAGE FROZEN (2026-09-07, nothing run):**
+`program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` + `calc/q2_run.py` (single entrypoint,
+refuses any argument but `--config`). Scope fence on the instrument's face: this evolves the
+**scalar** SY channel, **not** the interacting graviton zero-mode, and cannot discharge
+reopening key #1. Design-time findings recorded before any execution: the record's "≈0.034H"
+traces to m_eff²/(3H) = **0.0333H** (and a separate, unrelated 0.034 exists in the record —
+the worldline S(ω=0.1); the two are now separated); **two** rate targets are preregistered
+because the record's composition (0.0333H) and the SY Fokker–Planck eigenvalue of the very
+equation (0.00885H) differ by 3.8× — with a formal model-status adjudication and a rule that
+neither may be chosen post hoc; an SNR defect, a stationarity defect, and an unconnected-
+correlation bias were each found and repaired before running. Owner authorization pending.
 
 ## Q3 · Dimensional transmutation — OPEN (rank 3)
 
