@@ -311,7 +311,8 @@ def main(argv):
             windows.append({"window": [w0, w1], "rate": rate, "r2": r2, "points": npts})
         var = stationary_variance(r["t"], r["var"], N["burn_in_fraction"] * N["t_max"])
         primary.append({"seed": s, "autocorrelation_rate": ac, "decay_fits": windows,
-                        "stationary_var": var})
+                        "stationary_var": var,
+                        "D1_final_phi_sample": r["final_phi_sample"]})
     runs["primary"] = primary
 
     rates = [p["autocorrelation_rate"]["rate"] for p in primary
@@ -332,7 +333,32 @@ def main(argv):
                     "--controls; convergence ladders by --converge.")}
     outpath = os.path.join(HERE, "RESULTS_q2_stochastic_sy.json")
     json.dump(out, open(outpath, "w"), indent=1)
-    print(f"[q2] wrote {outpath}  ({manifest['wall_seconds']:.1f}s)")
+    # human-readable report (repo convention: every calc ships a RESULTS_*.md)
+    md = [f"# RESULTS — Q2 stochastic SY run", "",
+          "> Machine labels only. NO scientific adjudication is performed here; see",
+          "> `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` §18 for the frozen decision",
+          "> tree. This instrument evolves the SCALAR SY channel and is NOT O2.", "",
+          f"- instrument sha256: `{manifest['instrument_sha256']}`",
+          f"- config sha256: `{manifest['config_sha256']}`",
+          f"- python {manifest['python']} · RNG {manifest['rng_implementation']}",
+          f"- seeds: {manifest['seeds_explicit']}",
+          f"- wall seconds: {manifest['wall_seconds']:.1f}", "",
+          "## Preregistered comparison targets (emitted before measurement)", "",
+          f"- target A (record composition m_eff^2/3H): {anchors['target_A_naive_meff_over_3H']:.6f} H",
+          f"- target B (SY Fokker-Planck eigenvalue): {anchors['target_B_sy_fp_eigenvalue']:.6f} H", "",
+          "## Primary estimator O1a (stationary connected autocorrelation, LAG coordinate)", "",
+          "| seed | rate | r2 | n_lags |", "|---|---|---|---|"]
+    for p_ in primary:
+        a_ = p_["autocorrelation_rate"]
+        md.append(f"| {p_['seed']} | {a_.get('rate')} | {a_.get('r2')} | {a_.get('n_lags')} |")
+    md += ["", "## Cross-check O1b (ensemble-mean decay, ABSOLUTE TIME, transient phase)", "",
+           "| seed | window | rate | r2 |", "|---|---|---|---|"]
+    for p_ in primary:
+        for w in p_["decay_fits"]:
+            md.append(f"| {p_['seed']} | {w['window']} | {w['rate']} | {w['r2']} |")
+    md += ["", f"## Aggregate", "", f"```json", json.dumps(results, indent=1), "```"]
+    open(os.path.join(HERE, "RESULTS_q2_stochastic_sy.md"), "w").write("\n".join(md) + "\n")
+    print(f"[q2] wrote {outpath} and RESULTS_q2_stochastic_sy.md ({manifest['wall_seconds']:.1f}s)")
     print("[q2] machine labels only; scientific adjudication belongs to the audit layer.")
     return 0
 

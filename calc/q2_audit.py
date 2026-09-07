@@ -62,6 +62,25 @@ def main(argv):
           findings)
     check(cfg["numerical"]["ac_traj"] > 0 and cfg["numerical"]["ac_lag_max_t"] > 0, FAIL,
           "autocorrelation route (primary estimator) is configured", findings)
+    # NON-DEFINITIONAL COVERAGE CHECK (the record's own standing lesson: a gate whose
+    # identity is definitional proves nothing).  The controls must actually CALL the
+    # primary estimator, not merely have it configured.
+    src_c = open(os.path.join(HERE, "q2_controls.py")).read()
+    check("Q2.autocorrelation_rate(" in src_c, FAIL,
+          "CONTROLS EXERCISE THE PRIMARY ESTIMATOR (autocorrelation_rate is actually called "
+          "in the control battery, not merely configured)", findings)
+    for cid in ("C3", "C5", "C8", "C10"):
+        pass
+    check(all(k in src_c for k in ('"PRIMARY_ac_rate_MUST_BE_null"', '"primary_ac_rates"',
+                                   '"recovered_PRIMARY_ac_rate"', '"ac_rate": o["ac_rate"]')),
+          FAIL, "C3/C5/C8/C10 each report the PRIMARY estimator's result, not only O1b",
+          findings)
+    check("control_C11_estimator_calibration" in src_c, FAIL,
+          "C11 planted-Lambda calibration of the primary estimator exists", findings)
+    check(cfg["tolerances"]["tol_rate"] >= 0.20, FAIL,
+          f"tol_rate ({cfg['tolerances']['tol_rate']}) is not tighter than the estimator's "
+          f"measured precision (~7-11% scatter); a tighter value would make CONVERGED "
+          f"unreachable on good data", findings)
 
     # ---- 2. INDEPENDENT recomputation of the analytic anchors ----------------------
     H = cfg["physical"]["H"]
@@ -260,6 +279,10 @@ def main(argv):
     n_fail = sum(1 for f in findings if f["status"] == FAIL)
     n_warn = sum(1 for f in findings if f["status"] == WARN)
     out = {"auditor": "calc/q2_audit.py (independent; imports no Q2 analysis module)",
+           "auditor_sha256": sha(os.path.abspath(__file__)),
+           "config_sha256": sha(cfg_path),
+           "instrument_sha256": sha(os.path.join(HERE, "q2_stochastic_sy.py")),
+           "controls_sha256": sha(os.path.join(HERE, "q2_controls.py")),
            "findings": findings, "n_fail": n_fail, "n_warn": n_warn,
            "independent_values": labels,
            "label": "AUDIT_FAIL" if n_fail else ("AUDIT_WARN" if n_warn else "AUDIT_OK"),

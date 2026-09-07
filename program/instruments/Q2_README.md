@@ -70,6 +70,11 @@ single-threaded.
   produced by it is a Q2 result or was used to infer one.
 - Independent SNR re-derivation inside `q2_audit.py`: latest fit-window end sits at
   SNR 5.3 (others 6.3, 14.5) against the required floor of 5.
+- **Estimator calibration (C11) run at setup**: planted Λ recovered with bias −2.6% / +0.1%
+  and scatter 9.8% / 4.4% at targets A / B — inside the (measured, not guessed) tolerances.
+- **Primary-estimator control coverage verified non-definitionally**: the auditor checks the
+  controls actually *call* `autocorrelation_rate`, after an audit found every control had
+  been routing through the demoted cross-check only.
 - **Non-circularity firewall — all checks AUDIT_OK**: no mass injected (m²_bare = 0); live
   physical-input set exactly {H, m²=0, λ, φ₀, noise-rule}; timestep resolves both targets
   (dt·k = 3.3e-4, 8.9e-5); primary range spans ≥1 e-fold at both targets (6.7, 1.77);
@@ -90,13 +95,16 @@ Branch `master` → `origin/v4`. Q1 untouched (`20fd3d4`, GATED, REFUSE). Regist
 (74 nodes, sha256 prefix `beaeb84e8a6f8468`). See the commit for this package for the exact
 hash manifest.
 
-## SHA-256 manifest (frozen; recomputed after the coordinate/seed/RNG clarification)
+## SHA-256 manifest — FREEZE POINT
+
+**The freeze point is the git commit recorded below, not this table alone.** Any parameter
+change after that commit is a NEW preregistration, not an edit.
 
 | file | sha256 |
 |---|---|
 | `calc/q2_run.py` | `686375a3dc7da88b8fc780b49506317c40a7c7b8e93bfc1a5ec5ac0075148733` |
-| `calc/q2_stochastic_sy.py` | `eeb7eaac9eae4ad3e22d6d6569165fd9bbba40b601032a39bc36187de7abefc9` |
-| `calc/q2_controls.py` | `9af6c3b5cbf53de99a54bd47b4a6189d819fafb8a049f2f8e4d0128739afbc55` |
-| `calc/q2_audit.py` | `9e807c6c7776c2967a01b49f564fce6bc480e0bcac18846a72db4ef401cbc22f` |
-| `calc/q2_config.json` | `a737eb070b1484116adc9ea0a08b84731668ad93fbb62fbbb2a43b3a7f0b106f` |
-| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `2dc4f0995b9a20265a9f4c1fb9370131f8952f9393640d39bdaea72fafd868fe` |
+| `calc/q2_stochastic_sy.py` | `a2ad35267d5cc447b9dcac0c42c7f7155d94d628103b64d2996a2926c409087e` |
+| `calc/q2_controls.py` | `c97d63a8e64e38534878d285b23f1a28f5f17b3a980e8869e8ce5ccb7609d12a` |
+| `calc/q2_audit.py` | `0e4a9ed608833c478c2bdba352a6ef7264e77d617fbba0a60efcc9f7a5761e04` |
+| `calc/q2_config.json` | `ea73943c8ed708dea3a476c92fbf6bdb190a475225f1106db4b2878c8b7e8761` |
+| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `e2e79e425743d18886cce6382c65668ad960b19fb7adfe492180ce7d5478e650` |

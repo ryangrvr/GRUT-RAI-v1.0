@@ -18,13 +18,20 @@ import q2_stochastic_sy as Q2
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def _rate_from(cfg, m2, lam, seed, noise_scale=1.0, drift_scale=1.0):
+def _rate_from(cfg, m2, lam, seed, noise_scale=1.0, drift_scale=1.0, with_ac=True):
+    """Returns BOTH estimator routes.  'ac_rate' is the PRIMARY (O1a) estimator; 'rate' is the
+    O1b decay-fit cross-check.  Controls exercise BOTH -- an earlier revision routed every
+    control through O1b only, leaving the primary estimator with zero control coverage."""
     N = cfg["numerical"]
-    r = Q2.evolve_ensemble(cfg, m2, lam, seed, noise_scale, drift_scale)
+    r = Q2.evolve_ensemble(cfg, m2, lam, seed, noise_scale, drift_scale,
+                           ac_traj=(N["ac_traj"] if with_ac else 0))
     w0, w1 = N["fit_windows"][0]           # controls use the FIRST preregistered window
     rate, r2, n = Q2.fit_log_rate(r["t"], r["mean"], w0, w1)
     var = Q2.stationary_variance(r["t"], r["var"], N["burn_in_fraction"] * N["t_max"])
-    return {"rate": rate, "r2": r2, "fit_points": n, "stationary_var": var, "raw": r}
+    ac = (Q2.autocorrelation_rate(r["ac_rows"], r["ac_times"], N["ac_lag_max_t"])
+          if with_ac else {"rate": None, "reason": "ac disabled for this control"})
+    return {"rate": rate, "r2": r2, "fit_points": n, "stationary_var": var,
+            "ac_rate": ac.get("rate"), "ac_r2": ac.get("r2"), "ac_detail": ac, "raw": r}
 
 
 def control_C1_zero_noise(cfg):
@@ -68,6 +75,7 @@ def control_C3_massless_free_NULL(cfg):
     pred = [2.0 * D * t for t in ts]
     dev = max((abs(v - p) / p) for v, p in zip(vs[1:], pred[1:]) if p > 0) if len(ts) > 1 else None
     return {"control": "Q2-C3", "measured_rate_MUST_BE_null": out["rate"],
+            "PRIMARY_ac_rate_MUST_BE_null": out["ac_rate"],
             "max_relative_deviation_from_2Dt": dev,
             "criterion": "rate is None or |rate| <= tol_null AND var tracks 2Dt within tol",
             "role": "voids the primary run if it reports relaxation"}
@@ -92,12 +100,15 @@ def control_C5_seeds(cfg, seeds):
     """C5 SEED DEPENDENCE. Spread across frozen seeds must be within statistical expectation.
     DISAPPEARS IF REAL: a seed-specific fluctuation does not survive replication."""
     P = cfg["physical"]; H = P["H"]; m2 = P["m2_over_H2"] * H * H
-    rs = [_rate_from(cfg, m2, P["lambda_self"], s)["rate"] for s in seeds]
+    outs = [_rate_from(cfg, m2, P["lambda_self"], s) for s in seeds]
+    rs = [o["ac_rate"] for o in outs]          # PRIMARY route (was O1b only)
+    rs_o1b = [o["rate"] for o in outs]
     good = [r for r in rs if r is not None]
     mean = sum(good) / len(good) if good else None
     sd = (math.sqrt(sum((r - mean) ** 2 for r in good) / len(good))
           if good and len(good) > 1 else None)
-    return {"control": "Q2-C5", "seeds": seeds, "rates": rs, "mean": mean, "sd": sd,
+    return {"control": "Q2-C5", "seeds": seeds, "primary_ac_rates": rs,
+            "crosscheck_o1b_rates": rs_o1b, "mean": mean, "sd": sd,
             "relative_spread": (sd / mean) if (sd is not None and mean) else None,
             "criterion": "relative_spread <= tol_seed"}
 
@@ -140,9 +151,16 @@ def control_C8_planted_positive(cfg, planted_m2_over_H2):
     report one (N-analogue: the detect-capability role of N5)."""
     P = cfg["physical"]; H = P["H"]; m2p = planted_m2_over_H2 * H * H
     out = _rate_from(cfg, m2p, 0.0, cfg["numerical"]["seed_base"] + 7)
+    exact = Q2.ou_rate_analytic(m2p, H)   # for OU the spectral gap IS m^2/(3H), exactly
     return {"control": "Q2-C8", "planted_m2_over_H2": planted_m2_over_H2,
-            "recovered_rate": out["rate"], "analytic_rate": Q2.ou_rate_analytic(m2p, H),
-            "criterion": "recovered within tol_rate of analytic"}
+            "planted_exact_spectral_gap": exact,
+            "recovered_PRIMARY_ac_rate": out["ac_rate"],
+            "recovered_crosscheck_o1b_rate": out["rate"],
+            "ac_relative_error": (abs(out["ac_rate"] - exact) / exact
+                                  if out["ac_rate"] else None),
+            "criterion": "the PRIMARY route must recover the planted exact gap within "
+                         "tol_rate; this is the only control that calibrates O1a against a "
+                         "known answer inside the real SDE pipeline"}
 
 
 def control_C9_stationary_distribution(cfg):
@@ -164,10 +182,47 @@ def control_C10_ensemble_size(cfg, sizes):
     rows = []
     for n in sizes:
         c = json.loads(json.dumps(cfg)); c["numerical"]["n_traj"] = n
-        rows.append({"n_traj": n, "rate": _rate_from(c, m2, P["lambda_self"],
-                                                     cfg["numerical"]["seed_base"])["rate"]})
+        o = _rate_from(c, m2, P["lambda_self"], cfg["numerical"]["seed_base"])
+        rows.append({"n_traj": n, "ac_rate": o["ac_rate"], "o1b_rate": o["rate"]})
     return {"control": "Q2-C10", "ladder": rows,
             "criterion": "successive differences shrink and last step <= tol_converge"}
+
+
+def control_C11_estimator_calibration(cfg):
+    """C11 ESTIMATOR CALIBRATION (synthetic, no SDE).  Feed the PRIMARY estimator stationary
+    AR(1) data with an EXACTLY known Lambda, in production geometry, and measure its bias and
+    scatter.  DISAPPEARS IF REAL: an estimator that cannot recover a known Lambda cannot be
+    trusted to report an unknown one -- and its measured scatter is what the run's tolerances
+    must be set against.  This control exists because a pre-execution audit found the frozen
+    tolerances were tighter than the estimator's intrinsic precision."""
+    import random as _r
+    N = cfg["numerical"]; cal = cfg["controls"]["calibration"]
+    dt_s = N["dt"] * N["sample_stride"]
+    n_t = int(round((N["t_max"] - N["burn_in_time"]) / dt_s)) + 1
+    rows_out = []
+    for true_lam in cal["planted_lambdas"]:
+        ests = []
+        for k in range(cal["replicas"]):
+            rng = _r.Random(cal["seed"] + k)
+            a = math.exp(-true_lam * dt_s); sg = math.sqrt(1.0 - a * a)
+            phi = [rng.gauss(0, 1) for _ in range(N["ac_traj"])]
+            rows, times = [], []
+            for i in range(n_t):
+                rows.append(phi[:]); times.append(N["burn_in_time"] + i * dt_s)
+                phi = [a * p + sg * rng.gauss(0, 1) for p in phi]
+            r = Q2.autocorrelation_rate(rows, times, N["ac_lag_max_t"])
+            if r.get("rate"):
+                ests.append(r["rate"])
+        if ests:
+            m = sum(ests) / len(ests)
+            sd = math.sqrt(sum((x - m) ** 2 for x in ests) / len(ests)) if len(ests) > 1 else 0.0
+            rows_out.append({"planted_lambda": true_lam, "recovered_mean": m,
+                             "bias_rel": (m - true_lam) / true_lam,
+                             "scatter_rel": sd / m if m else None, "n_replicas": len(ests)})
+    return {"control": "Q2-C11", "rows": rows_out,
+            "criterion": "measured |bias| and scatter must lie inside tol_rate/tol_seed; "
+                         "if not, the run's precision claim is void (tolerances were set "
+                         "FROM this calibration, preregistered)"}
 
 
 def main(argv):
@@ -175,8 +230,10 @@ def main(argv):
     cfg = Q2.load_config(cfg_path)
     L = cfg["controls"]
     res = {
-        "battery": "Q2-C1..C10 (NOT the house N1-N10; see numbering fence)",
+        "battery": "Q2-C1..C11 (NOT the house N1-N10; see numbering fence)",
         "config_sha256": Q2.sha256_file(cfg_path),
+        "controls_sha256": Q2.sha256_file(os.path.abspath(__file__)),
+        "instrument_sha256": Q2.sha256_file(os.path.join(HERE, "q2_stochastic_sy.py")),
         "C1": control_C1_zero_noise(cfg),
         "C2": control_C2_zero_interaction(cfg),
         "C3": control_C3_massless_free_NULL(cfg),
@@ -187,6 +244,7 @@ def main(argv):
         "C8": control_C8_planted_positive(cfg, L["planted_m2_over_H2"]),
         "C9": control_C9_stationary_distribution(cfg),
         "C10": control_C10_ensemble_size(cfg, L["ensemble_ladder"]),
+        "C11": control_C11_estimator_calibration(cfg),
     }
     out = os.path.join(HERE, "RESULTS_q2_controls.json")
     json.dump(res, open(out, "w"), indent=1)

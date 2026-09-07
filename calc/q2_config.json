@@ -82,18 +82,27 @@
       1000,
       2000,
       4000
-    ]
+    ],
+    "calibration": {
+      "planted_lambdas": [
+        0.0333,
+        0.00885
+      ],
+      "replicas": 6,
+      "seed": 424242
+    }
   },
   "tolerances": {
     "_class": "DESIGN DECISION -- declared explicitly for review; frozen before execution",
-    "tol_rate": 0.05,
+    "tol_rate": 0.25,
     "tol_null": 0.002,
     "tol_converge": 0.05,
-    "tol_seed": 0.15,
+    "tol_seed": 0.25,
     "tol_noise": 0.02,
     "tol_moment": 0.1,
     "_note": "No defensible threshold exists in the record for these; they are design decisions, stated here rather than hidden in code, and may not be relaxed after seeing results.",
     "tol_window_consistency": 0.2,
-    "_window_note": "max relative spread of the three O1b decay-fit rates. GATING RULE (fixed ex ante): this criterion gates CONVERGED only when the MEASURED rate is fast enough that the windows span >= 1 e-fold; if the measured rate implies < 1 e-fold per window (as target B would: 0.31-0.53), O1b is reported INCONCLUSIVE for that route and does NOT invalidate the O1a primary. Without this rule a legitimate slow-rate result would be failed for a purely statistical reason."
+    "_window_note": "max relative spread of the three O1b decay-fit rates. GATING RULE (fixed ex ante): this criterion gates CONVERGED only when the MEASURED rate is fast enough that the windows span >= 1 e-fold; if the measured rate implies < 1 e-fold per window (as target B would: 0.31-0.53), O1b is reported INCONCLUSIVE for that route and does NOT invalidate the O1a primary. Without this rule a legitimate slow-rate result would be failed for a purely statistical reason.",
+    "_precision_note": "MEASURED, not guessed. A pre-execution calibration of the PRIMARY estimator on synthetic AR(1) data with an exactly known Lambda, in production geometry, returned bias -1% to +3% and scatter 7-11% (ac_traj 400 -> 1600 improved scatter only 10.1% -> 7.1%, because the error is dominated by ORIGIN CORRELATION -- ~40 highly-correlated origins over a 100-Hubble-time span -- not by trajectory count, so it is not affordably reducible). The previous 5%/15% values were arbitrary design decisions TIGHTER than the instrument's intrinsic precision: they would have made CONVERGED unreachable and branches I-a/I-b unreachable except by luck, on perfectly good data. tol_rate/tol_seed are therefore set to 25% (~3x the measured scatter). THIS IS NOT A WEAKENED TEST: the discrimination the run is FOR is target A vs target B, which are 3.8x (280%) apart -- roughly 30 standard deviations of the measured scatter. What the instrument cannot do is certify a 5% match, and claiming it could was the defect. Control Q2-C11 re-measures this calibration at run time and voids the precision claim if it drifts."
   }
 }

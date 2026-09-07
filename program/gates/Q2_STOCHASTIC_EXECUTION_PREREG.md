@@ -149,6 +149,44 @@ no preliminary run informed them, and none may reopen them.* The independent aud
 targets, the timestep resolution dt·k, and the burn-in in slow-relaxation-times, and fails
 the run if any falls below its frozen threshold.
 
+### 2.4 · Estimator calibration and the tolerances (pre-execution audit findings)
+
+A pre-execution audit found **two blocking defects that no amount of prose could have
+caught**, both now repaired:
+
+**(a) The PRIMARY estimator had zero control coverage.** Every control routed through the
+*demoted* cross-check (O1b); `autocorrelation_rate` was called only in the primary run, and
+the auditor's only check on it was definitional (`ac_traj > 0`). That is precisely the
+program's own standing lesson — *a gate whose identity is definitional proves nothing* — and
+it was not hypothetical: the auditor demonstrated an earlier configuration in which the
+estimator was **inoperable** (one usable origin ⇒ every seed returns `None` ⇒ INVALID_RUN)
+while the definitional check still reported AUDIT_OK. Roughly an hour of compute would have
+produced a void primary with nothing catching it. **Repair:** C3, C5, C8 and C10 now report
+the primary estimator's result alongside O1b; C8 plants a known exact spectral gap (OU, where
+Λ = m²/3H exactly) and requires the *primary route* to recover it inside the real SDE
+pipeline; a new **C11** feeds the primary estimator synthetic AR(1) data with an exactly
+known Λ in production geometry; and the auditor now verifies non-definitionally that the
+controls actually **call** the estimator.
+
+**(b) The frozen tolerances were tighter than the estimator's intrinsic precision.**
+Calibration (now C11, run at setup): bias −2.6% / +0.1%, **scatter 9.8% / 4.4%** at targets
+A / B. Raising `ac_traj` 400 → 1600 moved scatter only 10.1% → 7.1%, because the error is
+dominated by **origin correlation** (~40 highly-correlated origins across a 100-Hubble-time
+span), not by trajectory count — so it is not affordably reducible. The old `tol_rate = 5%`
+and `tol_seed = 15%` were arbitrary design decisions **below** that floor: CONVERGED would
+have been unreachable and branches I-a/I-b reachable only by luck, **on perfectly good data**.
+
+**Tolerances are therefore set FROM the measurement: `tol_rate = tol_seed = 0.25`** (≈3×
+the measured scatter), with the calibration recorded here and **re-measured at run time by
+C11**, which voids the precision claim if it drifts.
+
+**This is not a weakened test — it is a corrected precision claim.** The discrimination this
+run exists to perform is **target A vs target B, which are 3.8× (280%) apart — roughly 30
+standard deviations of the measured scatter.** What the instrument cannot do is certify a 5%
+match to either target, and claiming it could was the defect. Branches I-a/I-b are therefore
+decided as *"which target is consistent, and is the other excluded"*, never as a 5%
+agreement.
+
 ## 3 · Unresolved inputs (exposed, not invented)
 
 U1. **The scalar→graviton gap** (§1.1) — structural, unbridged, blocks any O2 claim.
@@ -247,6 +285,7 @@ REQUIRED**. The battery below is built only from already-declared structure.
 | C8 | planted positive (known m²) | an instrument blind to a real rate cannot report one (N5-analogue detect role) |
 | C9 | stationary moments vs independent quadrature | a detailed-balance violation lands on the wrong stationary law |
 | C10 | ensemble-size refinement | a small-ensemble fluctuation shrinks with N |
+| **C11** | **planted-Λ calibration of the PRIMARY estimator** (synthetic AR(1), exact known Λ, production geometry) | **an estimator that cannot recover a known Λ cannot report an unknown one; its measured scatter is what the tolerances are set against** |
 
 ## 11–12 · Observables (defined before execution)
 
@@ -292,7 +331,9 @@ missing; C3 reports relaxation beyond tol_null; C7 exceeds tol_noise; the fit wi
 `calc/RESULTS_q2_stochastic_sy.json` — manifest (instrument SHA-256, config SHA-256, full
 config echo, Python version, scope fence, wall time), analytic_anchors, runs.primary (per
 seed: rate, r², fit points, stationary variance), results, labels_available.
-`calc/RESULTS_q2_controls.json` — C1…C10 with per-control criteria.
+`calc/RESULTS_q2_stochastic_sy.md` — human-readable report generated from the JSON.
+`calc/RESULTS_q2_controls.json` — C1…C11 with per-control criteria; carries its own sha256,
+the instrument's, and the config's.
 `calc/RESULTS_q2_audit.json` — independent audit findings and label.
 
 ## 16b · The non-circularity firewall (the Q2 analogue of Q1's anti-self-certification)
