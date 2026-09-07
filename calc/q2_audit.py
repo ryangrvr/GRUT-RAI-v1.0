@@ -85,6 +85,27 @@ def main(argv):
     check("def evaluate(" in src_e and 'results["evaluation"]' in src_e, FAIL,
           "the instrument HAS an evaluation layer that applies the frozen tolerances "
           "(they are not prose-only)", findings)
+    vp = os.path.join(HERE, "RESULTS_q2_estimator_validity.json")
+    check(os.path.exists(vp), FAIL,
+          "the estimator-validity audit has been run (O1a shown to estimate Lambda_1 for the "
+          "NONLINEAR operator, not merely for OU)", findings)
+    if os.path.exists(vp):
+        V_ = json.load(open(vp))
+        bias = abs(V_["frozen_estimator_on_exact_C"]["relative_deviation"])
+        w1 = V_["frozen_estimator_on_exact_C"]["mode_weight_fractions"][0]["frac"]
+        labels["estimator_validity"] = {
+            "finite_lag_bias": bias, "Lambda1_weight_fraction": w1,
+            "Lambda_1": V_["nonlinear_spectrum"]["Lambda_1"]}
+        check(bias < 0.10 * cfg["tolerances"]["tol_rate"], FAIL,
+              f"the frozen estimator's finite-lag bias ({100*bias:.2f}%) is far below "
+              f"tol_rate ({100*cfg['tolerances']['tol_rate']:.0f}%)", findings)
+        check(w1 > 0.95, FAIL,
+              f"C(tau) is dominated by the slowest mode (weight fraction {w1:.5f}) -- the "
+              f"multi-exponential contamination is small", findings)
+        sepr = V_["discrimination"]["separation_factor"]
+        check(sepr / max(bias, 1e-9) > 50, FAIL,
+              f"the A-vs-B separation ({sepr:.2f}x) exceeds the estimator bias by "
+              f"{sepr/max(bias,1e-9):.0f}x", findings)
     check(cfg["tolerances"]["tol_rate"] >= 0.20, FAIL,
           f"tol_rate ({cfg['tolerances']['tol_rate']}) is not tighter than the estimator's "
           f"measured precision (~7-11% scatter); a tighter value would make CONVERGED "

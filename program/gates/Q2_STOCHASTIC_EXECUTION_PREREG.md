@@ -234,6 +234,61 @@ overstated ~5.3× and **the emitted r² is not a precision estimate**; and a ~+1
 from short-lag contamination (no minimum-lag exclusion; the Λ₃ mode, 6× Λ₁, is alive near
 τ = 0). Both are inside C11's empirically measured total bias and 25× smaller than tol_rate.
 
+### 2.6 · ESTIMATOR-VALIDITY AUDIT — is O1a actually a Λ₁ estimator for the NONLINEAR equation?
+
+**The question (owner-posed, and the last consequential one).** O1a is a log-linear fit to a
+finite-lag autocorrelation. For a nonlinear process C(τ) = Σᵢ Aᵢ e^(−Λᵢτ), not A e^(−Λ₁τ);
+Λ₁ dominates only once the faster modes have died *and* the signal is still measurable. The
+OU calibration (C11) shows the machinery recovers a known **single**-exponential process — it
+does **not** establish that the same estimator recovers the lowest eigenvalue of the
+**nonlinear** φ⁴ process. That is a measurement-model question, not a coding question, and it
+was settled deterministically before execution by `calc/q2_estimator_validity.py`
+(NON-EVIDENTIARY; no ensemble run).
+
+**Method (independent of the SDE and of the OU calibration).** The Fokker–Planck operator was
+built directly and symmetrized to Schrödinger form, −ψ″ + Wψ with W = (U′/2)² − U″/2,
+U = βV, β = 8π²/3H⁴, Λₙ = D·λₙ; eigenvalues by Sturm bisection, eigenfunctions by inverse
+iteration; the weights Aₙ = |⟨φ⟩₀ₙ|² give the exact multi-exponential C(τ); the **frozen fit
+rule was then replicated exactly** on that noise-free C(τ).
+
+**Solver validation.** Against the exact OU spectrum Λₙ = n·m²/(3H): computed 0.099995,
+0.199985, 0.299970 versus exact 0.1, 0.2, 0.3 — **−0.005% to −0.010%**. Independent
+cross-check on the eigenfunctions: ⟨φ²⟩_eq from the ground state = **1.317651** versus the
+analytic 1.317645.
+
+**Result for the frozen nonlinear operator (λ = 0.01):**
+
+| quantity | value |
+|---|---|
+| Λ₁ | **0.008892 = 0.08892 √λ H** (preregistered coefficient 0.0885 → agrees to 0.5%) |
+| mode weights of C(τ) | **Λ₁: 98.444%** · Λ₂ = 0.053665 (6.0×Λ₁): 1.520% · Λ₃: 0.035% · Λ₄: 0.001% |
+| frozen estimator on the exact noise-free C(τ) | **0.008951**, i.e. **+0.66%** relative to Λ₁ |
+| instantaneous −d lnC/dτ | 1.080×Λ₁ at τ→0, falling monotonically: 1.013 at τ=40, **1.0014 at τ=90, 1.0001 at τ=150** |
+
+**Verdict: the frozen O1a estimator IS a valid Λ₁ estimator for the nonlinear equation, at
+this λ, over this domain.** Three independent reasons: (i) C(τ) is overwhelmingly
+single-exponential — Λ₁ carries 98.4% of the weight and the sole non-negligible contaminant
+decays **6× faster**, so it is gone by τ ≈ 60; (ii) a genuine asymptotic regime exists **well
+inside** the frozen lag domain — the local slope is within 0.5% of Λ₁ by τ = 60 and within
+0.14% by τ = 90, while the fit extends to τ = 160; (iii) the resulting finite-lag bias is
+**+0.66%**, which is **15× smaller than the estimator's ~10% statistical scatter** and
+**≈420× smaller than the 3.75× A-vs-B separation** the run exists to resolve.
+
+**Nothing was retuned from this result** (owner instruction 5): no window, no knob, no target
+was changed. The preregistered target B stays at 0.0885 √λ H.
+
+**Sharpened preregistered expectation, stated before execution:** *if the implementation is
+correct and the physics is as the equation says, the primary estimator should return
+≈ 0.00895 H, with ~10% seed scatter.* This is the expected value **for this equation under
+this estimator** — per §2.2's guard it is **not** "the expected GRUT answer," and reproducing
+it establishes instrument-and-literature agreement, nothing about gravity.
+
+**Two things this does NOT settle**, kept separate: the ~+1% short-lag bias noted in §2.5 is
+a *different* effect from multi-exponential contamination (both are now quantified, and the
++0.66% figure here is the total finite-lag deviation for the frozen rule); and **r² is never
+a precision statement** — the fit above has r² = 0.999971 while carrying a real +0.66% bias.
+Uncertainty comes only from the preregistered replicate/seed/geometry methodology.
+
 ## 3 · Unresolved inputs (exposed, not invented)
 
 U1. **The scalar→graviton gap** (§1.1) — structural, unbridged, blocks any O2 claim.

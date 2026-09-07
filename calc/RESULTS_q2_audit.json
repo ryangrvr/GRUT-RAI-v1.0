@@ -1,6 +1,6 @@
 {
  "auditor": "calc/q2_audit.py (independent; imports no Q2 analysis module)",
- "auditor_sha256": "cdeefa5a43128bd510ae77a052c575063f82f9d38325c792e832d0c3b59d77c1",
+ "auditor_sha256": "800f418f63af54e92de3eadd3336946d68b18099a3a15509fd73832b1e040cd8",
  "config_sha256": "4aac62a44ac0ad65afe574d6e05eee5c5f3484e17e641aa680d08e5ae91ff4dc",
  "instrument_sha256": "3cda78997eaa5314f043594e6ce554e2734812f392fdd8882a326a3c1b6ad2b9",
  "controls_sha256": "edbce973040f6306c5e4ae36881abb68868199df5d5e170930fc57ffb1db1169",
@@ -72,6 +72,22 @@
   {
    "status": "AUDIT_OK",
    "check": "the instrument HAS an evaluation layer that applies the frozen tolerances (they are not prose-only)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the estimator-validity audit has been run (O1a shown to estimate Lambda_1 for the NONLINEAR operator, not merely for OU)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the frozen estimator's finite-lag bias (0.66%) is far below tol_rate (25%)"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "C(tau) is dominated by the slowest mode (weight fraction 0.98444) -- the multi-exponential contamination is small"
+  },
+  {
+   "status": "AUDIT_OK",
+   "check": "the A-vs-B separation (3.75x) exceeds the estimator bias by 566x"
   },
   {
    "status": "AUDIT_OK",
@@ -198,6 +214,11 @@
  "n_warn": 0,
  "independent_values": {
   "independent_snr_at_worst_window_end": 5.342899017057863,
+  "estimator_validity": {
+   "finite_lag_bias": 0.006628587261556455,
+   "Lambda1_weight_fraction": 0.9844428880932401,
+   "Lambda_1": 0.00889224094701654
+  },
   "independent_D": 0.012665147955292224,
   "independent_expected_rate_from_record_rule": 0.03333333333333333,
   "independent_target_B_sy_eigenvalue": 0.00885,

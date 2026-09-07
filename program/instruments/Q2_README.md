@@ -75,6 +75,13 @@ single-threaded.
 - **Primary-estimator control coverage verified non-definitionally**: the auditor checks the
   controls actually *call* `autocorrelation_rate`, after an audit found every control had
   been routing through the demoted cross-check only.
+- **Estimator-validity audit (`calc/q2_estimator_validity.py`, deterministic, NON-EVIDENTIARY)**:
+  an independent Fokker–Planck spectral solve — validated against the exact OU spectrum to
+  0.01% — gives Λ₁ = 0.008892 (= 0.08892√λ H, agreeing with the preregistered 0.0885 to
+  0.5%) and ⟨φ²⟩_eq = 1.317651 vs analytic 1.317645. C(τ) is 98.44% single-exponential; the
+  frozen fit rule applied to the exact noise-free C(τ) returns 0.008951, a **+0.66%**
+  finite-lag bias — 15× below the statistical scatter and 566× below the A-vs-B separation.
+  **O1a is therefore a valid Λ₁ estimator for the nonlinear operator, not merely for OU.**
 - **Non-circularity firewall — all checks AUDIT_OK**: no mass injected (m²_bare = 0); live
   physical-input set exactly {H, m²=0, λ, φ₀, noise-rule}; timestep resolves both targets
   (dt·k = 3.3e-4, 8.9e-5); primary range spans ≥1 e-fold at both targets (6.7, 1.77);
@@ -105,6 +112,7 @@ change after that commit is a NEW preregistration, not an edit.
 | `calc/q2_run.py` | `8cf91b8743eaad56d346988dac40a6fa1679aaada8451dd6a4b347480d4b329b` |
 | `calc/q2_stochastic_sy.py` | `3cda78997eaa5314f043594e6ce554e2734812f392fdd8882a326a3c1b6ad2b9` |
 | `calc/q2_controls.py` | `edbce973040f6306c5e4ae36881abb68868199df5d5e170930fc57ffb1db1169` |
-| `calc/q2_audit.py` | `cdeefa5a43128bd510ae77a052c575063f82f9d38325c792e832d0c3b59d77c1` |
+| `calc/q2_audit.py` | `800f418f63af54e92de3eadd3336946d68b18099a3a15509fd73832b1e040cd8` |
+| `calc/q2_estimator_validity.py` | `a7d042bdb9be13e8e55184ff598a895c0ed9e3c1c7d01f3f7b361774f11ed6da` |
 | `calc/q2_config.json` | `4aac62a44ac0ad65afe574d6e05eee5c5f3484e17e641aa680d08e5ae91ff4dc` |
-| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `53abc24ede659695e2e4790a709a6057a5e7ed3b68fe81b6407616853d4239fc` |
+| `program/gates/Q2_STOCHASTIC_EXECUTION_PREREG.md` | `47e71a1189b9faad7ddc2fb7678e580cc4e8853dbd03f7af669a458d21374b15` |
