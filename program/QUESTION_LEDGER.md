@@ -34,7 +34,7 @@ quiet-or-faint 7–47-order verdict — which the reconstruction CONFIRMED as th
 own figure, correcting this ledger's earlier doubt above). Owner decision owed: accept
 (Q1 → OFF, evaluation = the gate) or contest. Claim statuses untouched.
 
-## Q2 · Stochastic KMS-bath dynamics — GATED (rank 2; execution package frozen 2026-09-07, NOT run)
+## Q2 · Stochastic KMS-bath dynamics — **GATED** *(gloss: NOT ANSWERED)* (rank 2; package executed 2026-09-07 — see the ruling below)
 
 > **Gate question:** Do the legitimately specified GRUT constitutive equations, evolved
 > numerically as a stochastic realization, exhibit structure (fixed points, spectra,
@@ -61,6 +61,89 @@ because the record's composition (0.0333H) and the SY Fokker–Planck eigenvalue
 equation (0.00885H) differ by 3.8× — with a formal model-status adjudication and a rule that
 neither may be chosen post hoc; an SNR defect, a stationarity defect, and an unconnected-
 correlation bias were each found and repaired before running. Owner authorization pending.
+
+**OWNER RULING 2026-09-07, after execution and adjudication (`0b33ebe`).** The boxed
+question above is **preserved verbatim and is NOT re-worded.** Re-wording it after seeing the
+result would be post-hoc question substitution. The executed model was the **inherited scalar
+Starobinsky–Yokoyama channel**, graded in the adjudication §6 as INHERITED /
+STRUCTURAL_SELECTION / ASSUMPTION with *"derived from the GRUT construction? **NO**"*.
+**Therefore the execution did NOT answer this question, and the scalar-SY run — however
+cleanly it executed — may not be used to discharge it.** Disposition token: **GATED**; the owner's ruling records the clarifying gloss *"not
+answered"*, which is **not** a sixth disposition token — the declared set remains OPEN /
+GATED / ON / OFF / ANSWERED. GATED here — not because the
+computation failed (it ran cleanly and passed every control) but because it answered a
+different, narrower question, recorded separately as Q2-SY below. Q2 is **not** "failed":
+the original question remains unanswered, the child question is answered, and the run was
+technically valid — three distinct facts.
+
+## Q2-SY · The inherited scalar SY computational question — **ANSWERED** (post-execution child of Q2)
+
+> **Provenance: spawned from Q2 on 2026-09-07 AFTER execution**, by owner ruling, to hold the
+> question the run actually answered without altering Q2's registered wording.
+
+> **Registered question — the PRE-EXECUTION frozen wording** (prereg §1, byte-stable across
+> every commit from freeze to run; used here so that no post-execution formulation stands in
+> for the question actually asked, and because it covers **both** limbs, including the one
+> that came out NO):
+>
+> *"Does the already-declared stochastic Starobinsky–Yokoyama (SY) dynamics, started from a
+> bare massless field, **generate a finite relaxation rate** — and does it **reproduce the
+> record's own referent value** m_eff² = 0.1H² → rate = m_eff²/(3H) — under controls that can
+> distinguish generated dynamics from initialization, discretization, noise-normalization,
+> ensemble-size, and analysis artifacts?"*
+>
+> **Answered on both limbs: YES to the first (a finite rate was generated, 0.009216 H), NO to
+> the second (the referent value was NOT reproduced — target A NOT OBSERVED).**
+>
+> *(The owner's ruling phrased this entry as "does the inherited scalar SY channel … reproduce
+> its independently established nonlinear spectral dynamics without introducing new
+> structure?" — retained as the entry's summary label. The frozen wording above is the
+> registered question; the label is aimed at the affirmative limb only.)*
+
+**ANSWERED — and preregistered as NOT an advance.** Preregistered branches reached:
+**B-(b1), b2, H, I-b, not I-a.** Prereg §19–22 classifies **H** as *"uninformative about
+physics"* and required **B-(b3)** for an advance; b3 was not reached. **No registered
+scientific advance occurred under the Q2 preregistered decision rule.** That does not erase
+the findings below; it means they do not satisfy the criterion set beforehand for advancing
+the GRUT question.
+
+What the run did establish (execution record `78452bd`, adjudication `0b33ebe`):
+the nonlinear stochastic simulation recovered the independently solved spectral scale
+(0.009216 H vs Λ₁ = 0.008892 H, +3.6%, inside the pre-measured scatter); planted and analytic
+controls performed (planted exact gap 0.100000 → 0.101655; zero-noise and OU limits; C3 null
+clean; stationary variance −0.10% vs quadrature); convergence passed; **target A NOT
+OBSERVED**, **target B OBSERVED** — and, carried inline per prereg §2.2's own outcome
+table so the fence travels with the finding: *B reproduced means the implementation agrees
+with the registered spectral-gap calculation of the equation it integrates — **NOT evidence
+for GRUT, NOT a prediction, NOT O2***; O1b INCONCLUSIVE under its preregistered exemption; the
+selected λ remains a **non-predictive input** (branch H); and **no new structure appeared
+beyond what was already analytically present**. Instrument fidelity → **RECOVERED**; the
+estimator-validity theorem → **DERIVED** at its declared mathematical scope. **Localized
+finding:** within the scalar SY model the A-vs-B discrepancy is predominantly in the O(1)
+mass-normalization (0.100 H² vs the variance-matched 0.0288 H², 3.47×), **not** in the OU
+relaxation formula (8.1% when fed a consistent mass); **the scaling law m²_eff ∝ √λ H² was
+itself NOT tested and remains UNRESOLVED.** **Residual coverage limitations, retained and not
+backfilled** (the experiment is over and the preregistration is frozen): C4's timestep ladder
+does not exercise the O1a primary estimator, so the primary's convergence rests on C10; and
+branch D's λ limb is independently controlled by nothing, being absorbed into H rather than
+falsified.
+
+## Q2-BRIDGE · GRUT/O2 → SY stochastic reduction — OPEN
+
+> **Provenance: spawned 2026-09-07 from the Q2 adjudication §7.** Inherits **no** disposition
+> from Q2 or Q2-SY.
+
+> **Gate question:** Can the interacting TT graviton zero-mode be *derived* to reduce to an
+> SY-class stochastic dynamics, with the effective potential, the noise kernel, and the
+> coupling **derived rather than selected**?
+
+Required for any number of the Q2-SY kind to bear on O2: (1) a stochastic reduction for the
+interacting TT graviton zero-mode on de Sitter with potential and noise computed, not posited;
+(2) a **derived λ_grav** — since the measured rate scales as √λ, a selected λ makes the value
+uninformative (branch H); (3) a demonstration that "lifted vs protected" is decided by that
+equation's spectral gap. **Standing obstruction:** (1) and (2) live in the record's
+frontier-reserved sectors, where in-house resolution is an automatic fail under `CHARTER.md`
+§3. **No computation is authorized. Reopening key #1 remains NOT discharged.**
 
 ## Q3 · Dimensional transmutation — OPEN (rank 3)
 

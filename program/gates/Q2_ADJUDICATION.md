@@ -141,6 +141,9 @@ zero-mode; this run evolved a *scalar*.**
 
 ## 5 · Classification of "I-b without I-a"
 
+*Ruling applied (§9): the computational question answered here is registered separately as
+**Q2-SY**; the original **Q2** remains GATED / NOT ANSWERED with its wording intact.*
+
 **Completed at the computational level, and preregistered as NOT an advance** (§0). It is
 not a partial answer to the GRUT question, because that question was fenced out of Q2's
 scope before execution (§1.1, U1):
@@ -192,7 +195,8 @@ limitations of this run, not as a licence for a re-run.)*
   rather than the rate formula (8.1%)" → **DERIVED**, scoped. **Mass rule itself: UNTESTED.**
 - GRUT / O2 / reopening key #1 → **UNRESOLVED, unchanged.**
 
-**Investigation disposition — and a substitution the owner must rule on.**
+**Investigation disposition — OWNER RULING 2026-09-07, applied.**
+
 The ledger's boxed Q2 question reads, verbatim:
 
 > *"Do the **legitimately specified GRUT constitutive equations**, evolved numerically as a
@@ -202,22 +206,28 @@ The ledger's boxed Q2 question reads, verbatim:
 **That question, as written, was not answered.** Its subject — GRUT constitutive equations —
 was never available; §1.1 substituted the scalar SY channel **before execution**, and §6
 grades those dynamics INHERITED / STRUCTURAL_SELECTION / ASSUMPTION with "derived from the
-GRUT construction? **NO**." What was answered is the substitute question. **Marking "Q2 →
-ANSWERED" beside the boxed question as currently worded would let a later reader conclude
-that GRUT's constitutive equations were evolved and found to contain no new structure — a
-claim about GRUT this run cannot support in either direction.** *(The first draft paraphrased
-the boxed question as "the declared dynamics," dropping "GRUT constitutive equations"; that
-paraphrase is withdrawn.)*
+GRUT construction? **NO**."
 
-**Therefore, proposed rather than asserted:** the ledger's Q2 entry should be **re-worded to
-its substitute scope** — *"Does the inherited scalar Starobinsky–Yokoyama channel, evolved
-numerically…"* — and only then set to **ANSWERED**. Absent that re-wording, Q2 should remain
-**GATED**, because the disposition would otherwise attach to a question the run did not
-address. **The owner rules; this document does not edit the ledger.**
+**The owner ruled against re-wording it.** Re-wording a registered question after seeing the
+result is post-hoc question substitution, and the run cannot retrospectively be made an answer
+to the original question by editing the question. Accordingly, applied to the ledger:
 
-**The bridge question does not inherit any Q2 disposition.** It enters as a **new OPEN**
-entry — not ON (nothing licensed it), not OFF (nothing evaluated it), with §7 as its gate
+- **Q2 — original GRUT question: wording PRESERVED VERBATIM; disposition token **GATED**
+  (with the ruling's clarifying gloss *"not answered"*; the declared five-token set is
+  unchanged).** The scalar-SY execution — however cleanly it ran — **may not be used to discharge it.** Q2 is
+  **not "failed"**: the original question is unanswered, the child question is answered, and
+  the run was technically valid — three distinct facts.
+- **Q2-SY — new post-execution child entry (provenance recorded as spawned from Q2 after
+  execution): ANSWERED.** It holds the question the run actually answered.
+- **Q2-BRIDGE — new entry: OPEN**, inheriting no disposition from either, with §7 as its gate
+  question.
+
+**No registered scientific advance occurred under the Q2 preregistered decision rule** (§0:
+b3 was required; H is preregistered as uninformative about physics). The findings in §3
+stand as findings; they do not meet the criterion set beforehand for advancing the GRUT
 question. **Q2 does not become ON, and I-b licenses no further GRUT-directed computation.**
+*(The first draft of this document proposed re-wording the ledger question; that proposal is
+withdrawn — the owner ruled the other way, and correctly.)*
 
 ## 10 · Disclosed defects in this document's first draft
 
