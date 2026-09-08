@@ -8,7 +8,7 @@
 > status update). OFF ≠ not-yet-investigated; ON ≠ true. Entries are updated, never
 > deleted.
 
-## Q1 · The USL analogue signal — GATED (rank 1; gate built and rendered 2026-09-07)
+## Q1 · The USL analogue signal — **GATED** (rank 1; gate built and rendered 2026-09-07; **OFF is proposed but NOT applied — see the decision line below**)
 
 > **Gate question:** Can a physically realizable open system make a GRUT-class response
 > large enough to distinguish it from that same apparatus's standard QM/environmental
@@ -31,8 +31,12 @@ degeneracy row.
 engineered signal sits inside the baseline's freedom by construction; nothing
 GRUT-specific transfers; the real-coupling version is governed by the record's own
 quiet-or-faint 7–47-order verdict — which the reconstruction CONFIRMED as the record's
-own figure, correcting this ledger's earlier doubt above). Owner decision owed: accept
-(Q1 → OFF, evaluation = the gate) or contest. Claim statuses untouched.
+own figure, correcting this ledger's earlier doubt above). **Owner decision owed and NOT
+YET TAKEN:** accept (which would move Q1 → OFF, evaluation = the gate) or contest.
+**Until that acceptance actually occurs, Q1's disposition is GATED, not OFF** — under this
+ledger's semantics OFF means *evaluated and set aside with the evaluation cited*, and no
+acceptance has been recorded, so applying it now would be the disposition drifting by
+inertia rather than by ruling. Claim statuses untouched.
 
 ## Q2 · Stochastic KMS-bath dynamics — **GATED** *(gloss: NOT ANSWERED)* (rank 2; package executed 2026-09-07 — see the ruling below)
 
@@ -92,8 +96,19 @@ technically valid — three distinct facts.
 > distinguish generated dynamics from initialization, discretization, noise-normalization,
 > ensemble-size, and analysis artifacts?"*
 >
-> **Answered on both limbs: YES to the first (a finite rate was generated, 0.009216 H), NO to
-> the second (the referent value was NOT reproduced — target A NOT OBSERVED).**
+> **Answered on both limbs, with the first limb stated at its exact strength:**
+>
+> **Limb 1 — qualified.** *The inherited scalar SY dynamics produced the finite decay rate
+> expected for that equation, and the simulation recovered the independently established
+> nonlinear gap* (0.009216 H against Λ₁ = 0.008892 H). **This is not an emergent prediction
+> of a previously unconstrained rate:** the equation, λ, and the spectral structure were all
+> supplied in advance, and branch **H remains operative** — Λ₁ ∝ √λ with λ **selected**.
+> The prereg's verb "generate" is therefore read in its weak sense (the dynamics exhibited a
+> finite rate) and **must not be read as "GRUT generated a scale."** *The run demonstrates
+> dynamics, not parameter prediction.*
+>
+> **Limb 2 — NO.** The record's referent value was **not** reproduced (target A
+> NOT OBSERVED).
 >
 > *(The owner's ruling phrased this entry as "does the inherited scalar SY channel … reproduce
 > its independently established nonlinear spectral dynamics without introducing new
